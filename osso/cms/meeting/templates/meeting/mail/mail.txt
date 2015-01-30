@@ -1,0 +1,18 @@
+{% load i18n %}{% blocktrans with date|date:"j F Y" as date and time|time:"H:i" as time %}Dear {{ invite_name }},
+
+You are invited by {{ name }} for a conference call, with subject: {{ subject }}.
+This conference call will take place on {{ date }} at {{ time }} CET.
+
+To participate in the conference call from The Netherlands, please call
+{{ phone_number }} (€ 0,15 per minute), follow the instructions and use access
+code {{ pin_code }} to access your conference call.
+
+For use from abroad, please look at: {{ site_domain }}/en/international-access-numbers/
+
+To accept click here: http://{{ site_domain }}{{ accept_url }}
+To decline click here: http://{{ site_domain }}{{ reject_url }}
+
+Kind regards,
+
+http://{{ site_domain }}/en/
+{% endblocktrans %}

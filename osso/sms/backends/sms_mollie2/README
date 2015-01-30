@@ -1,0 +1,4 @@
+This is the "Mollie" SMS backend.
+
+As of 2014, the SMS provider is renamed to "MessageBird". The backend
+keeps the same name however.

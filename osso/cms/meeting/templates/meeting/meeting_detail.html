@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load i18n cms_tags %}
+
+{% block content %}
+    <h1>{% trans 'Meeting detail' %}</h1>
+    <table>
+        <tr>
+            <th>{% trans 'Name' %}</th><td>{{ meeting.name }}</td>
+        </tr>
+        <tr>
+            <th>{% trans 'Date' %}</th><td>{{ meeting.date|date:"j F Y" }}</td>
+        </tr>
+        <tr>
+            <th>{% trans 'Time' %}</th><td>{{ meeting.time|time:"H:i" }}</td>
+        </tr>
+        <tr>
+            <th>{% trans 'Access code' %}</th><td>{{ meeting.pin_code }}</td>
+        </tr>
+    </table>
+    <h2>{% trans 'Invites' %}</h2>
+    {% for invite in meeting.invites.all %}
+        {% if forloop.first %}
+        <table class='overview'>
+            <thead>
+                <tr>
+                    <th>{% trans 'Name' %}</th>
+                    <th>{% trans 'E-mail address' %}</th>
+                    <th>{% trans 'Mobile phone number' %}</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+        {% endif %}
+                <tr>
+                    <td>{{ invite.member.name }}</td>
+                    <td>{{ invite.member.email_address|default:"-" }}</td>
+                    <td>{{ invite.member.phone_number|default:"-" }}</td>
+                    <td>{{ invite.accept|yesno:"Accepted, Rejected, Unknown" }}</td>
+                </tr>
+        {% if forloop.last %}
+            </tbody>
+        </table>
+        {% endif %}
+    {% endfor %}
+{% endblock %}

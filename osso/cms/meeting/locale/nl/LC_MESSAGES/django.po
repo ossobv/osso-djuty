@@ -1,0 +1,367 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-08-20 11:50+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: forms.py:24
+msgid ""
+"The characters you entered didn't match the characters verification. Please "
+"try again."
+msgstr ""
+"De characters die u heeft ingevuld komen niet overéén met de characters in "
+"het plaatje. Probeert u het nog eens."
+
+#: forms.py:27 models.py:59 templates/meeting/meeting_detail.html:11
+#: templates/meeting/meeting_overview.html:12
+msgid "Date"
+msgstr "Datum"
+
+#: forms.py:27 models.py:59
+msgid "Date of meeting"
+msgstr "Datum van de vergadering"
+
+#: forms.py:28 models.py:60 templates/meeting/meeting_detail.html:14
+#: templates/meeting/meeting_overview.html:13
+msgid "Time"
+msgstr "Tijd"
+
+#: forms.py:28 models.py:60
+msgid "Time of meeting"
+msgstr "Tijd van de vergadering"
+
+#: forms.py:38
+msgid "The date of a meeting can't be in the past."
+msgstr "De datum van de vergadering mag niet in het verleden zijn."
+
+#: forms.py:62
+msgid "An e-mail address or a mobile phonenumber should be entered."
+msgstr "Er moet een e-mail adres ingevuld zijn of een mobiel telefoonnummer"
+
+#: models.py:55 templates/meeting/invite.html:61
+#: templates/meeting/meeting_detail.html:27
+msgid "E-mail address"
+msgstr "E-mail adres"
+
+#: models.py:55
+msgid "Enter your e-mail address."
+msgstr "Voer uw e-mail adres in."
+
+#: models.py:56 templates/meeting/invite.html:60
+#: templates/meeting/meeting_detail.html:8
+#: templates/meeting/meeting_detail.html:26
+#: templates/meeting/meeting_overview.html:14
+msgid "Name"
+msgstr "Naam"
+
+#: models.py:56
+msgid "Enter your name."
+msgstr "Voer uw naam in."
+
+#: models.py:57
+msgid "Subject"
+msgstr "Onderwerp"
+
+#: models.py:57
+msgid "Subject of meeting"
+msgstr "Onderwerp van de vergadering"
+
+#: models.py:58 templates/meeting/meeting_overview.html:16
+msgid "Group"
+msgstr "Groep"
+
+#: models.py:58
+msgid "Select a group or enter a name to create a new group."
+msgstr ""
+"Selecteer een groep of voer een naam in om een nieuwe groep te creëren."
+
+#: models.py:61 templates/meeting/meeting_detail.html:17
+msgid "Access code"
+msgstr "Pincode"
+
+#: models.py:61
+msgid "Access code of meeting"
+msgstr "Pin code van de vergadering"
+
+#: models.py:121
+msgid "You're invited"
+msgstr "U bent uitgenodigd"
+
+#: models.py:231 views.py:76 views.py:77
+msgid "accepted"
+msgstr "geaccepteerd"
+
+#: models.py:234 views.py:86 views.py:87
+msgid "not accepted"
+msgstr "niet geaccepteerd"
+
+#: navigation.py:9
+msgid "Groups"
+msgstr "Groepen"
+
+#: navigation.py:10
+msgid "Members"
+msgstr "Leden"
+
+#: navigation.py:11
+msgid "Meeting invitations"
+msgstr "Uitnodigingen voor vergaderingen"
+
+#: utils.py:28
+#, python-format
+msgid "Invitation %(notification_string)s by %(name)s"
+msgstr "Uitnodiging %(notification_string)s door %(name)s"
+
+#: views.py:33
+msgid "There must be at least 1 person to be invited."
+msgstr "Er moet minimaal 1 persoon worden uitgenodigd."
+
+#: templates/meeting/invite.html:16
+msgid "An error has occured, see details below."
+msgstr "Er is een fout opgetreden, zie formulier hier onder."
+
+#: templates/meeting/invite.html:30
+msgid "or"
+msgstr "of"
+
+#: templates/meeting/invite.html:56
+msgid "Invite by e-mail address and/or mobile number"
+msgstr "Uitnodigen per e-mail adres en/of mobiel nummer"
+
+#: templates/meeting/invite.html:62 templates/meeting/meeting_detail.html:28
+msgid "Mobile phone number"
+msgstr "Mobiele telefoonnummer"
+
+#: templates/meeting/invite.html:108
+msgid "Send invitation"
+msgstr "Uitnodiging versturen"
+
+#: templates/meeting/invite.html:113
+msgid "This field is required."
+msgstr "Dit veld is verplicht."
+
+#: templates/meeting/meeting_detail.html:5
+msgid "Meeting detail"
+msgstr "Vergaderings detail"
+
+#: templates/meeting/meeting_detail.html:20
+msgid "Invites"
+msgstr "Uitnodigingen"
+
+#: templates/meeting/meeting_invitation.html:5
+msgid "Dear"
+msgstr "Geachte"
+
+#: templates/meeting/meeting_invitation.html:6
+#, python-format
+msgid ""
+"\n"
+"You've %(notification_string)s the invitation for your conference call on %"
+"(date)s at %(time)s.\n"
+msgstr ""
+"\n"
+"U heeft de uitnodiging voor het telefonische vergadering op %(date)s om %"
+"(time)s\n"
+" %(notification_string)s\n"
+
+#: templates/meeting/meeting_overview.html:5
+msgid "Back to invites"
+msgstr "Teruf naar uitnodigingen"
+
+#: templates/meeting/meeting_overview.html:6
+msgid "Meeting overview"
+msgstr "Vergadering overzicht"
+
+#: templates/meeting/meeting_overview.html:15
+msgid "Access code"
+msgstr "Pin code"
+
+#: templates/meeting/meeting_overview.html:17
+msgid "Invited"
+msgstr "Uitgenodigd"
+
+#: templates/meeting/meeting_overview.html:18
+msgid "Accepted"
+msgstr "Geaccepteerd"
+
+#: templates/meeting/meeting_overview.html:19
+msgid "Rejected"
+msgstr "Verworpen"
+
+#: templates/meeting/meeting_overview.html:40
+msgid "You've didn't send any invitations yet."
+msgstr "U heeft nog geen uitnodigingen verstuurd."
+
+#: templates/meeting/thnx.html:5
+msgid "Thank you!"
+msgstr "Dank u wel!"
+
+#: templates/meeting/thnx.html:6
+msgid "Thank you for using the invitation tool."
+msgstr "Dank u wel voor het gebruiken van de uitnodingstool"
+
+#: templates/meeting/mail/mail.html:8
+#, python-format
+msgid ""
+"\n"
+"<p>Dear %(invite_name)s,</p>\n"
+"\n"
+"<p>You are invited by %(name)s for a conference call, with subject: %"
+"(subject)s.\n"
+"This conference call will take place on %(date)s at %(time)s CET.</p>\n"
+"\n"
+"<p>To participate in the conference call from The Netherlands, please call\n"
+"%(phone_number)s (€ 0,15 per minute), follow the instructions and use "
+"access\n"
+"code %(pin_code)s to access your conference call.</p>\n"
+"\n"
+"<p>For use from abroad, please look at: <a href=\"http://%(site_domain)s/en/"
+"international-access-numbers/\">international access numbers</a>.</p>\n"
+"\n"
+"<p>\n"
+"<a href=\"http://%(site_domain)s%(accept_url)s\">To accept click here.</"
+"a><br/>\n"
+"<a href=\"http://%(site_domain)s%(reject_url)s\">To decline click here.</a>\n"
+"</p>\n"
+"\n"
+"<p>Kind regards,</p>\n"
+"\n"
+"<p><a href=\"http://%(site_domain)s/en/\">www.%(site_name)s.nl</a></p>\n"
+msgstr ""
+"\n"
+"<p>Geachte %(invite_name)s,</p>\n"
+"\n"
+"<p>U bent uitgenodigd door %(name)s voor een conference call met als "
+"onderwerp: %(subject)s.\n"
+"Deze telefonische vergadering vindt plaats op %(date)s om %(time)s CET.</p>\n"
+"\n"
+"<p>Om deel te nemen vanuit Nederland, belt u naar\n"
+"%(phone_number)s (€ 0,15 per minuut), volg het menu en gebruik pincode %"
+"(pin_code)s om toegang te krijgen tot uw vergadering.</p>\n"
+"\n"
+"<p>Voor inbellen vanuit het buitenland, kijkt u op <a href=\"http://%"
+"(site_domain)s/nl/internationale-inbelnummers/\">internationale "
+"inbelnummers</a>.</p>\n"
+"\n"
+"<p>\n"
+"<a href=\"http://%(site_domain)s%(accept_url)s\">Om uw deelname te "
+"bevestigen klik hier.</a><br/>\n"
+"<a href=\"http://%(site_domain)s%(reject_url)s\">Om u af te melden klik hier."
+"</a>\n"
+"</p>\n"
+"\n"
+"<p>Met vriendelijke groet,</p>\n"
+"\n"
+"<p><a href=\"http://%(site_domain)s/nl/\">www.%(site_name)s.nl</a></p>\n"
+
+#: templates/meeting/mail/mail.txt:1
+#, python-format
+msgid ""
+"Dear %(invite_name)s,\n"
+"\n"
+"You are invited by %(name)s for a conference call, with subject: %(subject)"
+"s.\n"
+"This conference call will take place on %(date)s at %(time)s CET.\n"
+"\n"
+"To participate in the conference call from The Netherlands, please call\n"
+"%(phone_number)s (€ 0,15 per minute), follow the instructions and use "
+"access\n"
+"code %(pin_code)s to access your conference call.\n"
+"\n"
+"For use from abroad, please look at: %(site_domain)s/en/international-access-"
+"numbers/\n"
+"\n"
+"To accept click here: http://%(site_domain)s%(accept_url)s\n"
+"To decline click here: http://%(site_domain)s%(reject_url)s\n"
+"\n"
+"Kind regards,\n"
+"\n"
+"http://%(site_domain)s/en/\n"
+msgstr ""
+"Geachte %(invite_name)s,\n"
+"\n"
+"U bent uitgenodigd door %(name)s voor een conference call met als onderwerp: "
+"%(subject)s.\n"
+"Deze telefonische vergadering vindt plaats op %(date)s om %(time)s CET.\n"
+"\n"
+"Om deel te nemen vanuit Nederland, belt u naar\n"
+"%(phone_number)s (€ 0,15 per minuut), volg het menu en gebruik pincode %"
+"(pin_code)s om toegang te krijgen tot uw vergadering.\n"
+"\n"
+"Voor inbellen vanuit het buitenland, kijkt u op http://%(site_domain)s/nl/"
+"internationale-inbelnummers/.\n"
+"\n"
+"Om uw deelname te bevestigen klik hier: http://%(site_domain)s%(accept_url)"
+"s\n"
+"Om u af te melden klik hier: http://%(site_domain)s%(reject_url)s.\n"
+"\n"
+"Met vriendelijke groet,\n"
+"\n"
+"http://%(site_domain)s/nl/\n"
+
+#: templates/meeting/mail/sender_invite_notification.html:8
+#, python-format
+msgid ""
+"\n"
+"<p>Dear %(sender_name)s,</p>\n"
+"\n"
+"<p>%(invited_name)s has %(notification_string)s your invitation for your "
+"conference call on %(date)s at %(time)s CET.</p>\n"
+"\n"
+"<p>Kind regards,</p>\n"
+"\n"
+"<p><a href=\"http://%(site_domain)s/en/\">%(site_domain)s</a></p>\n"
+msgstr ""
+"\n"
+"<p>Geachte %(sender_name)s,</p>\n"
+"\n"
+"<p>%(invited_name)s heeft uw uitnodiging voor de telefonische vergadering "
+"op \n"
+"%(date)s om %(time)s CET %(notification_string)s.</p>\n"
+"\n"
+"<p>Met vriendelijke groet,</p>\n"
+"\n"
+"<p><a href=\"http://%(site_domain)s/nl/\">%(site_domain)s</a></p>\n"
+
+#: templates/meeting/mail/sender_invite_notification.txt:1
+#, python-format
+msgid ""
+"Dear %(sender_name)s,\n"
+"\n"
+"%(invited_name)s has %(notification_string)s your invitation for your "
+"conference call on %(date)s at %(time)s CET.\n"
+"\n"
+"Kind regards,\n"
+"\n"
+"http://%(site_domain)s/en/\n"
+msgstr ""
+"Geachte %(sender_name)s,\n"
+"\n"
+"%(invited_name)s heeft uw uitnodiging voor de telefonische vergadering op \n"
+"%(date)s om %(time)s CET %(notification_string)s.\n"
+"\n"
+"Met vriendelijke groet,\n"
+"\n"
+"http://%(site_domain)s/nl/\n"
+
+#: templates/meeting/mail/text.txt:1
+#, python-format
+msgid ""
+"%(name)s wants a conference call on %(date)s at %(time)s. Call %"
+"(phone_number)s or one of the international numbers and use code %(pin_code)"
+"s. Text %(keyword_confirm)s or %(keyword_decline)s to %(shortcode)s"
+msgstr ""
+"%(name)s wil op %(date)s om %(time)s telefonisch overleggen. Bel dan %"
+"(phone_number)s met pincode %(pin_code)s. Reageer en SMS gratis %"
+"(keyword_confirm)s of %(keyword_decline)s naar %(shortcode)s"

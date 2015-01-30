@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<django-objects version="1.0">
+    <object pk="useractivity.idle_max" model="aboutconfig.item">
+        <field type="DateTimeField" name="created">2009-06-11 15:34:34</field>
+        <field type="DateTimeField" name="modified">2009-06-11 15:34:43</field>
+	<field type="IntegerField" name="datatype_id">1</field>
+	<field type="TextField" name="value">120</field>
+    </object>
+</django-objects>

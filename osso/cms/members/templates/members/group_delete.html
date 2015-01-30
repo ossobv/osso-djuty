@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load i18n cms_tags %}
+
+{% block content %}
+    <h1>{% trans 'Delete group' %}</h1>
+    <p>{% blocktrans %}Are you sure you wan't to delete {{ group }}?{% endblocktrans %}</p>
+
+    {% for member in group.members.all %}
+        {% if forloop.first %}
+        <p>{% trans 'Members in this group:' %}</p>
+        <ul>
+        {% endif %}
+        <li>{{ member }}</li>
+        {% if forloop.last %}</ul>{% endif %}
+    {% endfor %}
+    <form action="." method="post">
+        <table>
+            <tr>
+                <td><input class='remove-button' type='submit' value='{% trans 'Yes' %}' name='yes'></input></td>
+                <td><input class='remove-button' type='submit' value='{% trans 'No' %}' name='no'></td>
+            </tr>
+        </table>
+    </form>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load i18n cms_tags %}
+
+{% block content %}
+    <div><a href='{% url invite %}'>{% trans 'Back to invites' %}</a></div>
+    <h1>{% trans 'Meeting overview' %}</h1>
+    {% for meeting in meetings %}
+        {% if forloop.first %}
+        <table class='overview' style='width: 100%;'>
+            <thead>
+                <tr>
+                    <th>{% trans 'Date' %}</th>
+                    <th>{% trans 'Time' %}</th>
+                    <th>{% trans 'Name' %}</th>
+                    <th>{% trans 'Access code' %}</th>
+                    <th>{% trans 'Group' %}</th>
+                    <th>{% trans 'Invited' %}</th>
+                    <th>{% trans 'Accepted' %}</th>
+                    <th>{% trans 'Rejected' %}</th>
+                </tr>
+            </thead>
+            <tbody>
+        {% endif %}
+                <tr>
+                    <td><a href='{% url meeting_detail meeting.id %}'>{{ meeting.date|date:"j F Y" }}</a></td>
+                    <td><a href='{% url meeting_detail meeting.id %}'>{{ meeting.time|time:"H:i" }}</a></td>
+                    <td>{{ meeting.subject }}</td>
+                    <td>{{ meeting.pin_code }}</td>
+                    <td>{{ meeting.group|default:"-" }}</td>
+                    <td>{{ meeting.invites.all|length }}</td>
+                    <td>{{ meeting.accepted_invites|length|default:"-"  }}</td>
+                    <td>{{ meeting.rejected_invites|length|default:"-" }}</td>
+                </tr>
+        {% if forloop.last %}
+            </tbody>
+        </table>
+        {% endif %}
+    {% empty %}
+        <p>
+            {% blocktrans %}You've didn't send any invitations yet.{% endblocktrans %}
+        </p>
+    {% endfor %}
+{% endblock %}

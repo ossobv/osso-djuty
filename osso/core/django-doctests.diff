@@ -1,0 +1,45 @@
+--- django/test/simple.py.orig	2013-08-27 17:44:15.000000000 +0200
++++ django/test/simple.py	2013-09-02 12:25:51.936686826 +0200
+@@ -68,7 +68,7 @@ def build_suite(app_module):
+             suite.addTest(doctest.DocTestSuite(app_module,
+                                                checker=doctestOutputChecker,
+                                                runner=DocTestRunner))
+-        except ValueError:
++        except doctest.NoTestFound:
+             # No doc tests in models.py
+             pass
+ 
+@@ -86,7 +86,7 @@ def build_suite(app_module):
+                 suite.addTest(doctest.DocTestSuite(test_module,
+                                                    checker=doctestOutputChecker,
+                                                    runner=DocTestRunner))
+-            except ValueError:
++            except doctest.NoTestFound:
+                 # No doc tests in tests.py
+                 pass
+     return suite
+--- django/test/_doctest.py.orig	2013-08-27 17:44:15.000000000 +0200
++++ django/test/_doctest.py	2013-09-02 12:25:18.945812668 +0200
+@@ -105,6 +105,13 @@ import unittest, difflib, pdb, tempfile
+ import warnings
+ from StringIO import StringIO
+ 
++class NoTestFound(ValueError):
++    """
++    Raised when no tests are found. Other exceptions raised when looking
++    for tests shouldn't be caught.
++    """
++    pass
++
+ if sys.platform.startswith('java'):
+     # On Jython, isclass() reports some modules as classes. Patch it.
+     def patch_isclass(isclass):
+@@ -2322,7 +2329,7 @@ def DocTestSuite(module=None, globs=None
+     if not tests:
+         # Why do we want to do this? Because it reveals a bug that might
+         # otherwise be hidden.
+-        raise ValueError(module, "has no tests")
++        raise NoTestFound(module, "has no tests")
+ 
+     tests.sort()
+     suite = unittest.TestSuite()

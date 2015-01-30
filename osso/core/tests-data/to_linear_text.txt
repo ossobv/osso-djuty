@@ -1,0 +1,9 @@
+Normal paragraph. This should end with dual LF because of the next P.
+
+The 2nd P with a couple of BRs in it:
+<- here, and
+<- here.
+This next line here has no extra preceding LF because it's no P.
+This is a continuation of the previous line. Only one LF precedes it.
+
+A nice little block-level element once again. (Double LF before because of the explicit BR.)

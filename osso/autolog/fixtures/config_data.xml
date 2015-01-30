@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<django-objects version="1.0">
+    <object pk="autolog.path" model="aboutconfig.item">
+        <field type="DateTimeField" name="created">2009-08-24 10:14:34</field>
+        <field type="DateTimeField" name="modified">2009-08-24 10:14:34</field>
+        <field type="IntegerField" name="datatype_id">1</field>
+        <field type="TextField" name="value">./log</field>
+    </object>
+</django-objects>

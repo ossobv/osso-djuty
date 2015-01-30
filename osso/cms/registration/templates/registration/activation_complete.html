@@ -1,0 +1,8 @@
+{% extends "base.html"  %}
+{% load i18n %}
+
+{% block content %}
+<h1>{% trans 'Account activated' %}</h1>
+<p>{% blocktrans %}Thank you for the activation of your account{% endblocktrans %}.</p>
+<p><a href="{% url invite %}">{% trans "Go to invitation assistent." %}</a>.</p>
+{% endblock %}

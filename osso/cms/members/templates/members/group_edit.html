@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load i18n cms_tags %}
+
+{% block content %}
+    <h1>{% trans 'Edit'%} {{ group }}</h1>
+    <form action='.' method='post'>
+        <table>
+            {{ form }}
+            <tr>
+                <td></td><td><input type='submit' value='{% trans 'Save' %}'/></td>
+            </tr>
+        </table>
+    </form>
+    <h2>{% trans 'Members' %}</h2>
+    {% for member in group.members.all %}
+        {% if forloop.first %}
+        <table class='overview'>
+            <thead>
+                <tr>
+                    <th>{% trans 'Name' %}</th>
+                    <th>{% trans 'Email' %}</th>
+                    <th>{% trans 'Phone number' %}</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+        {% endif %}
+                <tr>
+                    <td>{{ member.name }}</td>
+                    <td>{{ member.email_address }}</td>
+                    <td>{{ member.phone_number }}</td>
+                    <td>
+                        <a href='{% url member_edit member.id %}'>{% trans 'Edit' %}</a> | <a href='{% url group_remove_member group.id member.id %}'>{% trans 'Remove from group' %}</a>
+                    </td>
+                </tr>
+        {% if forloop.last %}
+            </tbody>
+        </table>
+        {% endif %}
+    {% empty %}
+        <p>{% blocktrans %}There are no members in this group.{% endblocktrans %}</p>
+    {% endfor %}
+    <p>
+        <a href='{% url group_add_member group.id %}'>{% trans 'Add a new member to this group' %}</a>
+    </p>
+{% endblock %}

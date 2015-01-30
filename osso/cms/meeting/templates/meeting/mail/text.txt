@@ -1,0 +1,1 @@
+{% load i18n %}{% spaceless %}{% blocktrans %}{{ name }} wants a conference call on {{ date }} at {{ time }}. Call {{ phone_number }} or one of the international numbers and use code {{ pin_code }}. Text {{ keyword_confirm }} or {{ keyword_decline }} to {{ shortcode }}{% endblocktrans %}{% endspaceless %}

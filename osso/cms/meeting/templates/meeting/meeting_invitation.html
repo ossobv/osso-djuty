@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% load i18n cms_tags %}
+
+{% block content %}
+<h1>{% trans 'Dear' %} {{ invite.member.name }},</h1>
+<p>{% blocktrans with invite.meeting.date|date:"j F Y" as date and invite.meeting.time|time:"H:i" as time%}
+You've {{ notification_string }} the invitation for your conference call on {{ date }} at {{ time }}.
+{% endblocktrans %}
+</p>
+{% endblock %}

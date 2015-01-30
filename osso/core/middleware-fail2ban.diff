@@ -1,0 +1,46 @@
+--- /etc/fail2ban/jail.conf.orig	2012-03-20 20:40:44.519412756 +0100
++++ /etc/fail2ban/jail.conf	2012-03-26 12:12:50.685229013 +0200
+@@ -177,6 +177,16 @@
+ logpath  = /var/log/apache*/*error.log
+ maxretry = 2
+ 
++[django-auth]
++
++enabled = true
++port    = http,https
++filter  = django-auth
++logpath = /var/log/auth.log
++#logpath = /var/log/apache*/*error.log
++#logpath = /var/log/uwsgi/app/*.log
++maxretry = 10
++
+ #
+ # FTP servers
+ #
+--- /dev/null	2012-03-14 11:59:05.396174000 +0100
++++ /etc/fail2ban/filter.d/django-auth.conf	2012-03-26 12:15:49.473236450 +0200
+@@ -0,0 +1,24 @@
++# Fail2Ban configuration file
++#
++# Author: Walter Doekes
++#
++
++[Definition]
++
++# Option:  failregex
++# Notes.:  regex to match the password failure messages in the logfile. The
++#          host must be matched by a group named "host". The tag "<HOST>" can
++#          be used for standard IP/hostname matching and is only an alias for
++#          (?:::f{4,6}:)?(?P<host>[\w\-.^_]+)
++# Values:  TEXT
++#
++# apache2: [Sun Feb 27 20:17:39 2011] [error] [django] Failed login for test2 from 1.2.3.4 port 53425 (Host: www.example.com)
++# authlog: Mar 26 11:49:34 datezeker uwsgi[14916]: [django] Failed login for test2 from 1.2.3.4 port 48427 (Host: www.example.com)
++failregex = ^.*[[]django[]] Failed login for .* from <HOST> port .*
++
++
++# Option:  ignoreregex
++# Notes.:  regex to ignore. If this regex matches, the line is ignored.
++# Values:  TEXT
++#
++ignoreregex = 

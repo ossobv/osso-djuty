@@ -1,0 +1,1446 @@
+<?xml version="1.0" encoding="utf-8"?>
+<django-objects version="1.0">
+    <object pk="1" model="relation.addresstype">
+        <field type="DateTimeField" name="created">2009-06-10 14:59:00</field><field type="DateTimeField" name="modified">2009-06-10 14:59:01</field><field type="CharField" name="identifier">BILLING</field><field type="CharField" name="description">Billing address</field>
+    </object>
+    <object pk="2" model="relation.addresstype">
+        <field type="DateTimeField" name="created">2009-06-10 14:59:02</field><field type="DateTimeField" name="modified">2009-06-10 14:59:02</field><field type="CharField" name="identifier">DELIVERY</field><field type="CharField" name="description">Delivery address</field>
+    </object>
+    <object pk="3" model="relation.addresstype">
+        <field type="DateTimeField" name="created">2009-06-10 14:59:03</field><field type="DateTimeField" name="modified">2009-06-10 14:59:03</field><field type="CharField" name="identifier">POSTAL</field><field type="CharField" name="description">Postal address</field>
+    </object>
+    <object pk="4" model="relation.addresstype">
+        <field type="DateTimeField" name="created">2009-06-10 14:59:04</field><field type="DateTimeField" name="modified">2009-06-10 14:59:04</field><field type="CharField" name="identifier">VISITING</field><field type="CharField" name="description">Visiting address</field>
+    </object>
+    <object pk="5" model="relation.addresstype">
+        <field type="DateTimeField" name="created">2009-06-10 14:59:05</field><field type="DateTimeField" name="modified">2009-06-10 14:59:05</field><field type="CharField" name="identifier">OTHER</field><field type="CharField" name="description">Other address</field>
+    </object>
+    <object pk="nl" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">NETHERLANDS</field>
+        <field type="PositiveIntegerField" name="order">3</field>
+    </object>
+    <object pk="be" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">BELGIUM</field>
+        <field type="PositiveIntegerField" name="order">2</field>
+    </object>
+    <object pk="de" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">GERMANY</field>
+        <field type="PositiveIntegerField" name="order">1</field>
+    </object>
+    <object pk="af" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">AFGHANISTAN</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="al" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">ALBANIA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="dz" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">ALGERIA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="as" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">AMERICAN SAMOA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="ad" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">ANDORRA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="ao" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">ANGOLA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="ai" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">ANGUILLA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="aq" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">ANTARCTICA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="ag" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">ANTIGUA AND BARBUDA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="ar" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">ARGENTINA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="am" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">ARMENIA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="aw" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">ARUBA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="au" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">AUSTRALIA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="at" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">AUSTRIA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="az" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">AZERBAIJAN</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="bs" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">BAHAMAS</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="bh" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">BAHRAIN</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="bd" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">BANGLADESH</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="bb" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">BARBADOS</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="by" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">BELARUS</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="bz" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">BELIZE</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="bj" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">BENIN</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="bm" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">BERMUDA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="bt" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">BHUTAN</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="bo" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">BOLIVIA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="ba" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">BOSNIA AND HERZEGOWINA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="bw" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">BOTSWANA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="bv" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">BOUVET ISLAND</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="br" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">BRAZIL</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="io" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">BRITISH INDIAN OCEAN TERRITORY</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="bn" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">BRUNEI DARUSSALAM</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="bg" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">BULGARIA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="bf" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">BURKINA FASO</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="bi" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">BURUNDI</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="kh" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">CAMBODIA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="cm" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">CAMEROON</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="ca" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">CANADA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="cv" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">CAPE VERDE</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="ky" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">CAYMAN ISLANDS</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="cf" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">CENTRAL AFRICAN REPUBLIC</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="td" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">CHAD</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="cl" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">CHILE</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="cn" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">CHINA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="cx" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">CHRISTMAS ISLAND</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="cc" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">COCOS (KEELING) ISLANDS</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="co" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">COLOMBIA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="km" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">COMOROS</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="cg" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">CONGO</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="ck" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">COOK ISLANDS</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="cr" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">COSTA RICA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="ci" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">COTE D'IVOIRE</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="hr" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">CROATIA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="cu" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">CUBA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="cy" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">CYPRUS</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="cz" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">CZECH REPUBLIC</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="dk" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">DENMARK</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="dj" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">DJIBOUTI</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="dm" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">DOMINICA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="do" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">DOMINICAN REPUBLIC</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="tp" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">EAST TIMOR</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="ec" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">ECUADOR</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="eg" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">EGYPT</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="sv" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">EL SALVADOR</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="gq" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">EQUATORIAL GUINEA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="er" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">ERITREA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="ee" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">ESTONIA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="et" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">ETHIOPIA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="fk" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">FALKLAND ISLANDS (MALVINAS)</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="fo" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">FAROE ISLANDS</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="fj" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">FIJI</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="fi" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">FINLAND</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="fr" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">FRANCE</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="fx" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">FRANCE, METROPOLITAN</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="gf" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">FRENCH GUIANA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="pf" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">FRENCH POLYNESIA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="tf" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">FRENCH SOUTHERN TERRITORIES</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="ga" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">GABON</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="gm" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">GAMBIA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="ge" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">GEORGIA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="gh" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">GHANA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="gi" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">GIBRALTAR</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="gr" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">GREECE</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="gl" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">GREENLAND</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="gd" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">GRENADA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="gp" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">GUADELOUPE</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="gu" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">GUAM</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="gt" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">GUATEMALA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="gn" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">GUINEA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="gw" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">GUINEA-BISSAU</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="gy" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">GUYANA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="ht" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">HAITI</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="hm" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">HEARD AND MC DONALD ISLANDS</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="hn" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">HONDURAS</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="hk" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">HONG KONG</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="hu" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">HUNGARY</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="is" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">ICELAND</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="in" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">INDIA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="id" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">INDONESIA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="ir" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">IRAN (ISLAMIC REPUBLIC OF)</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="iq" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">IRAQ</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="ie" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">IRELAND</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="il" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">ISRAEL</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="it" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">ITALY</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="jm" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">JAMAICA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="jp" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">JAPAN</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="jo" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">JORDAN</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="kz" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">KAZAKHSTAN</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="ke" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">KENYA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="ki" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">KIRIBATI</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="kp" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">KOREA, DEMOCRATIC PEOPLE'S REPUBLIC OF</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="kr" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">KOREA, REPUBLIC OF</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="kw" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">KUWAIT</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="kg" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">KYRGYZSTAN</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="la" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">LAO PEOPLE'S DEMOCRATIC REPUBLIC</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="lv" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">LATVIA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="lb" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">LEBANON</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="ls" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">LESOTHO</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="lr" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">LIBERIA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="ly" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">LIBYAN ARAB JAMAHIRIYA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="li" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">LIECHTENSTEIN</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="lt" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">LITHUANIA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="lu" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">LUXEMBOURG</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="mo" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">MACAU</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="mk" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">MACEDONIA, THE FORMER YUGOSLAV REPUBLIC OF</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="mg" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">MADAGASCAR</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="mw" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">MALAWI</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="my" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">MALAYSIA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="mv" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">MALDIVES</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="ml" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">MALI</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="mt" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">MALTA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="mh" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">MARSHALL ISLANDS</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="mq" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">MARTINIQUE</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="mr" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">MAURITANIA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="mu" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">MAURITIUS</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="yt" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">MAYOTTE</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="mx" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">MEXICO</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="fm" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">MICRONESIA, FEDERATED STATES OF</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="md" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">MOLDOVA, REPUBLIC OF</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="mc" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">MONACO</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="mn" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">MONGOLIA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="ms" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">MONTSERRAT</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="ma" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">MOROCCO</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="mz" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">MOZAMBIQUE</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="mm" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">MYANMAR</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="na" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">NAMIBIA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="nr" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">NAURU</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="np" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">NEPAL</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="an" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">NETHERLANDS ANTILLES</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="nc" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">NEW CALEDONIA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="nz" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">NEW ZEALAND</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="ni" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">NICARAGUA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="ne" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">NIGER</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="ng" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">NIGERIA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="nu" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">NIUE</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="nf" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">NORFOLK ISLAND</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="mp" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">NORTHERN MARIANA ISLANDS</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="no" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">NORWAY</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="om" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">OMAN</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="pk" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">PAKISTAN</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="pw" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">PALAU</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="pa" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">PANAMA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="pg" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">PAPUA NEW GUINEA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="py" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">PARAGUAY</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="pe" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">PERU</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="ph" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">PHILIPPINES</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="pn" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">PITCAIRN</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="pl" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">POLAND</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="pt" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">PORTUGAL</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="pr" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">PUERTO RICO</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="qa" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">QATAR</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="re" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">REUNION</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="ro" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">ROMANIA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="ru" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">RUSSIAN FEDERATION</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="rw" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">RWANDA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="kn" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">SAINT KITTS AND NEVIS</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="lc" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">SAINT LUCIA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="vc" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">SAINT VINCENT AND THE GRENADINES</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="ws" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">SAMOA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="sm" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">SAN MARINO</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="st" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">SAO TOME AND PRINCIPE</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="sa" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">SAUDI ARABIA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="sn" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">SENEGAL</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="sc" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">SEYCHELLES</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="sl" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">SIERRA LEONE</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="sg" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">SINGAPORE</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="sk" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">SLOVAKIA (Slovak Republic)</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="si" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">SLOVENIA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="sb" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">SOLOMON ISLANDS</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="so" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">SOMALIA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="za" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">SOUTH AFRICA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="es" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">SPAIN</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="lk" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">SRI LANKA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="sh" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">ST. HELENA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="pm" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">ST. PIERRE AND MIQUELON</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="sd" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">SUDAN</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="sr" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">SURINAME</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="sj" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">SVALBARD AND JAN MAYEN ISLANDS</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="sz" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">SWAZILAND</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="se" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">SWEDEN</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="ch" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">SWITZERLAND</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="sy" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">SYRIAN ARAB REPUBLIC</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="tw" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">TAIWAN, PROVINCE OF CHINA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="tj" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">TAJIKISTAN</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="tz" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">TANZANIA, UNITED REPUBLIC OF</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="th" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">THAILAND</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="tg" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">TOGO</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="tk" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">TOKELAU</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="to" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">TONGA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="tt" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">TRINIDAD AND TOBAGO</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="tn" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">TUNISIA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="tr" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">TURKEY</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="tm" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">TURKMENISTAN</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="tc" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">TURKS AND CAICOS ISLANDS</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="tv" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">TUVALU</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="ug" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">UGANDA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="ua" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">UKRAINE</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="ae" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">UNITED ARAB EMIRATES</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="gb" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">UNITED KINGDOM</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="us" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">UNITED STATES</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="um" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">UNITED STATES MINOR OUTLYING ISLANDS</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="uy" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">URUGUAY</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="uz" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">UZBEKISTAN</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="vu" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">VANUATU</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="va" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">VATICAN CITY STATE (HOLY SEE)</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="ve" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">VENEZUELA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="vn" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">VIETNAM</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="vg" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">VIRGIN ISLANDS (BRITISH)</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="vi" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">VIRGIN ISLANDS (U.S.)</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="wf" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">WALLIS AND FUTUNA ISLANDS</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="eh" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">WESTERN SAHARA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="ye" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">YEMEN</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="yu" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">YUGOSLAVIA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="zr" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">ZAIRE</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="zm" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">ZAMBIA</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+    <object pk="zw" model="relation.country">
+        <field type="DateTimeField" name="created">2009-06-10 15:32:07</field>
+        <field type="DateTimeField" name="modified">2009-06-10 15:32:07</field>
+        <field type="CharField" name="name">ZIMBABWE</field>
+        <field type="PositiveIntegerField" name="order">0</field>
+    </object>
+</django-objects>

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load cms_tags i18n  %}
+
+{% block content %}
+    <h1>{% trans "Registration" %}</h1>
+    {{ block.super }}
+    <form method='post' action='.'>
+        <table>
+            {% for name, fields in form.fieldsets %}
+                {% for field in fields %}
+                    <tr>
+                        <th>{{ field.label_tag }}</th>
+                        <td>{{ field }}</td>
+                        {% if field.errors %}
+                            <td>
+                            {% for error in field.errors %}
+                                {{ error }}
+                            {% endfor %}
+                            </td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            {% endfor %}
+
+            <tr>
+                <td></td><td><input type='submit' value='{% trans 'Registrate' %}'/></td>
+            </tr>
+        </table>
+    </form>
+{% endblock %}

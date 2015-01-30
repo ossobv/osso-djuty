@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load i18n cms_tags %}
+
+{% block content %}
+    <h1>{% trans 'Removing member from group' %}</h1>
+    <p>{% blocktrans %}Are you sure you wan't to remove {{ member }} from {{ group }}?{% endblocktrans %}</p>
+    <form action="." method="post">
+        <table>
+            <tr>
+                <td><input class='remove-button' type='submit' value='{% trans 'Yes' %}' name='yes'></input></td>
+                <td><input type='submit' class='remove-button' value='{% trans 'No' %}' name='no'></td>
+            </tr>
+        </table>
+    </form>
+{% endblock %}

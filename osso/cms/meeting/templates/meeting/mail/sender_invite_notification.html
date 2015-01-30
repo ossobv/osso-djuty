@@ -1,0 +1,20 @@
+{% load i18n %}
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<body>
+<div style="{{ site.email_styling }}">
+{% blocktrans with date|date:"j F Y" as date and time|time:"H:i" as time %}
+<p>Dear {{ sender_name }},</p>
+
+<p>{{ invited_name }} has {{ notification_string }} your invitation for your conference call on {{ date }} at {{ time }} CET.</p>
+
+<p>Kind regards,</p>
+
+<p><a href="http://{{ site_domain }}/en/">{{ site_name }}</a></p>
+{% endblocktrans %}
+<img src="cid:logo"/>
+</div>
+</body>
+</html>

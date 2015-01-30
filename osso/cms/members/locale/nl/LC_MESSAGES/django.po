@@ -1,0 +1,180 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-05-20 11:50+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: forms.py:38 forms.py:41
+msgid "This field is required."
+msgstr "Dit veld is verplicht."
+
+#: models.py:17 templates/members/group_edit.html:20
+#: templates/members/group_overview.html:12
+#: templates/members/members_overview.html:12
+msgid "Name"
+msgstr "Naam"
+
+#: models.py:17
+msgid "The name of the member."
+msgstr "Naam van het lid"
+
+#: models.py:18
+msgid "E-mail address of the member."
+msgstr "E-mail adres van het lid"
+
+#: models.py:19
+msgid "Phone number of the member."
+msgstr "Telefoonnummer van het lid"
+
+#: templates/members/group_add.html:5
+msgid "Add a group"
+msgstr "Groep toevoegen"
+
+#: templates/members/group_add.html:10
+#: templates/members/group_add_member.html:10
+#: templates/members/group_edit.html:10 templates/members/member_add.html:10
+#: templates/members/member_edit.html:10
+msgid "Save"
+msgstr "Opslaan"
+
+#: templates/members/group_add_member.html:5
+msgid "Add member to"
+msgstr "Lid toevoegen aan"
+
+#: templates/members/group_delete.html:5
+msgid "Delete group"
+msgstr "Groep verwijderen"
+
+#: templates/members/group_delete.html:6
+#, python-format
+msgid "Are you sure you wan't to delete %(group)s?"
+msgstr "Weet u het zeker dat u %(group)s wil verwijderen?"
+
+#: templates/members/group_delete.html:10
+msgid "Members in this group:"
+msgstr "Leden in deze groep:"
+
+#: templates/members/group_delete.html:19
+#: templates/members/group_remove_member.html:10
+#: templates/members/member_delete.html:10
+msgid "Yes"
+msgstr "Ja"
+
+#: templates/members/group_delete.html:20
+#: templates/members/group_remove_member.html:11
+#: templates/members/member_delete.html:11
+msgid "No"
+msgstr "Nee"
+
+#: templates/members/group_edit.html:5 templates/members/group_edit.html:33
+#: templates/members/group_overview.html:23
+#: templates/members/members_overview.html:26
+msgid "Edit"
+msgstr "Wijzigen"
+
+#: templates/members/group_edit.html:14
+msgid "Members"
+msgstr "Leden"
+
+#: templates/members/group_edit.html:21
+#: templates/members/members_overview.html:13
+msgid "Email"
+msgstr "Email"
+
+#: templates/members/group_edit.html:22
+#: templates/members/members_overview.html:14
+msgid "Phone number"
+msgstr "Telefoonnummer"
+
+#: templates/members/group_edit.html:33
+msgid "Remove from group"
+msgstr "Verwijderen van groep"
+
+#: templates/members/group_edit.html:41
+msgid "There are no members in this group."
+msgstr "Er zitten geen leden in deze groep."
+
+#: templates/members/group_edit.html:44
+msgid "Add a new member to this group"
+msgstr "Nieuw lid toevoegen aan groep"
+
+#: templates/members/group_overview.html:5
+#: templates/members/members_overview.html:5
+msgid "Back to invites"
+msgstr "Terug naar uitnodigingsassistent"
+
+#: templates/members/group_overview.html:6
+msgid "Group overview"
+msgstr "Groep overzicht"
+
+#: templates/members/group_overview.html:13
+msgid "Members count"
+msgstr "Aantal leden"
+
+#: templates/members/group_overview.html:23
+msgid "Add member"
+msgstr "Lid toevoegen"
+
+#: templates/members/group_overview.html:23
+#: templates/members/members_overview.html:26
+msgid "Delete"
+msgstr "Verwijderen"
+
+#: templates/members/group_overview.html:30
+#: templates/members/group_overview.html:34
+msgid "Add new group"
+msgstr "Nieuwe groep toevoegen"
+
+#: templates/members/group_overview.html:34
+msgid "You don't have any groups yet"
+msgstr "Er zijn nog geen groepen gedefinieerd"
+
+#: templates/members/group_remove_member.html:5
+msgid "Removing member from group"
+msgstr "Lid verwijderen van groep"
+
+#: templates/members/group_remove_member.html:6
+#, python-format
+msgid "Are you sure you wan't to remove %(member)s from %(group)s?"
+msgstr "Weet u het zeker dat u %(member)s van %(group)s wil verwijderen?"
+
+#: templates/members/member_add.html:5
+#: templates/members/members_overview.html:37
+msgid "Add new member"
+msgstr "Nieuw lid toevoegen"
+
+#: templates/members/member_delete.html:5
+msgid "Delete member"
+msgstr "Lid verwijderen"
+
+#: templates/members/member_edit.html:5
+msgid "Edit member"
+msgstr "Lid wijzigen "
+
+#: templates/members/members_overview.html:6
+msgid "Member overview"
+msgstr "Leden overzicht"
+
+#: templates/members/members_overview.html:15
+msgid "Groups"
+msgstr "Groepen"
+
+#: templates/members/members_overview.html:32
+msgid "Add new member here"
+msgstr "Hier nieuw lid toevoegen"
+
+#: templates/members/members_overview.html:37
+msgid "You don't have any members yet."
+msgstr "Er zijn nog geen groepen gedefinieerd"
+

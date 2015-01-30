@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load i18n cms_tags %}
+
+{% block content %}
+    <h1>{% trans 'Delete member' %}</h1>
+    <p>Are you sure you wan't to delete {{ member }}?</p>
+    <form action="." method="post">
+        <table>
+            <tr>
+                <td><input class='remove-button' type='submit' value='{% trans 'Yes' %}' name='yes'></input></td>
+                <td><input class='remove-button' type='submit' value='{% trans 'No' %}' name='no'></td>
+            </tr>
+        </table>
+    </form>
+{% endblock %}

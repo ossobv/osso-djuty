@@ -1,0 +1,130 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-08-17 12:53+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: forms.py:8 forms.py:20
+msgid "Username"
+msgstr "Gebruikersnaam"
+
+#: forms.py:9 forms.py:22 templates/registration/login.html:13
+msgid "E-mail address"
+msgstr "E-mail adres"
+
+#: forms.py:10 forms.py:23 templates/registration/login.html:16
+msgid "Password"
+msgstr "Wachtwoord"
+
+#: forms.py:11 forms.py:24
+msgid "Password (again)"
+msgstr "Wachtwoord (nogmaals)"
+
+#: forms.py:21
+msgid "Name"
+msgstr "Naam"
+
+#: forms.py:27
+msgid "Keep me informed of new services"
+msgstr "Houd mij op de hoogte van nieuwe diensten"
+
+#: forms.py:31
+msgid "I have read and agree to the Terms of Service"
+msgstr "Ik heb de servicevoorwaarden gelezen en ga akkoord."
+
+#: templates/registration/activate.html:5
+#: templates/registration/activation_complete.html:5
+msgid "Account activated"
+msgstr "Account geactiveerd"
+
+#: templates/registration/activate.html:6
+#: templates/registration/activation_complete.html:6
+msgid "Thank you for the activation of your account"
+msgstr "Dank u voor het activeren van uw account"
+
+#: templates/registration/activation_complete.html:7
+msgid "Go to invitation assistent."
+msgstr "Ga naar de uitnodigings assistent"
+
+#: templates/registration/activation_email.txt:1
+#, python-format
+msgid ""
+"\n"
+"Dear Madame/Sir,\n"
+"\n"
+"Thank you for your registration at %(site_name)s.\n"
+"\n"
+"Click here: http://%(site_domain)s/en%(activate_url)s to activate your "
+"account.\n"
+"\n"
+"Kind regards,\n"
+"\n"
+"%(site_name)s team.\n"
+msgstr ""
+"\n"
+"Geachte heer/mevrouw,\n"
+"\n"
+"Dank u voor uw registratie bij %(site_name)s.\n"
+"\n"
+"Klik hier: http://%(site_domain)s/nl%(activate_url)s om uw account te "
+"activeren.\n"
+"\n"
+"Vriendelijke groeten,\n"
+"\n"
+"%(site_name)s team.\n"
+
+#: templates/registration/activation_email_subject.txt:1
+msgid "Account Activation –"
+msgstr "Account activeren –"
+
+#: templates/registration/login.html:5
+msgid "Login"
+msgstr "Login"
+
+#: templates/registration/login.html:25
+msgid "Forgotten your password?"
+msgstr "Wachtwoord vergeten?"
+
+#: templates/registration/login.html:25
+msgid "Click here to reset your password."
+msgstr "Klik hier om je wachtwoord te reseten."
+
+#: templates/registration/logout.html:5
+msgid "Logged out"
+msgstr "Afgemeld"
+
+#: templates/registration/logout.html:7
+msgid "Thanks for spending some quality time with the Web site today."
+msgstr "Bedankt voor het gebruiken van de website."
+
+#: templates/registration/logout.html:9
+msgid "Log in again"
+msgstr "Log opnieuw in"
+
+#: templates/registration/registration_complete.html:5
+#: templates/registration/registration_form.html:5
+msgid "Registration"
+msgstr "Registratie"
+
+#: templates/registration/registration_complete.html:6
+msgid "Check your email to confirm the activation."
+msgstr "Controleer uw e-mail om de activering te bevestigen."
+
+#: templates/registration/registration_complete.html:7
+msgid "Go home"
+msgstr "Ga naar de startpagina"
+
+#: templates/registration/registration_form.html:26
+msgid "Registrate"
+msgstr "Registreer"

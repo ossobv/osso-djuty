@@ -1,0 +1,36 @@
+{# vim: set syn=htmldjango ts=8 sw=2 sts=2 et ai: #}
+
+{% comment %}
+{# EXAMPLE CSS #]
+/* userchat chat box */
+.userchat .textbox { margin: 8px 8px 0 8px; padding: 2px; color: #33331a; background: white; height: 400px; overflow-y: scroll; }
+.userchat .inputbox { margin: 0 8px 8px 8px; }
+.userchat .inputbox input { width: 100%; border: none; }
+.userchat .connection-error { color: #444444 !important; background: #888888; }
+.userchat .textbox .time { font-size: 80%; }
+.userchat .textbox .sender { font-weight: bold; }
+.userchat .textbox .is-my-message .body { font-style: italic; }
+.userchat .textbox a, .userchat .textbox a:hover { color: black; text-decoration: underline; }
+{# endcomment #}
+
+{% comment %}
+{# EXAMPLE JAVASCRIPT #}
+$(document).ready(function() {
+  var channel = new osso.userchat.Channel(
+    '/chat/1/',
+    document.getElementById('source_input_field'), // or $('.userchat input').get(0)
+    document.getElementById('destination_div')
+  );
+});
+
+// or.. for multiple channels, construct a MultipleChannelQuery
+// and m.addChannel(<id>, channel), use the auto_poll 4th argument
+// to the Channel constructor and set it to false.
+{% endcomment %}
+
+{% comment %}
+{# EXAMPLE HTML #}
+<div style="margin: 8px 8px 0 8px; padding: 2px; color: #33331a; background: white; height: 400px; overflow-y: scroll;"
+     id="destination_div"></div>
+<div style="margin: 0 8px 8px 8px;"><input type="text" id="source_input_field"/></div>
+{% endcomment %}
