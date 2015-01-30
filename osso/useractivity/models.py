@@ -51,7 +51,7 @@ class UserActivityLog(models.Model):
             help_text=_('The IP address of the user when logging in.'))
     first_activity = models.DateTimeField(blank=False,
             help_text=_('The time the user logged on.'))
-    explicit_login = models.BooleanField(blank=True,
+    explicit_login = models.BooleanField(blank=True, default=False,
             help_text=_('Whether the login was implicit (reuse of a session) '
                         'or explicit (the login button).'))
     last_activity = models.DateTimeField(db_index=True,
