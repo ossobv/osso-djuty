@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import os
+import subprocess
 from distutils.core import setup
 
 
@@ -35,6 +36,25 @@ packages = [i for i in packages if not i.startswith('osso.search')]
 data = [i for i in data if not i.startswith('search/')]  # relative to osso/
 # packages = [i for i in packages if not i.startswith('osso.sms')]
 # data = [i for i in data if not i.startswith('sms/')]
+
+
+# Add versioning; it's PEP386 compatible with:
+# <major>.<minor>.<timestamp_as_micro>-<git_version>
+version_path = os.path.join(os.path.dirname(__file__), 'osso', '.version')
+try:
+    # sdist gets to save the version.
+    version = subprocess.check_output([
+        'git', 'log', '-1', '--pretty=format:0.9.%ct-%h'])
+except subprocess.CalledProcessError:
+    # install gets to look it up.
+    file_ = open(version_path)
+    version = file_.read().strip()
+    file_.close()
+else:
+    file_ = open(version_path, 'w')
+    file_.write('%s\n' % (version,))
+    file_.close()
+data.append('.version')
 
 
 #####################
@@ -84,10 +104,7 @@ build_py._get_data_files = _get_data_files_HACK
 setup(
     # In need of a better name.
     name='osso-djuty',
-    # Trying to use a PEP386 and distutils.version.StrictVersion
-    # compatible versioning scheme here: 0.2a sorts before 0.2 and will
-    # mean not-exactly-0.2-yet.
-    version='0.0.1a',  # perpetual dev-mode
+    version=version,
     # Which files?
     packages=packages,
     package_data={'osso': data},  # cheat and let all data belong to osso pkg
