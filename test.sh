@@ -1,10 +1,15 @@
 #!/bin/sh
 # vim: set ts=8 sw=4 sts=4 et ai:
+#
+# This test script can be used to quickly test Django compatibility with
+# your currently loaded virtualenv.
+
+# Jump to base dir, like make(1) would.
+cd "`dirname "$0"`"
 
 admin="`which django-admin`"
 [ -z "$admin" ] && admin="`which django-admin.py`"
 [ -z "$admin" ] && echo 'No virtualenv loaded?' && exit 1
-here="`dirname "$0"`"
 
 # Apps to test. Exclude:
 # - cms because it is a namespace
@@ -20,13 +25,16 @@ for x in "$@"; do
     esac
 done
 if test -z "$APPS"; then
-    APPS="`find . -maxdepth 1 -type d -name '[A-Za-z0-9]*' |
-           egrep -v '^..(cms|doc|locale|xhr)$' |
-           sed -e 's/^..//' | sort`"
+    APPS="`find osso -maxdepth 1 -type d -name '[A-Za-z0-9]*' |
+           sed -e '
+               /^osso$/d
+               /^osso\/\(cms\|doc\|locale\|xhr\)$/d
+               s/^osso\///
+           ' | sort`"
 fi
 APPS="`echo "$APPS" | egrep -v '^(core|relation)$'`"  # included below
 
-cat > test_settings.py << __EOF__
+cat > osso/test_settings.py << __EOF__
 # vim: set ts=8 sw=4 sts=4 et ai:
 import os
 
@@ -57,9 +65,9 @@ INSTALLED_APPS = (
     'osso.relation',
 __EOF__
 for app in $APPS; do
-    echo "    'osso.$app'," >> test_settings.py
+    echo "    'osso.$app'," >> osso/test_settings.py
 done
-cat >> test_settings.py << __EOF__
+cat >> osso/test_settings.py << __EOF__
 )
 
 # The l10n middleware likes to have a view to call
@@ -77,7 +85,7 @@ ROOT_URLCONF = patterns('',
 SITE_ID = 1
 __EOF__
 
-PYTHONPATH="`dirname "$0"`/.." "$admin" test --settings=osso.test_settings $OPTS $APPS
+PYTHONPATH=. "$admin" test --settings=osso.test_settings $OPTS $APPS
 
 # Remove stuff again
-rm -f "$here/test_settings.py" "$here/test_settings.pyc"
+rm -f "osso/test_settings.py" "osso/test_settings.pyc"
