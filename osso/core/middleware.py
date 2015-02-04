@@ -51,7 +51,7 @@ class LogFailedLoginsMiddleware(object):
         # If all is well, this constructor is called exactly once.
         # Unfortunately some python-http interfaces (mod_python) call
         # this constructor more than once: we work around this by
-        # checking whether we already wrapped it. Now that this fails
+        # checking whether we already wrapped it. Note that this fails
         # if multiple decorators are attached to the login function.
         if not hasattr(auth_views.login, '__is_decorator'):
             # Wrap the regular auth login
