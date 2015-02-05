@@ -1,6 +1,18 @@
 #!/usr/bin/env python
 import os
-import subprocess
+try:
+    from subprocess import CalledProcessError, check_output
+except ImportError:  # python<=2.6
+    from subprocess import CalledProcessError, Popen, PIPE
+
+    def check_output(command):
+        file_ = Popen(command, stdout=PIPE)
+        out, err = file_.communicate()
+        ret = file_.wait()
+        if ret:
+            raise CalledProcessError(ret, command)
+        return out
+
 from distutils.core import setup
 
 
@@ -43,9 +55,9 @@ data = [i for i in data if not i.startswith('search/')]  # relative to osso/
 version_path = os.path.join(os.path.dirname(__file__), 'osso', '.version')
 try:
     # sdist gets to save the version.
-    version = subprocess.check_output([
+    version = check_output([
         'git', 'log', '-1', '--pretty=format:0.9.%ct-%h'])
-except subprocess.CalledProcessError:
+except CalledProcessError:
     # install gets to look it up.
     file_ = open(version_path)
     version = file_.read().strip()
