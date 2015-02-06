@@ -34,11 +34,12 @@ for root, dirs, files in os.walk(os.path.dirname(__file__) or '.'):
             packages.append(new_root.replace('/', '.'))
 
     for file in files:
-        if (os.path.splitext(file)[1] in ('.html', '.xml', '.js',
-                                          '.po', '.mo', '.diff') or
+        if (os.path.splitext(file)[1] in (
+                '.html', '.js', '.sql', '.txt', '.xml',
+                '.diff', '.po', '.mo', '.sh') or
                 file in ('COPYING', 'README', 'Makefile') or
                 file.startswith('LC_')):  # LC_locale_stuff
-            # Drop osso/ when appending.
+            # Drop "osso/" when appending.
             data.append(os.path.join(new_root, file)[5:])
 
 # Remove some?
