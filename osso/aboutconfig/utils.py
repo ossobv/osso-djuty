@@ -4,6 +4,8 @@ try:
 except NameError:
     u, py2 = str, False
 
+from datetime import datetime
+
 from django.core.cache import cache
 from django.db.models.signals import post_save
 from osso.aboutconfig.models import Item
@@ -82,7 +84,9 @@ def aboutconfig(key, default='', set=False):
         item, created = Item.objects.get_or_create(key=key,
                                                    defaults={'value': default})
         if not created and item.value != default:
-            rows = Item.objects.filter(key=key).update(value=default)
+            now = datetime.now()
+            rows = Item.objects.filter(key=key).update(value=default,
+                                                       modified=now)
             # backends that do not support matched/affected records
             # by update return None (pymongo)
             assert rows is None or rows == 1
