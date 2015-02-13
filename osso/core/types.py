@@ -73,6 +73,24 @@ class cidr4(_ComparableMixin):
     '255.255.255.255/255.255.255.255'
     >>> a.as_verbose_string(ip_as_net=False)
     '255.255.255.255'
+
+    Test the in operator.
+
+    >>> net = cidr4('192.168.1.0/24')
+    >>> cidr4('192.168.1.0') in net
+    True
+    >>> cidr4('192.168.1.123') in net
+    True
+    >>> cidr4('192.168.1.64/26') in net
+    True
+    >>> cidr4('192.168.0.0/23') in net  # more low
+    False
+    >>> cidr4('192.168.0.0/16') in net  # more of everything
+    False
+    >>> cidr4('192.168.2.0/23') in cidr4('192.168.2.0/24')  # more high
+    False
+    >>> net in net
+    True
     '''
     __slots__ = ('address', 'sigbits')
 
@@ -146,6 +164,12 @@ class cidr4(_ComparableMixin):
 
     def __str__(self):
         return self.as_string(ip_as_net=False)
+
+    def __contains__(self, subset):
+        if self.sigbits > subset.sigbits:  # more bits is smaller
+            return False
+        netmask = (0xffffffff << (32 - self.sigbits)) & 0xffffffff
+        return (subset.address & netmask) == self.address
 
     def as_string(self, ip_as_net=True):
         return '%d.%d.%d.%d%s' % (
