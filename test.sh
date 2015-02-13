@@ -32,7 +32,7 @@ if test -z "$APPS"; then
                s/^osso\///
            ' | sort`"
 fi
-APPS="`echo "$APPS" | egrep -v '^(core|relation)$'`"  # included below
+INST_APPS="`echo "$APPS" | egrep -v '^(core|relation)$'`"  # included below
 
 cat > osso/test_settings.py << __EOF__
 # vim: set ts=8 sw=4 sts=4 et ai:
@@ -64,7 +64,7 @@ INSTALLED_APPS = (
     'osso.core',
     'osso.relation',
 __EOF__
-for app in $APPS; do
+for app in $INST_APPS; do
     echo "    'osso.$app'," >> osso/test_settings.py
 done
 cat >> osso/test_settings.py << __EOF__
