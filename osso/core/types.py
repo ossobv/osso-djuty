@@ -45,6 +45,9 @@ class cidr4(_ComparableMixin):
     '1.2.3.4'
     >>> cidr4('1.2.3.4/30')
     cidr4("1.2.3.4/30")
+
+    Test comparisons.
+
     >>> a, b = cidr4('1.64.255.128/32'), cidr4('1.64.255.128')
     >>> a == b and a <= b and a >= b
     True
@@ -54,11 +57,21 @@ class cidr4(_ComparableMixin):
     >>> c = cidr4('2.0.0.0/7')
     >>> c > b and c > a
     True
+
+    Test initialization.
+
+    >>> a = cidr4('1.64.255.128/32')
+    >>> b = cidr4(a)
+    >>> a == b
+    True
     >>> try: cidr4('aap')
-    ... except: pass
+    ... except ValueError: pass
     ... else: assert False
     >>> try: cidr4('1.2.3.4/29') # .4 may have significant bits in (30, 31, 32)
-    ... except: pass
+    ... except ValueError: pass
+    ... else: assert False
+    >>> try: cidr4(None)
+    ... except TypeError: pass
     ... else: assert False
 
     Test the new /255.255.255.0 notation.
@@ -91,6 +104,17 @@ class cidr4(_ComparableMixin):
     False
     >>> net in net
     True
+
+    Test automatic casting and type errors on the in operator.
+
+    >>> net = cidr4('192.168.1.0/24')
+    >>> '1.2.3.4' in net
+    False
+    >>> u'192.168.1.2/31' in net
+    True
+    >>> try: True in net
+    ... except TypeError: pass
+    ... else: assert False
     '''
     __slots__ = ('address', 'sigbits')
 
@@ -98,6 +122,8 @@ class cidr4(_ComparableMixin):
         if isinstance(value, cidr4):
             self.address, self.sigbits = value.address, value.sigbits
             return
+        elif not isinstance(value, basestring):
+            raise TypeError('Cannot convert %r to a cidr4 type' % (value,))
 
         value = str(value).strip()
         if '/' not in value:
@@ -166,6 +192,9 @@ class cidr4(_ComparableMixin):
         return self.as_string(ip_as_net=False)
 
     def __contains__(self, subset):
+        if not isinstance(subset, cidr4):
+            subset = cidr4(subset)
+
         if self.sigbits > subset.sigbits:  # more bits is smaller
             return False
         netmask = (0xffffffff << (32 - self.sigbits)) & 0xffffffff
