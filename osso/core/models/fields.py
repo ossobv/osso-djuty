@@ -130,14 +130,26 @@ class FormatterBaseField(object):
     save time (which is why you need to supply all possibilities in the
     format_fields iterable).
     '''
-    def __init__(self, format_fields, accept_newlines=False):
+    CLEAN_VALUE_DEFAULT = \
+        fields.FormatterCharField.CLEAN_VALUE_DEFAULT
+    CLEAN_VALUE_WITH_ATTRIBUTES = \
+        fields.FormatterCharField.CLEAN_VALUE_WITH_ATTRIBUTES
+
+    def __init__(self, format_fields, clean_value=None,
+                 accept_newlines=False):
         self.format_fields = tuple(format_fields)
         self.accept_newlines = accept_newlines
+
+        if clean_value is None:
+            self.clean_value = self.CLEAN_VALUE_DEFAULT
+        else:
+            self.clean_value = clean_value
 
     def formfield(self, **kwargs):
         defaults = {
             'form_class': fields.FormatterCharField,
             'format_fields': self.format_fields,
+            'clean_value': self.clean_value,
             'accept_newlines': self.accept_newlines,
         }
         defaults.update(kwargs)
@@ -146,14 +158,17 @@ class FormatterBaseField(object):
 
 class FormatterCharField(FormatterBaseField, models.CharField):
     def __init__(self, *args, **kwargs):
-        FormatterBaseField.__init__(self, kwargs.pop('format_fields'))
+        FormatterBaseField.__init__(
+            self, format_fields=kwargs.pop('format_fields'),
+            clean_value=kwargs.pop('clean_value', None))
         models.CharField.__init__(self, *args, **kwargs)
 
 
 class FormatterTextField(FormatterBaseField, models.TextField):
     def __init__(self, *args, **kwargs):
-        FormatterBaseField.__init__(self, kwargs.pop('format_fields'),
-                                    accept_newlines=True)
+        FormatterBaseField.__init__(
+            self, format_fields=kwargs.pop('format_fields'),
+            clean_value=kwargs.pop('clean_value', None), accept_newlines=True)
         models.TextField.__init__(self, *args, **kwargs)
 
 

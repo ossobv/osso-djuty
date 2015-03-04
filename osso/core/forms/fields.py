@@ -20,7 +20,7 @@ class SafeCharField(forms.CharField):
 
 class Cidr4Field(forms.CharField):
     default_error_messages = {
-        'invalid': _(u'An IPv4 address in CIDR notation must be a.b.c.d/e.'),
+        'invalid': _('An IPv4 address in CIDR notation must be a.b.c.d/e.'),
     }
 
     def __init__(self, *args, **kwargs):
@@ -61,18 +61,62 @@ class EditableSelectField(forms.ModelChoiceField):
 
 
 class FormatterCharField(forms.CharField):
+    class _WithAttributes(object):
+        def __getattr__(self, name):
+            return self.__class__()
+
+        def __str__(self):
+            return 'whatever'
+        __repr__ = __unicode__ = __str__
+
+    CLEAN_VALUE_DEFAULT = 'whatever'
+    CLEAN_VALUE_WITH_ATTRIBUTES = _WithAttributes()
+
     default_error_messages = {
-        'formaterror': _(u'Unmatched brace or illegal format string '
-                         u'specifiers. Use {field} as replacement '
-                         u'needle and {{ and }} for literal braces.'),
-        'keyerror': _(u'Invalid format field found. Please use one or more '
-                      u'of %s.'),
+        'formaterror': _(
+            'Unmatched brace or illegal format string specifiers. '
+            'Use {field} as replacement needle and {{ and }} for '
+            'literal braces.'),
+        'keyerror': _(
+            'Invalid format field found. Please use one or more of %s.'),
+        'attributeerror': _(
+            'Invalid format field found. Indexes/properties of fields are '
+            'not allowed.'),
     }
 
     def __init__(self, *args, **kwargs):
-        self.format_dict = dict((i, '')
+        """
+        format_fields==('somevalue', 'othervalue')
+
+        If accept_newlines==True, then we do not strip linefeeds from the
+        input.
+
+        If you want to allow attribute indexing ("foo {foo.bar} baz")
+        you'll need to pass a clean_value==X that allows such an
+        attribute.
+
+        For example:
+
+            class AnyProperty(object):
+                def __getattr__(self, name):
+                    return self.__class__()
+                def __str__(self):
+                    return 'whatever'
+                __repr__ = __unicode__ = __str__
+
+        For your convenience, an object of that class is attached to
+        this class, so you can do this:
+
+            FormatterCharField(
+                format_fields=('foo',),
+                clean_value=FormatterCharField.CLEAN_VALUE_WITH_ATTRIBUTES)
+        """
+        clean_value = kwargs.pop('clean_value',
+                                 FormatterCharField.CLEAN_VALUE_DEFAULT)
+        self.format_dict = dict((i, clean_value)
                                 for i in kwargs.pop('format_fields', ()))
         self.accept_newlines = kwargs.pop('accept_newlines')
+
         super(FormatterCharField, self).__init__(*args, **kwargs)
 
     def clean(self, value):
@@ -89,18 +133,21 @@ class FormatterCharField(forms.CharField):
             raise forms.ValidationError(msg)
         except (IndexError, KeyError):
             msg = self.default_error_messages['keyerror']
-            raise forms.ValidationError(msg % (
-                ', '.join('{%s}' % i for i in self.format_dict)
-            ))
+            raise forms.ValidationError(
+                msg % (', '.join('{%s}' % i for i in self.format_dict),))
+        except (AttributeError, TypeError):
+            msg = self.default_error_messages['attributeerror']
+            raise forms.ValidationError(msg)
         return value
 
 
 class PhoneNumberField(forms.CharField):
-    widget = new_widget_with_attributes(forms.TextInput,
-            {'onchange': 'this.value=this.value.replace(/[^0-9+]/g,"");'})
+    widget = new_widget_with_attributes(
+        forms.TextInput,
+        {'onchange': 'this.value=this.value.replace(/[^0-9+]/g,"");'})
     default_error_messages = {
-        'invalid': _(u'A valid phone number must begin with either a region '
-                     u'code (0xx) or an international prefix (00xx or +xx).'),
+        'invalid': _('A valid phone number must begin with either a region '
+                     'code (0xx) or an international prefix (00xx or +xx).'),
     }
 
     def __init__(self, *args, **kwargs):
