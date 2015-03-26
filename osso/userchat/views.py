@@ -57,7 +57,7 @@ def channel(request, channel_id):
     except ValueError:
         last_message_id = 0
 
-    # Get all necessary prerequisites
+    # Get all necessary prerequisites.
     group_ids = list(request.user.groups.values_list('id', flat=True))
     exclude_empty_sender = False
     try:
@@ -68,7 +68,7 @@ def channel(request, channel_id):
                                       groups__in=group_ids).distinct()
     channel = get_object_or_404(channels, pk=channel_id)
 
-    # Add message if this is a post request
+    # Add message if this is a post request.
     if request.method == 'POST':
         try:
             body = request.POST.get('body')
@@ -83,12 +83,15 @@ def channel(request, channel_id):
             if body != '':
                 channel.create_message(body=body, sender=request.user)
 
-    # Get messages greater than last_message_id
+    # Get messages greater than last_message_id.
     message_qs = channel.messages.filter(id__gt=last_message_id)
     if exclude_empty_sender:
         message_qs = message_qs.exclude(sender=None)
-    messages = (message_qs.select_related('sender').order_by('timestamp')
-                .distinct())
+    if hasattr(message_qs, 'prefetch_related'):
+        message_qs = message_qs.prefetch_related('sender')
+    else:
+        message_qs = message_qs.select_related('sender')
+    messages = message_qs.order_by('timestamp').distinct()
 
     # Run it through the message filters.
     final_messages = []
@@ -111,7 +114,7 @@ def multiple_channels(request):
     # 1-0-2-45 means channel 1 from id 0 and channel 2 from id 45.
     pairs = qarg_to_pairs(request.GET.get('q'))
 
-    # Get all necessary prerequisites first when we need them
+    # Get all necessary prerequisites first when we need them.
     json = {}
     relation_id, group_ids, exclude_empty_sender = None, None, False
 
@@ -120,6 +123,8 @@ def multiple_channels(request):
         # different id, go do actual work.
         cache_key = 'osso.userchat.channel%d' % channel_id
         if cache.get(cache_key) != message_id:
+            # Fetch relation_id and group_ids the first time in the
+            # loop.
             if relation_id is None:
                 if request.user.is_anonymous():
                     raise PermissionDenied()
@@ -133,16 +138,23 @@ def multiple_channels(request):
                 group_ids = list(request.user.groups
                                  .values_list('id', flat=True))
 
+                # Check the channels for permissions, if there is
+                # something fishy, bail out and return the empty dict.
+                if Channel.objects.filter(
+                        id__in=[i[0] for i in pairs],
+                        relation__id=relation_id,
+                        groups__in=group_ids).distinct().count() != len(pairs):
+                    return JsonResponse(request, {}, compact=True)
+
             message_qs = Message.objects.filter(
-                id__gt=message_id,
-                channel__id=channel_id,
-                channel__relation__id=relation_id,
-                channel__groups__in=group_ids
-            )
+                id__gt=message_id, channel__id=channel_id)
             if exclude_empty_sender:
                 message_qs = message_qs.exclude(sender=None)
-            messages = list(message_qs.select_related('sender')
-                            .order_by('timestamp').distinct())
+            if hasattr(message_qs, 'prefetch_related'):
+                message_qs = message_qs.prefetch_related('sender')
+            else:
+                message_qs = message_qs.select_related('sender')
+            messages = list(message_qs.order_by('timestamp'))
 
             # Run it through the message filters.
             final_messages = []
@@ -154,7 +166,7 @@ def multiple_channels(request):
 
             if len(final_messages):
                 json[channel_id] = messages_to_json(final_messages,
-                                                   user=request.user)
+                                                    user=request.user)
             if len(messages):
                 # Store the last one we found, even if it was filtered.
                 last_id = messages[-1].id
