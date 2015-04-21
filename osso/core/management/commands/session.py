@@ -86,7 +86,7 @@ class Command(BaseCommand):
 
             if user != last_user:
                 if last_user is not None:
-                    print  # tailing LF after each record
+                    print  # trailing LF after each record
                 print '%s:' % (user.username or '(anonymoususer)',)
                 last_user = user
             print ' ', session.session_key, session.expire_date
@@ -95,7 +95,7 @@ class Command(BaseCommand):
                 print '   ', '\n    '.join(decoded_printable.split('\n'))
 
         if sessions:
-            print  # tailing LF
+            print  # trailing LF
 
     def remove(self, sessions, quiet=False):
         engine = import_module(settings.SESSION_ENGINE)
