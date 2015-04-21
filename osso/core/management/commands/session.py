@@ -69,20 +69,30 @@ class Command(BaseCommand):
         return matches
 
     def show(self, sessions):
+        def get_user(user_id):
+            try:
+                user = user_map[user_id]
+            except KeyError:
+                # When you've removed the user, the session may still
+                # exist.
+                user = AnonymousUser()
+                user.username = '(user-does-not-exist-anymore)'
+            return user
+
         user_map = dict((user.id, user) for user in (
             User.objects.filter(id__in=[i['user_id'] for i in sessions
                                         if i['user_id'] is not None])))
         user_map[None] = AnonymousUser()
 
         sessions.sort(key=(
-            lambda x: (user_map[x['user_id']].username,
+            lambda x: (get_user(x['user_id']).username,
                        x['session'].expire_date)))
 
         last_user = None
         for data in sessions:
             session = data['session']
             decoded = data['decoded']
-            user = user_map[data['user_id']]
+            user = get_user(data['user_id'])
 
             if user != last_user:
                 if last_user is not None:
