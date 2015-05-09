@@ -60,11 +60,24 @@ def _logrotate_if_necessary(filename):
 def _logrotate(filename, amount):
     '''
     This is protected by a file lock.
+
+    Rotates files so at most filename.(amount-1) exists. It won't rotate
+    the oldest files away as long as there is a gap.
     '''
-    try:
-        unlink('%s.%d' % (filename, amount - 1))
-    except OSError:
-        pass
+    missing = ''
+    for i in range(1, amount):
+        missing = '%s.%d' % (filename, i)
+        if not path.isfile(missing):
+            amount = i + 1
+            break
+    else:
+        missing = ''
+
+    if not missing:
+        try:
+            unlink('%s.%d' % (filename, amount - 1))
+        except OSError:
+            pass
     for i in range(amount - 2, 0, -1):
         try:
             rename('%s.%d' % (filename, i), '%s.%d' % (filename, i + 1))
