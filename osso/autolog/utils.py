@@ -1,7 +1,8 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
 from datetime import date
+from fcntl import LOCK_EX, LOCK_UN, flock
 from time import strftime
-from os import getpid, path, rename, stat, unlink
+from os import getpid, fstat, path, rename, stat, unlink
 from threading import currentThread
 
 from osso.core.fileutil import select_writable_path
@@ -26,29 +27,50 @@ def _logpath():
     return pathstr
 
 
-def _logrotate(filename):
+def _logrotate_if_necessary(filename):
     '''
     Rotate the log if its modification time is not today.
-    Keep at most 7 log files.
+    Keep at most 30 log files.
     '''
-    max = 30
+    amount = 30
     try:
         statinfo = stat(filename)
     except OSError:
-        return False
+        return
 
-    if date.today() != date.fromtimestamp(statinfo.st_mtime):
+    today = date.today()
+    if date.fromtimestamp(statinfo.st_mtime) != today:
+        # Use file locking to check that we're the only one touching
+        # things.
+        # NOTE: This only works for single threaded processes; multiple
+        # threads could still get away with running this code
+        # simultaneously.
+        with open(filename, 'a') as logfile:
+            flock(logfile.fileno(), LOCK_EX)
+            try:
+                statinfo = fstat(logfile.fileno())
+
+                # Second check.
+                if date.fromtimestamp(statinfo.st_mtime) != today:
+                    _logrotate(filename, amount)
+            finally:
+                flock(logfile.fileno(), LOCK_UN)
+
+
+def _logrotate(filename, amount):
+    '''
+    This is protected by a file lock.
+    '''
+    try:
+        unlink('%s.%d' % (filename, amount - 1))
+    except OSError:
+        pass
+    for i in range(amount - 2, 0, -1):
         try:
-            unlink('%s.%i' % (filename, max - 1))
+            rename('%s.%d' % (filename, i), '%s.%d' % (filename, i + 1))
         except OSError:
             pass
-        for i in range(max - 2, 0, -1):
-            try:
-                rename('%s.%i' % (filename, i), '%s.%i' % (filename, i + 1))
-            except OSError:
-                pass
-        rename('%s' % filename, '%s.1' % filename)  # don't catch error here
-    return True
+    rename('%s' % filename, '%s.1' % filename)  # don't catch error here
 
 
 NAMEDIDS = ('apple', 'block', 'color', 'death', 'entry',
@@ -71,7 +93,7 @@ def log(message, log='main', subsys='(main)', fail_silently=True):
         if fail_silently:
             return
         raise
-    _logrotate(filename)
+    _logrotate_if_necessary(filename)
     datestr = strftime('%Y-%m-%d %H:%M:%S%z')
     pid, tid = getpid(), currentThread().ident
     uniqueid = '%04x%012x' % (pid, tid)
