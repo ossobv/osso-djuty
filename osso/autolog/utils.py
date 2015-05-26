@@ -2,7 +2,7 @@
 from datetime import date
 from fcntl import LOCK_EX, LOCK_UN, flock
 from time import strftime
-from os import getpid, fstat, path, rename, stat, unlink
+from os import getpid, path, rename, stat, unlink
 from threading import currentThread
 
 from osso.core.fileutil import select_writable_path
@@ -48,11 +48,16 @@ def _logrotate_if_necessary(filename):
         with open(filename, 'a') as logfile:
             flock(logfile.fileno(), LOCK_EX)
             try:
-                statinfo = fstat(logfile.fileno())
-
-                # Second check.
-                if date.fromtimestamp(statinfo.st_mtime) != today:
-                    _logrotate(filename, amount)
+                try:
+                    # Don't check logfile.fileno(), check the original
+                    # filename.
+                    statinfo = stat(filename)
+                except OSError:
+                    pass
+                else:
+                    # Second check.
+                    if date.fromtimestamp(statinfo.st_mtime) != today:
+                        _logrotate(filename, amount)
             finally:
                 flock(logfile.fileno(), LOCK_UN)
 
