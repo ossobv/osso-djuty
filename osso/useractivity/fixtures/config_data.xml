@@ -6,4 +6,10 @@
 	<field type="IntegerField" name="datatype_id">1</field>
 	<field type="TextField" name="value">120</field>
     </object>
+    <object pk="useractivity.keep_days" model="aboutconfig.item">
+        <field type="DateTimeField" name="created">2015-07-11 10:06:03</field>
+        <field type="DateTimeField" name="modified">2015-07-11 10:06:03</field>
+	<field type="IntegerField" name="datatype_id">1</field>
+	<field type="TextField" name="value">120</field>
+    </object>
 </django-objects>

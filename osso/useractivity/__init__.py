@@ -1,5 +1,6 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
-import datetime
+from datetime import datetime, timedelta
+
 from django.contrib.auth.models import User
 from django.core.cache import cache
 from osso.aboutconfig.utils import aboutconfig
@@ -9,6 +10,7 @@ from osso.useractivity.signals import logged_in, logged_out
 
 CACHE_KEY_FMT = 'useractivity.user%d.ip%s'
 IDLE_MAX_DEFAULT = 120
+KEEP_DAYS_DEFAULT = 120
 
 
 def mark_active(user_pk, ip_address, request=None):
@@ -25,7 +27,7 @@ def mark_active(user_pk, ip_address, request=None):
     # Previously, we did this:
     #     updated = (UserActivityLog.objects
     #                .filter(user__pk=user_pk, explicit_logout=None)
-    #                .update(last_activity=datetime.datetime.now()))
+    #                .update(last_activity=datetime.now()))
     #     if updated == 0: mark_login(...)
     #
     # However, that turned out to be very deadlock prone in postgres. A
@@ -76,10 +78,10 @@ def mark_active(user_pk, ip_address, request=None):
                    explicit_login=False, request=request)
     else:
         update_ids = []
-        now = datetime.datetime.now()
+        now = datetime.now()
         idle_max = int(aboutconfig('useractivity.idle_max', IDLE_MAX_DEFAULT))
         need_refresh_after = idle_max / 2 - 10  # 120 seconds -> 50
-        old = now - datetime.timedelta(seconds=need_refresh_after)
+        old = now - timedelta(seconds=need_refresh_after)
         for i, (log_id, time) in enumerate(log_ids):
             if time < old:
                 update_ids.append(log_id)
@@ -111,7 +113,7 @@ def mark_login(user_pk, ip_address, explicit_login=True, request=None):
     # It's quite possible that we get multiple open entries at the same
     # time.  That'll be the users fault for logging on from multiple
     # locations.
-    now = datetime.datetime.now()
+    now = datetime.now()
     log = UserActivityLog.objects.create(
         user_id=user_pk,
         ip_address=ip_address,
@@ -148,7 +150,7 @@ def mark_logout(user_pk, ip_address, explicit_logout=True):
         ip_address=ip_address,
         explicit_logout=None
     ).update(
-        last_activity=datetime.datetime.now(),
+        last_activity=datetime.now(),
         explicit_logout=explicit_logout
     )
 
@@ -170,7 +172,7 @@ def prune_idlers(idle_max):
     Returns a list of users that were pruned.
     '''
     # Because we send signals for every user, we have to loop over all users.
-    then = datetime.datetime.now() - datetime.timedelta(seconds=idle_max)
+    then = datetime.now() - timedelta(seconds=idle_max)
     prunable_users = (UserActivityLog.objects
                       .filter(explicit_logout=None, last_activity__lt=then)
                       .values_list('user_id', flat=True))
@@ -192,3 +194,15 @@ def prune_idlers(idle_max):
         logged_out.send(sender=User, instance=user, explicit=False)
 
     return pruned_users
+
+
+def prune_table(keep_days):
+    """
+    Prune the useractivity table of records older than N days.
+
+    You should run this every now and then. Perhaps through the cleanup
+    command that you run every minute, and then only once per 100 runs
+    or so.
+    """
+    long_ago = datetime.today() - timedelta(days=keep_days)
+    UserActivityLog.objects.filter(last_activity__lt=long_ago).delete()

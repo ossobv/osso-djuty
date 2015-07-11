@@ -1,7 +1,10 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
+from random import randint
+
 from osso.core.management.base import BaseCommand, CommandError
 from osso.aboutconfig.utils import aboutconfig
-from osso.useractivity import IDLE_MAX_DEFAULT, prune_idlers
+from osso.useractivity import (
+    IDLE_MAX_DEFAULT, KEEP_DAYS_DEFAULT, prune_idlers, prune_table)
 
 
 class Command(BaseCommand):
@@ -39,3 +42,19 @@ Choose one of:
             print('Sent logout signal for %d logged on user(s): %s' %
                   (len(pruned_users),
                    ', '.join(i.username for i in pruned_users)))
+
+        # Prune the table every now and then. And since we recommend
+        # that this command is ran every minute, this should fix that
+        # the job runs only about once or twice per day. (Or sometimes
+        # more often, or less often :P)
+        if randint(0, 719) == 0:
+            keep_days = int(aboutconfig('useractivity.keep_days',
+                                        KEEP_DAYS_DEFAULT))
+            if keep_days > 0:
+                if not quiet:
+                    print('Useractivity cleanup, running prune_table keeping '
+                          '%s days.' % keep_days)
+                prune_table(keep_days)
+            else:
+                if not quiet:
+                    print('Useractivity cleanup, prune_table disabled.')
