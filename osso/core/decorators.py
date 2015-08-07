@@ -66,7 +66,8 @@ def login_with_profile_required(func):
         try:
             return bool(user.is_authenticated() and user.get_profile())
         except ObjectDoesNotExist:
-            assert False, 'User %s has no profile!' % user  # XXX: should replace assert
+            # XXX: we should replace assert with something better
+            assert False, 'User %s has no profile!' % user
 
     return user_passes_test(test)(func)
 
@@ -119,15 +120,16 @@ def log_failed_login(request, username=None):
     xff = ILLEGAL_RE.sub('', request.META.get('HTTP_X_FORWARDED_FOR', ''))
     if xff:
         xff = ', X-Forwarded-For: %s' % (xff,)
-    msg = (u'[django] Failed login for %(username)s '
-           u'from %(address)s port %(port)s (Host: %(host)s%(xff)s)\n') % {
-               'username': ILLEGAL_RE.sub('?', username),
-               'address': request.META.get('REMOTE_ADDR', '/unset/'),
-               'port': request.META.get('REMOTE_PORT', '/unset/'),
-               'host': ILLEGAL_RE.sub('?', request.META.get('HTTP_HOST',
-                                                            '/unset/')),
-               'xff': xff,
-           }
+    msg = (
+        u'[django] Failed login for %(username)s '
+        u'from %(address)s port %(port)s (Host: %(host)s%(xff)s)\n'
+    ) % {
+        'username': ILLEGAL_RE.sub('?', username) or '/unset/',
+        'address': request.META.get('REMOTE_ADDR', '/unset/'),
+        'port': request.META.get('REMOTE_PORT', '/unset/'),
+        'host': ILLEGAL_RE.sub('?', request.META.get('HTTP_HOST', '/unset/')),
+        'xff': xff,
+    }
 
     # Always use syslog. You should be checking auth.log
     # anyway for failed ssh logins. fail2ban has issues
