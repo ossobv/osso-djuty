@@ -38,12 +38,21 @@ class LogFailedLoginsMiddleware(object):
     Use fail2ban or something similar to block brute-force attacks. (See
     fail2ban.diff in this directory.)
 
-    Note that this *breaks* two auth tests:
+    This middleware may *break* builtin Django auth tests:
+
     > File "/opt/django13/django/contrib/auth/tests/views.py",
     >   line 211, in test_security_check
     > ...
     > NoReverseMatch: Reverse for 'django.contrib.auth.views.login'
     >   with arguments '()' and keyword arguments '{}' not found.
+
+    That occurs if a middleware has called reverse() already and
+    therefore cached the value of the original login view -- which is
+    later used for the reverse lookup.
+
+    Fix 1: the hacks below (``i._callback = auth_views.login``).
+    Fix 2: move this middleware up a bit, so no reverse() has been
+           called yet.
     '''
     def __init__(self, *args, **kwargs):
         super(LogFailedLoginsMiddleware, self).__init__(*args, **kwargs)
@@ -55,7 +64,24 @@ class LogFailedLoginsMiddleware(object):
         # if multiple decorators are attached to the login function.
         if not hasattr(auth_views.login, '__is_decorator'):
             # Wrap the regular auth login
+            original = auth_views.login
             auth_views.login = log_failed_logins(auth_views.login)
+
+            # Fix test failures that arise if someone has already
+            # called reverse() before this middleware is loaded.
+            # If they did, the urlpattern would be cached and the
+            # reverse lookup would contain the old view instead
+            # of the new.
+            # Tested against Django 1.4.19 on 2015-08-13.
+            try:
+                # from django.core.urlresolvers import clear_url_caches
+                # clear_url_caches()
+                from django.contrib.auth import urls
+                for i in urls.urlpatterns:
+                    if i.callback == original:
+                        i._callback = auth_views.login
+            except:
+                pass
 
         # Same goes for the admin-site login. Note that since Django
         # 1.3 this uses the auth login function. We only do this for
