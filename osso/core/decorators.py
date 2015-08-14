@@ -143,7 +143,7 @@ def log_failed_login(request, username=None):
     if request.META.get('SERVER_SOFTWARE') == 'mod_python':
         from mod_python import apache
         apache.log_error(msg.encode('utf-8')[0:-1])  # strip LF
-    else:
+    elif sys.argv[1:2] != ['test']:  # no output during test runs
         # We could check for 'uwsgi.version' in request.META
         # and add strftime('%c'), but that log confuses
         # fail2ban so we won't bother.
