@@ -104,13 +104,67 @@ class AsciiTest(TestCase):
         self.assertEqual(values, [u'unicode-?'])
 
     @skip_if_not_mysql_or_sqlite
-    def test_case_sensitive(self):
+    def test_case_sensitive_store(self):
         obj = AsciiModel.objects.create(name='case', value=1)
         obj2 = AsciiModel.objects.create(name='CaSe', value=2)
         obj3 = AsciiModel.objects.create(name='CASE', value=3)
         self.assertEqual(AsciiModel.objects.get(id=obj.id).name, 'case')
         self.assertEqual(AsciiModel.objects.get(id=obj2.id).name, 'CaSe')
         self.assertEqual(AsciiModel.objects.get(id=obj3.id).name, 'CASE')
+
+    @skip_if_not_mysql_or_sqlite
+    def test_case_sensitive_lookup(self):
+        AsciiModel.objects.create(name='case', value=1)
+        AsciiModel.objects.create(name='CaSe', value=2)
+        AsciiModel.objects.create(name='CASE', value=3)
+        self.assertEqual(AsciiModel.objects.get(name='case').value, 1)
+        self.assertEqual(AsciiModel.objects.get(name='CaSe').value, 2)
+        self.assertEqual(AsciiModel.objects.get(name='CASE').value, 3)
+
+    @skip_if_not_mysql_or_sqlite
+    def test_substring_contains(self):
+        AsciiModel.objects.create(name='a Mid-String to search for', value=1)
+        AsciiModel.objects.create(name='whatever', value=2)
+        self.assertEquals(
+            AsciiModel.objects.filter(name__contains='Mid-String').count(), 1)
+
+    @skip_if_not_mysql_or_sqlite
+    def test_substring_startswith(self):
+        AsciiModel.objects.create(name='a Mid-String to search for', value=1)
+        AsciiModel.objects.create(name='whatever', value=2)
+        self.assertEquals(
+            AsciiModel.objects.filter(name__startswith='a Mid').count(), 1)
+
+    @skip_if_not_mysql_or_sqlite
+    def test_substring_endswith(self):
+        AsciiModel.objects.create(name='a Mid-String to search for', value=1)
+        AsciiModel.objects.create(name='whatever', value=2)
+        self.assertEquals(
+            AsciiModel.objects.filter(name__endswith='search for').count(), 1)
+
+    @skip_if_not_mysql_or_sqlite
+    @expect_failure_if_not_mysql
+    def test_substring_contains_case(self):
+        AsciiModel.objects.create(name='a Mid-String to search for', value=1)
+        AsciiModel.objects.create(name='a mid-string to miss', value=2)
+        self.assertEquals(
+            AsciiModel.objects.filter(name__contains='Mid-String').count(), 1)
+
+    @skip_if_not_mysql_or_sqlite
+    @expect_failure_if_not_mysql
+    def test_substring_startswith_case(self):
+        AsciiModel.objects.create(name='a Mid-String to search for', value=1)
+        AsciiModel.objects.create(name='a mid-string to miss', value=2)
+        self.assertEquals(
+            AsciiModel.objects.filter(name__startswith='a Mid').count(), 1)
+
+    @skip_if_not_mysql_or_sqlite
+    @expect_failure_if_not_mysql
+    def test_substring_endswith_case(self):
+        AsciiModel.objects.create(name='a Mid-String to search for', value=1)
+        AsciiModel.objects.create(name='a mid-string to Search For', value=2)
+        self.assertEquals(
+            AsciiModel.objects.filter(name__endswith='search for').count(), 1)
 
 
 class BlobModel(models.Model):
@@ -199,7 +253,6 @@ class BlobTest(TestCase):
     @expect_failure_if_not_mysql
     def test_values_list(self):
         binary = b'\x00\x01\x02...abc...\xfd\xfe\xff'
-        binary = b'\x00\x01\x02...abc...\xfd\xfe\xff'
         BlobModel.objects.create(name='binary', value=binary)
         values = list(BlobModel.objects.values_list('value', flat=True))
 
@@ -213,3 +266,16 @@ class BlobTest(TestCase):
         # which will not be correct for SQLite3.
         self.assertTrue(isinstance(values[0], bytes), values)
         self.assertEqual(values, [binary])
+
+    @skip_if_not_mysql_or_sqlite
+    def test_contains(self):
+        binary = b'\x00\x01..ab...\xfe\xff'
+        BlobModel.objects.create(name='binary', value=binary)
+        BlobModel.objects.create(name='binary2', value='whatever')
+
+        # TypeError: Lookup type exact is not supported.
+        self.assertRaises(TypeError, BlobModel.objects.get,
+                          value=binary)
+        # TypeError: Lookup type contains is not supported.
+        self.assertRaises(TypeError, BlobModel.objects.get,
+                          value__contains='ab')

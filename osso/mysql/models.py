@@ -26,8 +26,10 @@ _is_mysql = all(i == 'mysql' for i in _db_engines())
 
 if not _is_mysql:
     from warnings import warn
-    warn('Not using MySQL engine, you get encoded blob performance, and you '
-         'cannot rely on the SQL LENGTH() function!')
+    warn('Not using MySQL engine, AsciiField substring match becomes case '
+         'sensitive (SQLite) and BlobField will suffer poor performance, '
+         'broken substring search and you cannot rely on the SQL LENGTH() '
+         'function.')
 
 
 class AsciiField(models.CharField):
@@ -119,7 +121,7 @@ class BlobField(with_metaclass(models.SubfieldBase, models.Field)):
             def get_db_prep_value(self, value):
                 return self.get_prep_value(value)
 
-    def get_db_prep_lookup(self, lookup_type, value):
+    def get_db_prep_lookup(self, lookup_type, value, **kwargs):
         if lookup_type not in ('isnull',):
             raise TypeError('Lookup type %s is not supported.' % lookup_type)
         return super(BlobField, self).get_db_prep_lookup(lookup_type, value)
