@@ -270,11 +270,16 @@ class ParentField(models.ForeignKey):
     A foreign key field that points to the model that uses it. Use it to
     define non-cyclic parent-child relationships.
     '''
-    def __init__(self, verbose_name=None, **kwargs):
+    def __init__(self, verbose_name=None, blank=True, null=True, **kwargs):
         # Must be null/blank because at least one God object does not
         # have a parent.
+        assert blank and null, 'ParentField must have blank/null=True'
+        # Django migrations will pass the 'to' model as a kwarg.
+        # Ignore it and force the use of 'self'
+        if 'to' in kwargs:
+            del kwargs['to']
         super(ParentField, self).__init__('self', verbose_name=verbose_name,
-                                          blank=True, null=True, **kwargs)
+                                          blank=blank, null=null, **kwargs)
 
     @staticmethod
     def check(object=None, attname=None):
