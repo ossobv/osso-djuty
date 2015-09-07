@@ -50,6 +50,9 @@ class AsciiField(models.CharField):
 
     def db_type(self, connection=None):
         # Newer Djangos pass connection parameter. Django 1.1 does not.
+        if not hasattr(connection, 'vendor'):  # 1.2 has it, without vendor
+            connection = None
+
         if connection and connection.vendor == 'mysql':
             return ('VARCHAR(%s) CHARACTER SET ascii '
                     'COLLATE ascii_bin' %

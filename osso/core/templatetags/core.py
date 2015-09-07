@@ -2,7 +2,7 @@
 import datetime
 import decimal
 
-from django import template
+from django import VERSION, template
 from django.utils.formats import get_format
 
 
@@ -26,24 +26,25 @@ def hourstohuman(value):
     return '%d:%02d' % (hours, minutes)
 
 
-@register.filter(name='strftime', expects_localtime=True)
-def strftime(value, fmt=None):
-    '''
-    Format a date/datetime/time using the given format string.
-    If no format is given format defaults to the first format
-    found in <type>_INPUT_FORMATS.
-    '''
-    # allow None so you can use mydate|strftime|default:"-"
-    if not hasattr(value, 'strftime'):
-        return value
-    if fmt is None:
-        # get_format returns the localized format if USE_L10N=True
-        if isinstance(value, datetime.datetime):
-            fmt = get_format('DATETIME_INPUT_FORMATS')[0]
-        elif isinstance(value, datetime.date):
-            fmt = get_format('DATE_INPUT_FORMATS')[0]
-        elif isinstance(value, datetime.time):
-            fmt = get_format('TIME_INPUT_FORMATS')[0]
-        else:
-            raise ValueError('No default strftime format for %r' % value)
-    return value.strftime(fmt)
+if VERSION >= (1, 4):
+    @register.filter(name='strftime', expects_localtime=True)
+    def strftime(value, fmt=None):
+        '''
+        Format a date/datetime/time using the given format string.
+        If no format is given format defaults to the first format
+        found in <type>_INPUT_FORMATS.
+        '''
+        # allow None so you can use mydate|strftime|default:"-"
+        if not hasattr(value, 'strftime'):
+            return value
+        if fmt is None:
+            # get_format returns the localized format if USE_L10N=True
+            if isinstance(value, datetime.datetime):
+                fmt = get_format('DATETIME_INPUT_FORMATS')[0]
+            elif isinstance(value, datetime.date):
+                fmt = get_format('DATE_INPUT_FORMATS')[0]
+            elif isinstance(value, datetime.time):
+                fmt = get_format('TIME_INPUT_FORMATS')[0]
+            else:
+                raise ValueError('No default strftime format for %r' % value)
+        return value.strftime(fmt)

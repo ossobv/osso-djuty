@@ -20,6 +20,7 @@ APPS=""
 OPTS=""
 for x in "$@"; do
     case $x in
+    --shell) SHELL=1;;
     -*) OPTS="$OPTS $x";;
     *) APPS="$APPS $x";;
     esac
@@ -37,6 +38,7 @@ INST_APPS="`echo "$APPS" | egrep -v '^(core|relation)$'`"  # included below
 cat > osso/test_settings.py << __EOF__
 # vim: set ts=8 sw=4 sts=4 et ai:
 import os
+from django import VERSION
 
 DATABASES = {
     'default': {
@@ -52,15 +54,26 @@ DATABASE_ENGINE = DATABASES['default']['ENGINE']
 LOCALE_PATHS = (os.path.join(os.path.dirname(__file__), 'locale'),)
 SECRET_KEY = 50 * 'A'  # must be set to something..
 
-MIDDLEWARE_CLASSES = ()  # avoid Django 1.7 check
+if VERSION >= (1, 4):
+    MIDDLEWARE_CLASSES = ()  # avoid Django 1.7 check
+else:
+    MIDDLEWARE_CLASSES = (
+        'django.contrib.sessions.middleware.SessionMiddleware',
+        'django.contrib.auth.middleware.AuthenticationMiddleware')
 
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
-    #'django.contrib.sessions',
-    #'django.contrib.sites',
-    #'django.contrib.messages',
-    #'django.contrib.staticfiles',
+)
+if VERSION < (1, 4):
+    INSTALLED_APPS += (
+        'django.contrib.sessions',
+        'django.contrib.sites',
+        'django.contrib.admin',
+        #'django.contrib.messages',
+        #'django.contrib.staticfiles',
+    )
+INSTALLED_APPS += (
     'osso.core',
     'osso.relation',
 __EOF__
@@ -85,7 +98,11 @@ ROOT_URLCONF = patterns('',
 SITE_ID = 1
 __EOF__
 
-PYTHONPATH=. "$admin" test --settings=osso.test_settings $OPTS $APPS
+if test "$SHELL" = 1; then
+    PYTHONPATH=. "$admin" shell --settings=osso.test_settings $OPTS
+else
+    PYTHONPATH=. "$admin" test --settings=osso.test_settings $OPTS
+fi
 
 # Remove stuff again
 rm -f "osso/test_settings.py" "osso/test_settings.pyc"
