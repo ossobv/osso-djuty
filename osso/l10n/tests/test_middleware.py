@@ -4,7 +4,7 @@ from django.utils import translation
 
 
 class LanguageSelectTest(TestCase):
-    ACCEPT_LANGUAGE = 'sv, en-gb;q=0.7, nl-nl;q=0.8'
+    ACCEPT_LANGUAGE = 'sv, en-gb;q=0.7, da-dk;q=0.8, nl-nl;q=0.9'
 
     def setUp(self, **kwargs):
         # Store settings that we mess with
@@ -31,22 +31,22 @@ class LanguageSelectTest(TestCase):
         self.assertEqual(translation.get_language(), 'sv')
 
     def test_select_default_language(self):
-        settings.LANGUAGE_CODES = ('da', 'es', 'fr')
-        settings.LANGUAGE_CODE = 'unused'
+        settings.LANGUAGE_CODES = ('da', 'en', 'fr', 'nl')
+        settings.LANGUAGE_CODE = 'en'  # unused, but must be valid since Django 1.8
 
-        response = self.client.get('/')
+        response = self.client.get('/')  # no ACCEPT_LANGUAGE
         self.assertEqual(response._headers.get('content-language', (None, ''))[1], 'da')
 
     def test_select_fallback_language(self):
-        settings.LANGUAGE_CODES = ('da', 'es', 'fr')
-        settings.LANGUAGE_CODE = 'unused'
+        settings.LANGUAGE_CODES = ('es', 'da', 'de', 'nl', 'fr')
+        settings.LANGUAGE_CODE = 'en'  # unused, but must be valid since Django 1.8
+
+        response = self.client.get('/', HTTP_ACCEPT_LANGUAGE=self.ACCEPT_LANGUAGE)
+        self.assertEqual(response._headers.get('content-language', (None, ''))[1], 'nl')
+
+    def test_select_second_language(self):
+        settings.LANGUAGE_CODES = ('es', 'da', 'de', 'fr')
+        settings.LANGUAGE_CODE = 'en'  # unused, but must be valid since Django 1.8
 
         response = self.client.get('/', HTTP_ACCEPT_LANGUAGE=self.ACCEPT_LANGUAGE)
         self.assertEqual(response._headers.get('content-language', (None, ''))[1], 'da')
-
-    def test_select_second_language(self):
-        settings.LANGUAGE_CODES = ('da', 'en', 'fr')
-        settings.LANGUAGE_CODE = 'unused'
-
-        response = self.client.get('/', HTTP_ACCEPT_LANGUAGE=self.ACCEPT_LANGUAGE)
-        self.assertEqual(response._headers.get('content-language', (None, ''))[1], 'en')
