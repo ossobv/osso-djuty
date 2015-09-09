@@ -2,7 +2,23 @@
 from django import VERSION as django_version
 from django.conf import settings
 from django.db import DatabaseError, connection, transaction
-from django.db.transaction import commit_manually, commit_on_success
+try:
+    from django.db.transaction import commit_manually, commit_on_success
+except ImportError:  # Django 1.8+ has no commit_*
+    from django.db.transaction import commit, set_autocommit
+
+    def commit_manually(fn):
+        def _commit_manually(*args, **kwargs):
+            set_autocommit(False)
+            try:
+                res = fn(*args, **kwargs)
+                commit()
+            finally:
+                set_autocommit(True)
+            return res
+        return _commit_manually
+
+    commit_on_success = commit_manually
 
 
 __all__ = ('suppressed_sql_notes', 'add_constraint', 'enumify')
@@ -124,22 +140,27 @@ def enumify(model, column, choices, null=False):
         db_engine = settings.DATABASES['default']['ENGINE']
         db_name = settings.DATABASES['default']['NAME']
 
-    # Check if it is done already. But only for MySQL since that ALTER TABLE
-    # is blocking and slow. Postgres doesn't have an equally simple query to
-    # find out whether it is done already. But I'm betting it detects that it
-    # is and runs a lightning fast no-op.
+    # Check if it is done already. But only for MySQL since that ALTER
+    # TABLE is blocking and slow. Postgres doesn't have an equally
+    # simple query to find out whether it is done already. But I'm
+    # betting it detects that it is and runs a lightning fast no-op.
     if db_engine in ('mysql', 'django.db.backends.mysql'):
         cursor = connection.cursor()
-        cursor.execute('SELECT data_type, column_type, is_nullable FROM information_schema.columns '
-                       'WHERE table_schema = %s AND table_name = %s AND column_name = %s',
+        cursor.execute('SELECT data_type, column_type, is_nullable '
+                       'FROM information_schema.columns '
+                       'WHERE table_schema = %s AND table_name = %s '
+                       'AND column_name = %s',
                        (db_name, table, column))
         orig_datatype, orig_columntype, orig_isnull = cursor.fetchall()[0]
-        if orig_datatype.lower() == 'enum' and ((orig_isnull.lower() != 'no') == null):
+        if (orig_datatype.lower() == 'enum' and
+                ((orig_isnull.lower() != 'no') == null)):
             # Is already an enum with same is_null properties.
             assert orig_columntype[0:6] == "enum('"
             assert orig_columntype[-2:] == "')"
-            orig_choices = orig_columntype[6:-2]        # drop "enum('" and "')"
-            orig_choices = orig_choices.split("','")    # split "abc','def','ghi"
+            # drop "enum('" and "')"
+            orig_choices = orig_columntype[6:-2]
+            # split "abc','def','ghi"
+            orig_choices = orig_choices.split("','")
             if set(orig_choices) == set(choices):
                 # Same, do nothing.
                 return
