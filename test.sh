@@ -11,6 +11,12 @@ admin="`which django-admin`"
 [ -z "$admin" ] && admin="`which django-admin.py`"
 [ -z "$admin" ] && echo 'No virtualenv loaded?' && exit 1
 
+VERSION=`echo 'from django import VERSION;print VERSION' | python 2>/dev/null`
+MAJVER=`echo $VERSION | sed -e 's/^[^0-9]*\([0-9]\+\).*/\1/'`
+MINVER=`echo $VERSION | sed -e 's/^[^0-9]*[0-9]\+[^0-9]\+\([0-9]\+\).*/\1/'`
+NEWVER=1  # from 1.6+ we take tests by the full dotted module
+test $MAJVER -eq 1 && test $MINVER -lt 6 && NEWVER=0
+
 # Apps to test. Exclude:
 # - cms because it is a namespace
 # - doc because it is no app
@@ -33,7 +39,8 @@ if test -z "$APPS"; then
                s/^osso\///
            ' | sort`"
 fi
-INST_APPS="`echo "$APPS" | egrep -v '^(core|relation)$'`"  # included below
+INST_APPS=`echo "$APPS" | egrep -v '^(core|relation)$'`  # included below
+test $NEWVER -eq 1 && APPS=`for x in $APPS; do echo osso.$x; done`
 
 cat > osso/test_settings.py << __EOF__
 # vim: set ts=8 sw=4 sts=4 et ai:
@@ -54,26 +61,11 @@ DATABASE_ENGINE = DATABASES['default']['ENGINE']
 LOCALE_PATHS = (os.path.join(os.path.dirname(__file__), 'locale'),)
 SECRET_KEY = 50 * 'A'  # must be set to something..
 
-if VERSION >= (1, 4):
-    MIDDLEWARE_CLASSES = ()  # avoid Django 1.7 check
-else:
-    MIDDLEWARE_CLASSES = (
-        'django.contrib.sessions.middleware.SessionMiddleware',
-        'django.contrib.auth.middleware.AuthenticationMiddleware')
+MIDDLEWARE_CLASSES = ()  # avoid Django 1.7 check
 
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
-)
-if VERSION < (1, 4):
-    INSTALLED_APPS += (
-        'django.contrib.sessions',
-        'django.contrib.sites',
-        'django.contrib.admin',
-        #'django.contrib.messages',
-        #'django.contrib.staticfiles',
-    )
-INSTALLED_APPS += (
     'osso.core',
     'osso.relation',
 __EOF__
@@ -101,7 +93,7 @@ __EOF__
 if test "$SHELL" = 1; then
     PYTHONPATH=. "$admin" shell --settings=osso.test_settings $OPTS
 else
-    PYTHONPATH=. "$admin" test --settings=osso.test_settings $OPTS
+    PYTHONPATH=. "$admin" test --settings=osso.test_settings $OPTS $APPS
 fi
 
 # Remove stuff again
