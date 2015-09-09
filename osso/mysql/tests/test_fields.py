@@ -31,10 +31,10 @@ import sys
 from django.db import models
 from django.test import TestCase
 try:
-    from django.utils.unittest import expectedFailure, skip  # django 1.3+
+    from unittest import expectedFailure, skip  # django 1.1, new py
 except ImportError:
     try:
-        from unittest import expectedFailure, skip  # django 1.1, new py
+        from django.utils.unittest import expectedFailure, skip  # django 1.3+
     except ImportError:
         expectedFailure, skip = None, None
 
