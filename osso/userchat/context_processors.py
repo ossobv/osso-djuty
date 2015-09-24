@@ -29,7 +29,7 @@ def userchat(request):
         try:
             relation = request.active_relation
         except AttributeError:
-            relation = request.user.get_profile().relation
+            relation = request.user.authenticatablecontact.relation
         groups = request.user.groups.all()
         return list(Channel.objects.filter(relation=relation,
                                            groups__in=groups).distinct())

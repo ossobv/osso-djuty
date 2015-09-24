@@ -64,7 +64,7 @@ def login_with_profile_required(func):
     '''
     def test(user):
         try:
-            return bool(user.is_authenticated() and user.get_profile())
+            return bool(user.is_authenticated() and user.authenticatablecontact)
         except ObjectDoesNotExist:
             # XXX: we should replace assert with something better
             assert False, 'User %s has no profile!' % user

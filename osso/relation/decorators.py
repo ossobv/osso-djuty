@@ -1,6 +1,6 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
 from django.contrib.auth import REDIRECT_FIELD_NAME
-from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect
 from django.utils.functional import update_wrapper
 from django.utils.http import urlquote
@@ -31,7 +31,6 @@ class _CheckAuthenticatableContactLogin(object):
             if k not in self.__dict__:
                 self.__dict__[k] = view_func.__dict__[k]
 
-
     def __get__(self, obj, cls=None):
         view_func = self.view_func.__get__(obj, cls)
         return _CheckAuthenticatableContactLogin(view_func, self.login_url, self.redirect_field_name)
@@ -45,9 +44,12 @@ class _CheckAuthenticatableContactLogin(object):
         if hasattr(request, 'active_relation'):
             relation = request.active_relation
         else:
-            try: profile = request.user.get_profile()
-            except ObjectDoesNotExist: relation = None
-            else: relation = profile.relation
+            try:
+                contact = request.user.authenticatablecontact
+            except ObjectDoesNotExist:
+                relation = None
+            else:
+                relation = contact.relation
 
         assert relation, 'User %s has no profile / no relation!' % (request.user,)
         return self.view_func(relation, request.user, request, *args, **kwargs)

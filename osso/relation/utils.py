@@ -1,10 +1,10 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
+from django.core.exceptions import ObjectDoesNotExist
 
 
-def get_active_relation(request, allow_id=False):
+def get_active_relation(request):
     # No user? No relation.
     if not hasattr(request, 'user'):
-        #assert hasattr(request, 'user'), "The OSSO relation middleware requires authentication middleware to be installed. Edit your MIDDLEWARE_CLASSES setting to insert 'django.contrib.auth.middleware.AuthenticationMiddleware'."
         return None
     # Anonymous user? No relation either.
     user = request.user
@@ -16,13 +16,11 @@ def get_active_relation(request, allow_id=False):
         return relation
     # Real relation?
     try:
-        profile = request.user.get_profile()
+        contact = request.user.authenticatablecontact
     except ObjectDoesNotExist:
         return None
     # Return
-    if allow_id:
-        return profile.relation_id
-    return profile.relation
+    return contact.relation
 
 
 def set_active_relation(request, relation):

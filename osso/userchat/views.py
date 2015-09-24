@@ -63,7 +63,7 @@ def channel(request, channel_id):
     try:
         relation_id = request.active_relation_id
     except AttributeError:
-        relation_id = request.user.get_profile().relation_id
+        relation_id = request.user.authenticatablecontact.relation_id
     channels = Channel.objects.filter(relation__id=relation_id,
                                       groups__in=group_ids).distinct()
     channel = get_object_or_404(channels, pk=channel_id)
@@ -132,7 +132,7 @@ def multiple_channels(request):
                     relation_id = request.active_relation_id
                 except AttributeError:
                     try:
-                        relation_id = request.user.get_profile().relation_id
+                        relation_id = request.user.authenticatablecontact.relation_id
                     except:
                         raise PermissionDenied()
                 group_ids = list(request.user.groups

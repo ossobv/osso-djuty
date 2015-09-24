@@ -161,10 +161,10 @@ class Contact(Model):
 
 class AuthenticatableContact(Contact):
     '''
-    Model to store the user profile of a contact who can log in. This
-    model is referred to by the AUTH_PROFILE_MODULE in the settings.
+    Model to store the user profile of a contact who can log in.
     '''
-    user = models.ForeignKey(User, verbose_name=_('user'), unique=True)
+    user = models.OneToOneField(User, verbose_name=_('user'),
+            related_name='authenticatablecontact')
 
     def __unicode__(self):
         return u'%s (%s)' % (self.user, self.relation)
