@@ -77,13 +77,8 @@ def log_failed_logins(view_func):
         response = view_func(request, *args, **kwargs)
 
         if request.method == 'POST':
-            login_unsuccessful = (
-                response and
-                not response.has_header('location') and
-                response.status_code != 302
-            )
-
-            if login_unsuccessful:
+            # Django auth sets request.user if authentication was successful.
+            if not request.user.is_authenticated():
                 log_failed_login(request)
         return response
 
