@@ -3,7 +3,6 @@ import datetime
 import decimal
 
 from django import VERSION, template
-from django.utils.formats import get_format
 
 
 register = template.Library()
@@ -27,6 +26,8 @@ def hourstohuman(value):
 
 
 if VERSION >= (1, 4):
+    from django.utils.formats import get_format
+
     @register.filter(name='strftime', expects_localtime=True)
     def strftime(value, fmt=None):
         '''
