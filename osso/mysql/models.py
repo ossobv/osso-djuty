@@ -77,12 +77,19 @@ class BlobField(with_metaclass(models.SubfieldBase, models.Field)):
     """
     description = 'Binary'
 
-    # For the MySQL version we don't need this. The to_python and
-    # value_to_string methods will get called for serializing and
+    # For the MySQL version we don't need most of this. The to_python
+    # and value_to_string methods will get called for serializing and
     # deserializing fixtures only.
     # For the SQLite3 version, we store the values in base64 in the DB,
     # so to_python must always get called.
-    if not _is_mysql:
+    if _is_mysql:
+        def db_type(self, connection=None):
+            # We use a LONGBLOB which can hold up to 4GB of bytes. A
+            # MEDIUMBLOB of max 16MB should probably be enough, but we
+            # don't want to add an arbitrary limit there.
+            return 'LONGBLOB'
+
+    else:
         __metaclass__ = models.SubfieldBase
 
         def to_python(self, value):
@@ -103,13 +110,6 @@ class BlobField(with_metaclass(models.SubfieldBase, models.Field)):
             value = self._get_val_from_obj(obj)
             return unicode(b64encode(value))
 
-    if _is_mysql:
-        def db_type(self, connection=None):
-            # We use a LONGBLOB which can hold up to 4GB of bytes. A
-            # MEDIUMBLOB of max 16MB should probably be enough, but we
-            # don't want to add an arbitrary limit there.
-            return 'LONGBLOB'
-    else:
         def get_prep_value(self, value):
             if value is None:
                 return None

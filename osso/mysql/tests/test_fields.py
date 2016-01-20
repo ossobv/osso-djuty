@@ -2,7 +2,7 @@
 """
 Taken from django-pstore and adapted.
 
-Copyright (C) 2012,2013  Walter Doekes <wdoekes>, OSSO B.V.
+Copyright (C) 2012,2013,2016  Walter Doekes <wdoekes>, OSSO B.V.
 
     This application is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -182,9 +182,40 @@ class BlobTest(TestCase):
 
     @skip_if_not_mysql_or_sqlite
     def test_binary(self):
+        # Note that this string is invalid UTF-8, but the MySQL driver
+        # shouldn't care. For some reason, it complains on some servers
+        # with:
+        #
+        #   Warning: Invalid utf8 character string: 'FDFEFF'
+        #
+        # See: https://bugs.mysql.com/bug.php?id=78851
+        #
+        # This can be worked around like this:
+        #
+        # --- MySQLdb/connections.py.orig 2016-01-20 16:31:02.000000000 +0100
+        # +++ MySQLdb/connections.py      2016-01-20 16:32:54.000000000 +0100
+        # @@ -194,7 +194,7 @@ class Connection(_mysql.connection):
+        #          db = proxy(self)
+        #          def _get_string_literal():
+        #              def string_literal(obj, dummy=None):
+        # -                return db.string_literal(obj)
+        # +                return b'_binary' + db.string_literal(obj)
+        #              return string_literal
+        #
+        #          def _get_unicode_literal():
         binary = b'\x00\x01\x02...abc...\xfd\xfe\xff'
 
-        obj = BlobModel.objects.create(name='binary', value=binary)
+        # A local fix is to ignore the warnings instead.
+        try:
+            import MySQLdb
+            import warnings
+        except ImportError:
+            obj = BlobModel.objects.create(name='binary', value=binary)
+        else:
+            with warnings.catch_warnings():
+                warnings.filterwarnings('ignore', category=MySQLdb.Warning)
+                obj = BlobModel.objects.create(name='binary', value=binary)
+
         obj_id = obj.id
         del obj
 
@@ -270,7 +301,19 @@ class BlobTest(TestCase):
     @skip_if_not_mysql_or_sqlite
     def test_contains(self):
         binary = b'\x00\x01..ab...\xfe\xff'
-        BlobModel.objects.create(name='binary', value=binary)
+
+        # A local fix to ignore stupid mysql warnings. See `test_binary`
+        # for details.
+        try:
+            import MySQLdb
+            import warnings
+        except ImportError:
+            BlobModel.objects.create(name='binary', value=binary)
+        else:
+            with warnings.catch_warnings():
+                warnings.filterwarnings('ignore', category=MySQLdb.Warning)
+                BlobModel.objects.create(name='binary', value=binary)
+
         BlobModel.objects.create(name='binary2', value='whatever')
 
         # TypeError: Lookup type exact is not supported.
