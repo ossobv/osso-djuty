@@ -55,3 +55,10 @@ class BaseSequence(object):
         match = sequence_name_re.match(name)
         if not match:
             raise SequenceError('invalid sequence name %r' % name)
+
+    def has_savepoint_issues(self):
+        '''
+        set to true if this connection has problems with savepoints in
+        tests autocommit=0 environments
+        '''
+        return False

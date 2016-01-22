@@ -2,7 +2,8 @@
 """
 Old doctest in testcase format.
 """
-from .test_helper import TestCase
+from django.test import TestCase
+
 from .. import SequenceDoesNotExist, SequenceError, sequence
 
 
@@ -15,7 +16,7 @@ class OldDocTestCase(TestCase):
         sequence.create('invoice', start=100, increment=10)  # custom sequence
 
         # create a sequence that already exists
-        if not self.is_ndbcluster:
+        if not sequence.has_savepoint_issues():
             self.assertRaises(SequenceError, sequence.create, 'invoice')
 
         # sequence has no value yet

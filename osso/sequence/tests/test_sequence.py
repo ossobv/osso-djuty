@@ -1,5 +1,6 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
-from .test_helper import TestCase
+from django.test import TestCase
+
 from .. import SequenceDoesNotExist, SequenceError, sequence
 
 
@@ -70,9 +71,9 @@ class SequenceTest(TestCase):
         # commands ignored until end of transaction block"
         sequence.create('counter')
 
-        # Cannot test this with ndbcluster. See the is_ndbcluster code
-        # for an explanation.
-        if not self.is_ndbcluster:
+        # Cannot test this with ndbcluster. See the has_savepoint_issues
+        # code for an explanation.
+        if not sequence.has_savepoint_issues():
             self.assertRaises(SequenceError, sequence.create, 'counter')
 
         sequence.nextval('counter')
