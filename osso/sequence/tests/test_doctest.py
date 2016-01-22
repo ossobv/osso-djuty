@@ -1,27 +1,44 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
-import doctest
-import sys
-
-from . import old_doctest
-
-
-def load_tests(loader, tests, ignore):
-    # Only run doctests for Python2.
-    if sys.version_info < (3,):
-        finder = doctest.DocTestFinder(exclude_empty=False)
-        for mod in (old_doctest,):
-            tests.addTests(doctest.DocTestSuite(module=mod,
-                                                test_finder=finder))
-    return tests
+"""
+Old doctest in testcase format.
+"""
+from .test_helper import TestCase
+from .. import SequenceDoesNotExist, SequenceError, sequence
 
 
-try:
-    from unittest import skip  # noqa, check if we're using 2.7+
-except ImportError:
-    class tests_helper(list):
-        def addTests(self, testsuite):
-            self.extend(testsuite._tests)
-    tests_to_load = tests_helper()
-    load_tests(None, tests_to_load, None)
-    sys.stderr.write('(skipping %d tests in pre-2.7 python)\n' %
-                     (len(tests_to_load),))
+class OldDocTestCase(TestCase):
+    def test_olddoctest1(self):
+        self.assertRaises(SequenceError, sequence.create, '1337')
+
+    def test_olddoctest2(self):
+        sequence.create('counter')  # default sequence
+        sequence.create('invoice', start=100, increment=10)  # custom sequence
+
+        # create a sequence that already exists
+        if not self.is_ndbcluster:
+            self.assertRaises(SequenceError, sequence.create, 'invoice')
+
+        # sequence has no value yet
+        self.assertRaises(SequenceError, sequence.currval, 'invoice')
+
+        self.assertEqual(sequence.nextval('invoice'), 100)
+        self.assertEqual(sequence.nextval('counter'), 1)
+        self.assertEqual(sequence.nextval('invoice'), 110)
+        self.assertEqual(sequence.nextval('counter'), 2)
+
+        self.assertEqual(sequence.currval('invoice'), 110)
+        self.assertEqual(sequence.currval('counter'), 2)
+
+        sequence.setval('invoice', 1)
+        self.assertEqual(sequence.currval('invoice'), 1)
+
+        sequence.drop('invoice')  # drop a sequence
+
+        # drop a sequence that does not exist
+        self.assertRaises(SequenceDoesNotExist, sequence.drop, 'invoice')
+        # currval of a sequence that does not exist
+        self.assertRaises(SequenceDoesNotExist, sequence.currval, 'invoice')
+        # nextval of a sequence that does not exist
+        self.assertRaises(SequenceDoesNotExist, sequence.nextval, 'invoice')
+        # setval of a sequence that does not exist
+        self.assertRaises(SequenceDoesNotExist, sequence.setval, 'invoice', 1)

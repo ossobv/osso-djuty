@@ -4,7 +4,7 @@
 from MySQLdb import IntegrityError, OperationalError
 
 from django.db import (DatabaseError, IntegrityError as DjangoIntegrityError,
-                       connection)
+                       connection, transaction)
 from osso.sequence.backends import (BaseSequence, SequenceDoesNotExist,
                                     SequenceError)
 
@@ -19,17 +19,22 @@ class Sequence(BaseSequence):
         '''
         self.validate_name(name)
         cursor = connection.cursor()
+
+        sid = transaction.savepoint()
         try:
             cursor.execute('INSERT INTO sequence_sequence '
                            '(`name`, `start`, `increment`) '
                            'VALUES (%s, %s, %s)',
                            (name, start, increment))
         except (IntegrityError, DjangoIntegrityError) as e:
+            transaction.savepoint_rollback(sid)
             # In older Django (1.1-ish) we get a MySQL exception. In newer
             # versions, we get a Django-wrapped one.
             if e.args[0] == 1062:  # duplicate key
                 raise SequenceError('sequence %r already exists' % name)
             raise
+        else:
+            transaction.savepoint_commit(sid)
 
     def drop(self, name):
         '''

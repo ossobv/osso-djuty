@@ -1,6 +1,5 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
-from django.test import TestCase
-
+from .test_helper import TestCase
 from .. import SequenceDoesNotExist, SequenceError, sequence
 
 
@@ -70,7 +69,12 @@ class SequenceTest(TestCase):
         # error. "DatabaseError: current transaction is aborted,
         # commands ignored until end of transaction block"
         sequence.create('counter')
-        self.assertRaises(SequenceError, sequence.create, 'counter')
+
+        # Cannot test this with ndbcluster. See the is_ndbcluster code
+        # for an explanation.
+        if not self.is_ndbcluster:
+            self.assertRaises(SequenceError, sequence.create, 'counter')
+
         sequence.nextval('counter')
 
     def test_recover_on_failed_drop(self):
