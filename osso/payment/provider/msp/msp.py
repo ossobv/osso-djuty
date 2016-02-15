@@ -88,7 +88,8 @@ class MultiSafepay(object):
         if settings:
             self.account = settings.OSSO_PAYMENT_MSP['account']
             self.site_id = settings.OSSO_PAYMENT_MSP['site_id']
-            self.site_secure_code = settings.OSSO_PAYMENT_MSP['site_secure_code']
+            self.site_secure_code = (
+                settings.OSSO_PAYMENT_MSP['site_secure_code'])
 
     def get_signature(self, payment):
         amount_cents = str(int(payment.amount * 100))
@@ -107,23 +108,24 @@ class MultiSafepay(object):
             raise PaymentAlreadyUsed()  # user clicked back?
 
         # (1) Start transaction by messaging MultiSafepay directly.
-        result = self.start_transaction(payment, locale=locale, remote_addr=remote_addr)
-        #result = '''<?xml version="1.0" encoding="UTF-8"?>
-        #<redirecttransaction result="ok">
-        #    <transaction>
-        #        <id>4039</id>
-        #        <payment_url>https://pay.multisafepay.com/pay/?transaction=12345&amp;lang=nl_NL</payment_url>
-        #    </transaction>
-        #</redirecttransaction>'''
+        result = self.start_transaction(payment, locale=locale,
+                                        remote_addr=remote_addr)
+        # result = '''<?xml version="1.0" encoding="UTF-8"?>
+        # <redirecttransaction result="ok">
+        #     <transaction>
+        #         <id>4039</id>
+        #         <payment_url>https://pay.multisafepay.com/pay/?transaction=12345&amp;lang=nl_NL</payment_url>
+        #     </transaction>
+        # </redirecttransaction>'''
         # OR
-        #result = '''<?xml version="1.0" encoding="UTF-8"?>
-        #<redirecttransaction result="error">
-        #    <error>
-        #        <code>1006</code>
-        #        <description>Invalid transaction ID</description>
-        #    </error>
-        #    <transaction><id>4326</id></transaction>
-        #</redirecttransaction>'''
+        # result = '''<?xml version="1.0" encoding="UTF-8"?>
+        # <redirecttransaction result="error">
+        #     <error>
+        #         <code>1006</code>
+        #         <description>Invalid transaction ID</description>
+        #     </error>
+        #     <transaction><id>4326</id></transaction>
+        # </redirecttransaction>'''
 
         # (2) Fetch URL from results.
         try:
@@ -140,7 +142,8 @@ class MultiSafepay(object):
                     raise PaymentAlreadyUsed()  # user clicked back somehow?
 
             payment_url_node = dom.getElementsByTagName('payment_url')[0]
-            payment_url = u''.join(i.wholeText for i in payment_url_node.childNodes)
+            payment_url = u''.join(
+                i.wholeText for i in payment_url_node.childNodes)
         except PaymentAlreadyUsed:
             raise
         except:
@@ -154,13 +157,16 @@ class MultiSafepay(object):
         inputs = []
         for item in data:
             inputs.append('<input type="hidden" name="%s" value="%s"/>' % (
-                item[0].replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&#34;'),
-                item[1].replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&#34;'),
+                (item[0].replace('&', '&amp;').replace('<', '&lt;')
+                 .replace('>', '&gt;').replace('"', '&#34;')),
+                (item[1].replace('&', '&amp;').replace('<', '&lt;')
+                 .replace('>', '&gt;').replace('"', '&#34;')),
             ))
 
         # Must use GET, we're fed a GET url after all.
         form = '''<form id="msp_form" method="GET" action="%s">%s</form>''' % (
-            url.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&#34;'),
+            (url.replace('&', '&amp;').replace('<', '&lt;')
+             .replace('>', '&gt;').replace('"', '&#34;')),
             ''.join(inputs),
         )
 
@@ -275,8 +281,8 @@ class MultiSafepay(object):
             # declined ("rejected") they can create a new transaction with our
             # same transaction id. That means that we cannot store anything
             # here. They can still choose to complete a payment.
-            #DO_NOT_DO#payment.mark_aborted()
-            #DO_NOT_DO#payment_updated.send(sender=payment, change='aborted')
+            # #DO_NOT_DO#payment.mark_aborted()
+            # #DO_NOT_DO#payment_updated.send(sender=payment, change='aborted')
             pass
 
         elif status == 'canceled':
@@ -377,7 +383,8 @@ class MultiSafepay(object):
             mail_admins('Incoming error to this XML',
                         body + '\n\n--\n' + contents + '\n\nURL: ' +
                         self.api_url + '\n')
-            log('Got error %s with response: %s' % (e.code, contents), 'msp', 'error')
+            log('Got error %s with response: %s' % (e.code, contents),
+                'msp', 'error')
             raise
         except Exception as e:
             # TEMP: this could use some tweaking

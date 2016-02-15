@@ -1,14 +1,26 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
-import decimal, unittest, urllib, urllib2, urlparse
-from osso.payment import BuyerError, PaymentAlreadyUsed, PaymentSuspect, TryDifferentPayment
+import decimal
+import unittest
+import urllib
+import urllib2
+import urlparse
+
+from osso.payment import (
+    BuyerError, PaymentAlreadyUsed, PaymentSuspect, TryDifferentPayment)
 from osso.payment import ProviderError, ProviderBadConfig, ProviderDown
+
 # conditional django includes
 # TODO: does it make sense to keep these conditionals??
-try: from django.conf import settings
-except ImportError: settings = None
-else: from django.core.urlresolvers import reverse
-try: from django.core.mail import mail_admins
-except ImportError: mail_admins = None
+try:
+    from django.conf import settings
+except ImportError:
+    settings = None
+else:
+    from django.core.urlresolvers import reverse
+try:
+    from django.core.mail import mail_admins
+except ImportError:
+    mail_admins = None
 
 
 class Paypal(object):
@@ -20,8 +32,10 @@ class Paypal(object):
     https://www.x.com/developers/paypal/documentation-tools/api/setexpresscheckout-api-operation-nvp
     https://www.x.com/developers/paypal/documentation-tools/api/doexpresscheckoutpayment-api-operation-nvp
     '''
-    def __init__(self, testing=False, username=None, password=None, signature=None):
-        paypal_settings = settings and getattr(settings, 'OSSO_PAYMENT_PAYPAL', {}) or {}
+    def __init__(self, testing=False, username=None, password=None,
+                 signature=None):
+        paypal_settings = (
+            settings and getattr(settings, 'OSSO_PAYMENT_PAYPAL', {}) or {})
         # Store args
         self.testing = bool(testing)
         self.username = username or paypal_settings['username']
@@ -31,16 +45,16 @@ class Paypal(object):
         # https://cms.paypal.com/us/cgi-bin?cmd=_render-content&content_ID=developer/howto_api_endpoints
         if self.testing:
             self.frontend_url = 'https://www.sandbox.paypal.com/webscr'
-            self.backend_url = 'https://api-3t.sandbox.paypal.com/nvp' # POST-api
+            self.backend_url = 'https://api-3t.sandbox.paypal.com/nvp'  # POST
         else:
             self.frontend_url = 'https://www.paypal.com/webscr'
-            self.backend_url = 'https://api-3t.paypal.com/nvp' # POST-api
+            self.backend_url = 'https://api-3t.paypal.com/nvp'  # POST-api
 
     def get_payment_form(self, payment):
         # Note that description should be clean.
-        # FIXME: the description is limited to 128 bytes alnum or something similar?
-        # not relevant for now, but we should check that we're not feeding paypal
-        # something invalid...
+        # FIXME: the description is limited to 128 bytes alnum or
+        # something similar? Not relevant for now, but we should check
+        # that we're not feeding paypal something invalid...
 
         # FIXME: namespace? osso_payment_paypal_paypal_report? :)
         success_url = 'http://%s%s' % (payment.realm, reverse('paypal_passed', kwargs={'payment_id': payment.id}))
@@ -54,13 +68,14 @@ class Paypal(object):
         # FIXME/TODO: is it possible to not raise an error but continue
         # instead??
         if payment.unique_key:
-            raise PaymentAlreadyUsed() # user clicked back?
+            raise PaymentAlreadyUsed()  # user clicked back?
 
         # For some obscure reason, the payment total does not show up on
         # the initial SetExpressCheckout page shown by PayPal. We don't
         # need to show any other pages to the user, but we alter the
         # description to include the price.
-        description_and_price = '%s - EUR %.2f' % (payment.description, payment.get_amount())
+        description_and_price = '%s - EUR %.2f' % (
+            payment.description, payment.get_amount())
         params = {
             # API options
             'METHOD': 'SetExpressCheckout',
@@ -68,13 +83,16 @@ class Paypal(object):
             'cancelUrl': abort_url,
             # Mandatory payment info
             'PAYMENTREQUEST_0_AMT': '%.2f' % (payment.get_amount(),),
-            'PAYMENTREQUEST_0_CURRENCYCODE': 'EUR', # we're in the EU after all
+            'PAYMENTREQUEST_0_CURRENCYCODE': 'EUR',  # we're in the EU..
             'PAYMENTREQUEST_0_DESC': description_and_price,
             # UI options
             'BRANDNAME': payment.realm,
-            'LOCALECODE': 'NL',         # TODO: should be optional
-            'LANDINGPAGE': 'Billing',   # favor non-Paypal (creditcard) payments in UI
-            'SOLUTIONTYPE': 'Sole',     # we don't need a PayPal account ("PayPal account optional")
+            # TODO: should be optional
+            'LOCALECODE': 'NL',
+            # Favor non-Paypal (creditcard) payments in UI.
+            'LANDINGPAGE': 'Billing',
+            # We don't need a PayPal account ("PayPal account optional").
+            'SOLUTIONTYPE': 'Sole',
             # Disable shipping and useless notes. With shipping
             # disabled, we can skip the GetExpressCheckoutDetails and
             # jump right to the DoExpressCheckoutPayment
@@ -98,7 +116,8 @@ class Paypal(object):
         # that they would get very far anyway. The payment is performed
         # and validated by a call from us to paypal in process_passed().
         if '-' in str(payment.id):
-            raise NotImplementedError('Cannot cope with minus in PK', payment.id) # rsplit below would fail
+            raise NotImplementedError(  # rsplit below would fail
+                'Cannot cope with minus in PK', payment.id)
         unique_key = '%s-%s' % (token, str(payment.id).upper())
         payment.set_unique_key(unique_key)
 
@@ -109,8 +128,13 @@ class Paypal(object):
             '<input type="hidden" name="token" value="%(token)s"/>'
             '</form>'
         ) % {
-            'action': self.frontend_url.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&#34;'),
-            'token': token.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&#34;'),
+            'action': (
+                self.frontend_url.replace('&', '&amp;')
+                .replace('<', '&lt;').replace('>', '&gt;')
+                .replace('"', '&#34;')),
+            'token': (
+                token.replace('&', '&amp;').replace('<', '&lt;')
+                .replace('>', '&gt;').replace('"', '&#34;')),
         }
         return form
 
@@ -126,11 +150,17 @@ class Paypal(object):
         # Otherwise we might be creating a bogus unique_key which we
         # won't be using.
         if str(payment.unique_key).rsplit('-', 1)[0] != str(token):
-            raise PaymentSuspect('Found token %s differing from payment %s' % (token, payment.id))
+            raise PaymentSuspect(
+                'Found token %s differing from payment %s' %
+                (token, payment.id))
         if len(token) < 16:
-            raise PaymentSuspect('Found invalid token %s in payment %s' % (token, payment.id))
+            raise PaymentSuspect(
+                'Found invalid token %s in payment %s' %
+                (token, payment.id))
         if payment.is_success is not None:
-            raise PaymentSuspect('Got payment status report for %s which is already %s' % (payment.id, payment.is_success))
+            raise PaymentSuspect(
+                'Got payment status report for %s which is already %s' %
+                (payment.id, payment.is_success))
 
         # Continue and poke Paypal to make the payment.
         # We do have the option to call GetExpressCheckoutDetails first
@@ -141,14 +171,14 @@ class Paypal(object):
             'METHOD': 'DoExpressCheckoutPayment',
             # Mandatory payment info
             'PAYMENTREQUEST_0_AMT': '%.2f' % (payment.get_amount(),),
-            'PAYMENTREQUEST_0_CURRENCYCODE': 'EUR', # we're in the EU after all
+            'PAYMENTREQUEST_0_CURRENCYCODE': 'EUR',  # we're in the EU..
             # Mandatory verification info
             'TOKEN': token,
             'PAYERID': payer_id,
             # Optional notification URL (IPN): we may implement this
             # later, but I believe we need to have HTTPS enabled for
             # this to work on live.
-            #'PAYMENTREQUEST_0_NOTIFYURL: 'http://example.com/notify.html',
+            # 'PAYMENTREQUEST_0_NOTIFYURL: 'http://example.com/notify.html',
         }
 
         # Do request
@@ -185,12 +215,14 @@ class Paypal(object):
             # there is no way for us to get more status if the deal
             # wasn't really sealed. We add some logging and hope for
             # the best.
-            if (response['PAYMENTINFO_0_PAYMENTTYPE'] != 'instant'
-                or decimal.Decimal(response['PAYMENTINFO_0_AMT']) != payment.get_amount()
-                or response['PAYMENTINFO_0_PAYMENTSTATUS'] != 'Completed'):
+            if (response['PAYMENTINFO_0_PAYMENTTYPE'] != 'instant' or
+                    (decimal.Decimal(response['PAYMENTINFO_0_AMT']) !=
+                        payment.get_amount()) or
+                    response['PAYMENTINFO_0_PAYMENTSTATUS'] != 'Completed'):
                 if mail_admins:
                     mail_admins(
-                        'Paypal payment %s not completed fully?' % (payment.id,),
+                        ('Paypal payment %s not completed fully?' %
+                         (payment.id,)),
                         repr(response)
                     )
             # Set payment status to succeeded
@@ -203,7 +235,8 @@ class Paypal(object):
             # supposed to fail... will it autocorrect itself?
             if mail_admins:
                 mail_admins(
-                    'Paypal payment %s not completed fully? (2)' % (payment.id,),
+                    ('Paypal payment %s not completed fully? (2)' %
+                     (payment.id,)),
                     repr(response)
                 )
             # Set payment status to aborted
@@ -219,11 +252,17 @@ class Paypal(object):
         # Otherwise we might be creating a bogus unique_key which we
         # won't be using.
         if str(payment.unique_key).rsplit('-', 1)[0] != str(token):
-            raise BuyerError('Found token %s differing from payment %s' % (token, payment.id))
+            raise BuyerError(
+                'Found token %s differing from payment %s' %
+                (token, payment.id))
         if len(token) < 16:
-            raise BuyerError('Found invalid token %s in payment %s' % (token, payment.id))
+            raise BuyerError(
+                'Found invalid token %s in payment %s' %
+                (token, payment.id))
         if payment.is_success is not None:
-            raise BuyerError('Got payment status report for %s which is already %s' % (payment.id, payment.is_success))
+            raise BuyerError(
+                'Got payment status report for %s which is already %s' %
+                (payment.id, payment.is_success))
 
         # This raises a ValueError if this is not possible.
         payment.mark_aborted()
@@ -238,7 +277,7 @@ class Paypal(object):
         params['USER'] = self.username
         params['PWD'] = self.password
         params['SIGNATURE'] = self.signature
-        params['VERSION'] = '78' # not sure if needed
+        params['VERSION'] = '78'  # not sure if needed
 
         response = urllib2.urlopen(self.backend_url, urllib.urlencode(params))
         data = response.read()
@@ -248,15 +287,25 @@ class Paypal(object):
         if ack != 'Success':
             # API failure codes:
             # https://cms.paypal.com/us/cgi-bin/?cmd=_render-content&content_ID=developer/e_howto_api_nvp_errorcodes
-            errorcode = int(decoded.get('L_ERRORCODE0', ['-1'])[0])
-            severity = decoded.get('L_SEVERITYCODE0', ['Unspecified'])[0]
-            shortmsg = decoded.get('L_SHORTMESSAGE0', ['Unknown'])[0]
-            longmsg = decoded.get('L_LONGMESSAGE0', ['An unknown error occurred'])[0]
-            if errorcode == 10001: # Internal Error
+            errorcode = int(
+                decoded.get('L_ERRORCODE0', ['-1'])[0])
+            severity = decoded.get(
+                'L_SEVERITYCODE0', ['Unspecified'])[0]
+            shortmsg = decoded.get(
+                'L_SHORTMESSAGE0', ['Unknown'])[0]
+            longmsg = decoded.get(
+                'L_LONGMESSAGE0', ['An unknown error occurred'])[0]
+            if errorcode == 10001:
+                # Internal Error
                 raise ProviderDown('PayPal')
-            if errorcode == 10002: # Error, Security Error, Security header is not valid
-                raise ProviderBadConfig('Security error (paypal error 10002); common cause is bad or test mode credentials')
-            if errorcode == 10417: # Transaction cannot complete (Instruct the customer to use an alternative payment method)
+            if errorcode == 10002:
+                # Error, Security Error, Security header is not valid
+                raise ProviderBadConfig(
+                    'Security error (paypal error 10002); '
+                    'common cause is bad or test mode credentials')
+            if errorcode == 10417:
+                # Transaction cannot complete (Instruct the customer to
+                # use an alternative payment method)
                 raise TryDifferentPayment()
             raise ProviderError(errorcode, severity, shortmsg, longmsg)
 

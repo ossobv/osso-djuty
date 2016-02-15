@@ -1,5 +1,6 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
-import decimal, random
+import decimal
+import random
 from datetime import datetime
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -14,41 +15,69 @@ class Payment(models.Model):
     '''
     Holds state of payment transactions.
     '''
-    created = models.DateTimeField(_('created'), auto_now_add=True,
-            help_text=_('When this object was created.'))
+    created = models.DateTimeField(
+        _('created'), auto_now_add=True,
+        help_text=_('When this object was created.'))
 
-    realm = models.CharField(_('realm'), max_length=31, blank=True,
-            help_text=_('Realm/domain/host where this payment is done (e.g. yoursite1.com).'))
-    paying_user = models.ForeignKey(User, verbose_name=_('paying user'), blank=True, null=True,
-            help_text=_('The user which is making the payment, if applicable.'))
+    realm = models.CharField(
+        _('realm'), max_length=31, blank=True,
+        help_text=_('Realm/domain/host where this payment is done '
+                    '(e.g. yoursite1.com); include scheme:// so we '
+                    'know where to return your request.'))
+    paying_user = models.ForeignKey(
+        User, verbose_name=_('paying user'), blank=True, null=True,
+        help_text=_('The user which is making the payment, if applicable.'))
 
-    description = models.CharField(_('description'), max_length=255,
-            help_text=_('A description of the payment. Keep it short.'))
-    amount = models.DecimalField(_('amount'), max_digits=9, decimal_places=2,
-            help_text=_('The amount of money being transferred.'))
-    currency = models.CharField(_('currency'), max_length=3, blank=True,
-            help_text=_('The currency of the transaction (e.g. EUR/USD) or empty if currency-agnostic.'))
+    description = models.CharField(
+        _('description'), max_length=255,
+        help_text=_('A description of the payment. Keep it short.'))
+    amount = models.DecimalField(
+        _('amount'), max_digits=9, decimal_places=2,
+        help_text=_('The amount of money being transferred.'))
+    currency = models.CharField(
+        _('currency'), max_length=3, blank=True,
+        help_text=_('The currency of the transaction (e.g. EUR/USD) or '
+                    'empty if currency-agnostic.'))
 
-    transfer_initiated = models.DateTimeField(_('transfer initiated'), blank=True, null=True,
-            help_text=_('When the request to the bank was made.')) # just before posting data to the bank
-    transfer_allowed = models.DateTimeField(_('transfer allowed'), blank=True, null=True,
-            help_text=_('When the bank responsed positively.')) # when a valid response from the bank was received
-    transfer_finalized = models.DateTimeField(_('transfer finalized'), blank=True, null=True,
-            help_text=_('When the bank confirmed/reject the transaction.')) # final response from the bank
-    transfer_revoked = models.DateTimeField(_('transfer revoked'), blank=True, null=True,
-            help_text=_('If the bank revoked the transaction after finalizing it.')) # not used too often, I hope
+    transfer_initiated = models.DateTimeField(
+        _('transfer initiated'), blank=True, null=True,
+        # just before posting data to the bank
+        help_text=_('When the request to the bank was made.'))
+    transfer_allowed = models.DateTimeField(
+        _('transfer allowed'), blank=True, null=True,
+        # when a valid response from the bank was received
+        help_text=_('When the bank responsed positively.'))
+    transfer_finalized = models.DateTimeField(
+        _('transfer finalized'), blank=True, null=True,
+        # final response from the bank
+        help_text=_('When the bank confirmed/reject the transaction.'))
+    transfer_revoked = models.DateTimeField(
+        _('transfer revoked'), blank=True, null=True,
+        # not used too often, I hope
+        help_text=_('If the bank revoked the transaction after '
+                    'finalizing it.'))
 
-    # Note here that a failed transaction is_success=False and transfer_revoked=None and
-    # a revoked (previously succesful) transaction has is_success=False and transfer_revoked=(set).
-    # THIS IS NOT EDITABLE THROUGH THE ADMIN! WE DON'T WANT ADMINS TO MESS WITH THIS!
-    is_success = models.NullBooleanField(_('is success'), blank=True, null=True, editable=False, db_index=True,
-            help_text=_('Is None until transfer_finalized is set at which point it is True for success and False for failure. '
-                        'If for some reason the transaction is revoked after success, it can flip from True to False.'))
+    # Note here that a failed transaction is_success=False and
+    # transfer_revoked=None and a revoked (previously succesful)
+    # transaction has is_success=False and transfer_revoked=(set).
+    # THIS IS NOT EDITABLE THROUGH THE ADMIN! WE DON'T WANT ADMINS TO
+    # MESS WITH THIS!
+    is_success = models.NullBooleanField(
+        _('is success'), blank=True, null=True, editable=False, db_index=True,
+        help_text=_('Is None until transfer_finalized is set at which '
+                    'point it is True for success and False for failure. '
+                    'If for some reason the transaction is revoked after '
+                    'success, it can flip from True to False.'))
 
-    unique_key = models.CharField(_('unique key'), max_length=64, blank=True, db_index=True,
-            help_text=_('Max. 64 bytes of unique key, e.g. randbits||-||pk. Will be unique if set.'))
-    blob = models.TextField(_('blob'), blank=True,
-            help_text=_('Can hold freeform data about the transaction. Use it to store transaction and/or debug info from the bank.'))
+    unique_key = models.CharField(
+        _('unique key'), max_length=64, blank=True, db_index=True,
+        help_text=_('Max. 64 bytes of unique key, e.g. randbits||-||pk. '
+                    'Will be unique if set.'))
+    blob = models.TextField(
+        _('blob'), blank=True,
+        help_text=_('Can hold free form data about the transaction. '
+                    'Use it to store transaction and/or debug info from '
+                    'the bank.'))
 
     def atomic_update(self, filter_kwargs, update_kwargs):
         '''
@@ -60,9 +89,11 @@ class Payment(models.Model):
         (non-ACID) storage either. In that case we will update and
         always return true.
         '''
-        is_BASE = bool('mongodb' in connection.settings_dict['ENGINE']) # non-ACID
+        # non-ACID db?
+        is_BASE = bool('mongodb' in connection.settings_dict['ENGINE'])
 
-        count = Payment.objects.filter(id=self.id, **filter_kwargs).update(**update_kwargs)
+        count = Payment.objects.filter(id=self.id, **filter_kwargs).update(
+            **update_kwargs)
         if is_BASE or count == 1:
             for key, value in update_kwargs.items():
                 setattr(self, key, value)
@@ -124,7 +155,8 @@ class Payment(models.Model):
         if self.unique_key:
             return self.unique_key
 
-        unique_key = '%x-%s' % (random.getrandbits(128), self.id) # 32 bytes + n bytes
+        unique_key = '%x-%s' % (
+            random.getrandbits(128), self.id)  # 32 bytes + n bytes
         if not self.atomic_update({'unique_key': ''},
                                   {'unique_key': unique_key}):
             self.unique_key = Payment.objects.get(id=self.id).unique_key
@@ -142,15 +174,19 @@ class Payment(models.Model):
         if self.unique_key:
             raise ValueError('Cannot reset an already set unique key')
 
-        if not self.atomic_update({'unique_key': ''},
-                                  {'unique_key': unique_key}):
-            raise ValueError('Failed to set unique_key because it was already set in DB')
+        if not self.atomic_update(
+                {'unique_key': ''},
+                {'unique_key': unique_key}):
+            raise ValueError(
+                'Failed to set unique_key because it was already set in DB')
 
     def mark_submitted(self):
         '''Atomic setting of initiated time.'''
-        if not self.atomic_update({'transfer_initiated': None, 'is_success': None},
-                                  {'transfer_initiated': datetime.now()}):
-            raise ValueError('Attempt to mark Payment %s as initiated, failed' % (self.id,))
+        if not self.atomic_update(
+                {'transfer_initiated': None, 'is_success': None},
+                {'transfer_initiated': datetime.now()}):
+            raise ValueError(
+                'Attempt to mark Payment %s as initiated, failed' % (self.id,))
 
     def mark_passed(self):
         '''
@@ -162,33 +198,45 @@ class Payment(models.Model):
 
         See also: the payment_updated 'passed' vs. 'aborted' signals.
         '''
-        if not self.atomic_update({'transfer_allowed': None, 'is_success': None},
-                                  {'transfer_allowed': datetime.now()}):
-            raise ValueError('Attempt to mark Payment %s as allowed, failed' % (self.id,))
+        if not self.atomic_update(
+                {'transfer_allowed': None, 'is_success': None},
+                {'transfer_allowed': datetime.now()}):
+            raise ValueError(
+                'Attempt to mark Payment %s as allowed, failed' % (self.id,))
 
     def mark_succeeded(self):
         '''Atomic setting of finalized time + success.'''
-        if not self.atomic_update({'transfer_finalized': None, 'is_success': None},
-                                  {'transfer_finalized': datetime.now(), 'is_success': True}):
-            raise ValueError('Attempt to mark Payment %s as succeeded, failed' % (self.id,))
+        if not self.atomic_update(
+                {'transfer_finalized': None, 'is_success': None},
+                {'transfer_finalized': datetime.now(), 'is_success': True}):
+            raise ValueError(
+                'Attempt to mark Payment %s as succeeded, failed' % (self.id,))
 
     def mark_aborted(self):
         '''Atomic setting of finalized time + failure.'''
-        if not self.atomic_update({'transfer_allowed': None, 'transfer_finalized': None, 'is_success': None},
-                                  {'transfer_finalized': datetime.now(), 'is_success': False}):
-            raise ValueError('Attempt to mark Payment %s as finalized+failed, failed' % (self.id,))
+        if not self.atomic_update(
+                {'transfer_allowed': None, 'transfer_finalized': None,
+                 'is_success': None},
+                {'transfer_finalized': datetime.now(), 'is_success': False}):
+            raise ValueError(
+                'Attempt to mark Payment %s as finalized+failed, failed' %
+                (self.id,))
 
     def set_blob(self, blob, overwrite=False):
         if overwrite:
             Payment.objects.filter(id=self.id).update(blob=blob)
             self.blob = blob
-        elif not self.atomic_update({'blob': ''},
-                                    {'blob': blob}):
-            raise ValueError('Attempt to set Payment %s empty blob to something, failed' % (self.id,))
+        elif not self.atomic_update(
+                {'blob': ''},
+                {'blob': blob}):
+            raise ValueError(
+                'Attempt to set Payment %s empty blob to something, failed' %
+                (self.id,))
 
     def __unicode__(self):
-        return '%s (#%s %s %s %s)' % (self.description, self.id, self.paying_user or '(no one)',
-                                      self.is_success and 'paid' or 'unpaid', self.get_amount())
+        return '%s (#%s %s %s %s)' % (
+            self.description, self.id, self.paying_user or '(no one)',
+            self.is_success and 'paid' or 'unpaid', self.get_amount())
 
     class Meta:
         verbose_name = _('payment')
