@@ -137,12 +137,18 @@ class Payment(models.Model):
         '''
         URL to jump to on success/abort/ou-need-to-wait-some-more.
         '''
-        url = settings.OSSO_PAYMENT.get('%s_url' % (when,), '/') # success_url, abort_url, toosoon_url
+        # Create: success_url, abort_url, toosoon_url
+        path = settings.OSSO_PAYMENT.get('%s_url' % (when,), '/')
         try:
-            url = url % (self.id,)
+            path = path % (self.id,)
         except TypeError:
             pass
-        return 'http://%s%s' % (self.realm, url)
+
+        scheme_and_host = self.realm
+        if '://' not in scheme_and_host:
+            scheme_and_host = 'http://%s' % (scheme_and_host,)
+
+        return '%s%s' % (scheme_and_host, path)
 
     def get_unique_key(self):
         '''

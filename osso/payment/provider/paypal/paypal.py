@@ -57,8 +57,16 @@ class Paypal(object):
         # that we're not feeding paypal something invalid...
 
         # FIXME: namespace? osso_payment_paypal_paypal_report? :)
-        success_url = 'http://%s%s' % (payment.realm, reverse('paypal_passed', kwargs={'payment_id': payment.id}))
-        abort_url = 'http://%s%s' % (payment.realm, reverse('paypal_aborted', kwargs={'payment_id': payment.id}))
+        host_prefix = payment.realm
+        if '://' not in host_prefix:
+            host_prefix = 'http://%s' % (host_prefix,)
+
+        success_url = '%s%s' % (
+            host_prefix,
+            reverse('paypal_passed', kwargs={'payment_id': payment.id}))
+        abort_url = '%s%s' % (
+            host_prefix,
+            reverse('paypal_aborted', kwargs={'payment_id': payment.id}))
 
         # Check whether we've "used" this payment already. If we don't
         # check this here, we might first find out when setting

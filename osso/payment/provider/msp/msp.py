@@ -307,14 +307,20 @@ class MultiSafepay(object):
         assert len(locale.split('_')) == 2, locale  # looks like nl_NL ?
         remote_addr = remote_addr or ''
 
-        host = payment.realm.lower()
         # FIXME: namespace?
-        host_prefix = 'http://%s' % (host,)
-        notification_url = host_prefix + reverse('msp_report')
-        redirect_url = host_prefix + reverse('msp_return', kwargs={
-                                             'payment_id': payment.id})
-        cancel_url = host_prefix + reverse('msp_abort', kwargs={
-                                           'payment_id': payment.id})
+        host_prefix = payment.realm
+        if '://' not in host_prefix:
+            host_prefix = 'http://%s' % (host_prefix,)
+
+        notification_url = '%s%s' % (
+            host_prefix,
+            reverse('msp_report'))
+        redirect_url = '%s%s' % (
+            host_prefix,
+            reverse('msp_return', kwargs={'payment_id': payment.id}))
+        cancel_url = '%s%s' % (
+            host_prefix,
+            reverse('msp_abort', kwargs={'payment_id': payment.id}))
 
         # Prepare the data!
         template = self.XML_PAYMENT_REQUEST

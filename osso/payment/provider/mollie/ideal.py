@@ -88,12 +88,22 @@ class Ideal(BaseIdeal):
             raise BuyerError(
                 'Size of description too large (max 29): %s' % (description,))
 
-        host = payment.realm.lower()
+        scheme_and_host = payment.realm
+        if '://' in scheme_and_host:
+            scheme, host = scheme_and_host.split('://', 1)
+        else:
+            scheme, host = 'http', scheme_and_host
         if host == 'localhost' or host.startswith('localhost:'):
             host = 'example.com'  # Mollie refuses 'localhost' even in testmode
+        host_prefix = '%s://%s' % (scheme, host)
+
         # FIXME: namespace? osso_payment_mollie_ideal_report? :)
-        report_url = 'http://%s%s' % (host, reverse('mollie_ideal_report', kwargs={'payment_id': payment.id}))
-        return_url = 'http://%s%s' % (host, reverse('mollie_ideal_return', kwargs={'payment_id': payment.id}))
+        report_url = '%s%s' % (
+            host_prefix,
+            reverse('mollie_ideal_report', kwargs={'payment_id': payment.id}))
+        return_url = '%s%s' % (
+            host_prefix,
+            reverse('mollie_ideal_return', kwargs={'payment_id': payment.id}))
 
         # Check whether we've "used" this payment already. If we don't
         # check this here, we might first find out when setting
