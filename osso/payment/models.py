@@ -20,7 +20,7 @@ class Payment(models.Model):
         help_text=_('When this object was created.'))
 
     realm = models.CharField(
-        _('realm'), max_length=31, blank=True,
+        _('realm'), max_length=127, blank=True,
         help_text=_('Realm/domain/host where this payment is done '
                     '(e.g. yoursite1.com); include scheme:// so we '
                     'know where to return your request.'))
