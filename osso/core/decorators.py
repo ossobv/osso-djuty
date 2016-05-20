@@ -59,12 +59,13 @@ def expect_post(func):
 
 def login_with_profile_required(func):
     '''
-    Decorator for views that checks that the user is logged in and checks that
-    the user has a valid profile.
+    Decorator for views that checks that the user is logged in and
+    checks that the user has a valid profile.
     '''
     def test(user):
         try:
-            return bool(user.is_authenticated() and user.authenticatablecontact)
+            return bool(user.is_authenticated() and
+                        user.authenticatablecontact)
         except ObjectDoesNotExist:
             # XXX: we should replace assert with something better
             assert False, 'User %s has no profile!' % user
@@ -77,7 +78,8 @@ def log_failed_logins(view_func):
         response = view_func(request, *args, **kwargs)
 
         if request.method == 'POST':
-            # Django auth sets request.user if authentication was successful.
+            # Django auth sets request.user if authentication was
+            # successful.
             if not request.user.is_authenticated():
                 log_failed_login(request)
         return response
@@ -130,8 +132,9 @@ def log_failed_login(request, username=None):
     # anyway for failed ssh logins. fail2ban has issues
     # with the uwsgi log which does not set timestamps on
     # every message.
-    syslog.openlog(sys.argv[0], syslog.LOG_PID, syslog.LOG_AUTH)
-    syslog.syslog(msg.encode('utf-8')[0:-1])  # strip LF
+    syslog.openlog(logoption=(syslog.LOG_PID | syslog.LOG_NDELAY),
+                   facility=syslog.LOG_AUTH)
+    syslog.syslog(syslog.LOG_WARNING, msg.encode('utf-8')[0:-1])  # strip LF
 
     # These log messages are here for further debugging and
     # backwards compatibility.
