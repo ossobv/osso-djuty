@@ -269,11 +269,20 @@ class MultiSafepay(object):
                     # Notify some people!
                     payment_updated.send(sender=payment, change='passed')
 
-        elif status in ('initialized', 'uncleared'):
-            # This means absolutely nothing. Initialized means that someone
-            # clicked next on the payment interface. Uncleared is that the
-            # payment was started but is on hold. For the latter, we might need
-            # to more work in the future.
+        elif status == 'initialized':
+            # This means absolutely nothing, or does it? I thought
+            # Initialized means that someone clicked next on the
+            # payment interface.
+            # It does appear that initialized is called when a
+            # transaction is reopened after it had been cancalled.
+            # In that case this is the time to reopen the thing.
+            if payment.is_success is False:
+                payment.mark_reset()
+                payment_updated.send(sender=payment, change='reset')
+
+        elif status == 'uncleared':
+            # Uncleared is that the payment was started but is on hold.
+            # This might need more work in the future.
             pass
 
         elif status in ('void', 'declined', 'expired'):

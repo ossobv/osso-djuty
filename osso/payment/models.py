@@ -186,6 +186,19 @@ class Payment(models.Model):
             raise ValueError(
                 'Failed to set unique_key because it was already set in DB')
 
+    def mark_reset(self):
+        '''Atomic resetting of the entire payment data (yuck, MSP).'''
+        # You shouldn't have to call this. But MSP reuses transactions
+        # if it can (restart a closed payment) and we need to cope with
+        # that.
+        if not self.atomic_update(
+                {},
+                {'transfer_initiated': None, 'transfer_allowed': None,
+                 'transfer_finalized': None, 'transfer_revoked': None,
+                 'is_success': None}):
+            raise ValueError(
+                'Attempt to reset Payment %s, failed' % (self.id,))
+
     def mark_submitted(self):
         '''Atomic setting of initiated time.'''
         if not self.atomic_update(
