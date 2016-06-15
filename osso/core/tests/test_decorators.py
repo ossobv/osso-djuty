@@ -1,5 +1,6 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
 from mock import patch, DEFAULT
+from syslog import LOG_WARNING
 
 from django.contrib.auth.models import AnonymousUser, User
 from django.core.exceptions import PermissionDenied
@@ -11,9 +12,10 @@ from osso.core.decorators import expect_get, expect_post, log_failed_logins
 
 class DecoratorTestCase(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username='user', email='',
-                password='user2')
-        self.user.is_authenticated = lambda: True
+        self.user = User.objects.create_user(
+            username='user', email='',
+            password='user2')
+        self.user.is_authenticated = (lambda: True)
 
     def get_request(self, method, user=None):
         req = HttpRequest()
@@ -49,8 +51,9 @@ class DecoratorTestCase(TestCase):
             log_failed_logins(test_view)(req)
             assert syslog['openlog'].called, 'syslog was not called'
             assert syslog['syslog'].called, 'syslog was not called'
-            expected = ('[django] Failed login for user from /unset/ port '
-                        '/unset/ (Host: /unset/)',)
+            expected = (LOG_WARNING,
+                        '[django] Failed login for user from /unset/ port '
+                        '/unset/ (Host: /unset/)')
             self.assertEqual(syslog['syslog'].call_args[0], expected)
         with patch.multiple('syslog', openlog=DEFAULT,
                             syslog=DEFAULT) as syslog:
