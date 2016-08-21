@@ -274,7 +274,7 @@ class MultiSafepay(object):
             # Initialized means that someone clicked next on the
             # payment interface.
             # It does appear that initialized is called when a
-            # transaction is reopened after it had been cancalled.
+            # transaction is reopened after it had been cancelled.
             # In that case this is the time to reopen the thing.
             if payment.is_success is False:
                 payment.mark_reset()
