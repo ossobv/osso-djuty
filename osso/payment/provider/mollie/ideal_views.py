@@ -1,8 +1,8 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
-from django.conf import settings
 from django.core.mail import mail_admins
 from django.http import HttpResponse
 from django.views.generic import RedirectView, View
+from osso.payment import use_test_mode
 from osso.payment.models import Payment
 from osso.payment.provider.mollie.ideal import Ideal
 
@@ -60,8 +60,7 @@ class TransactionReport(View):
             pass
         else:
             transaction_id = self.request.GET.get('transaction_id')
-            testing = settings.OSSO_PAYMENT.get('test_mode', False)
-            ideal = Ideal(testing=testing)
+            ideal = Ideal(testing=use_test_mode())
             try:
                 ideal.process_report(payment, transaction_id)
             except Exception as e:

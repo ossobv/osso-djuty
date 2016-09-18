@@ -1,4 +1,5 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
+from django.conf import settings
 
 
 class BuyerError(ValueError):
@@ -37,3 +38,10 @@ class ProviderDown(ProviderError):
             message = '%s is down' % (provider,)
 
         super(ProviderDown, self).__init__(message)
+
+
+def use_test_mode():
+    """
+    Returns True if OSSO_PAYMENT is in test_mode.
+    """
+    return settings.OSSO_PAYMENT.get('test_mode', False)

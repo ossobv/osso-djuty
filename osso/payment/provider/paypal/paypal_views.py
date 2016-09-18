@@ -1,9 +1,8 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
-from django.conf import settings
 from django.core.mail import mail_admins
 from django.http import Http404
 from django.views.generic import RedirectView
-from osso.payment import ProviderError, TryDifferentPayment
+from osso.payment import ProviderError, TryDifferentPayment, use_test_mode
 from osso.payment.models import Payment
 from osso.payment.provider.paypal.paypal import Paypal
 
@@ -24,7 +23,7 @@ class TransactionPassed(RedirectView):
             raise Http404()  # belongs to different user
 
         get = self.request.GET
-        paypal = Paypal(testing=settings.OSSO_PAYMENT.get('test_mode', False))
+        paypal = Paypal(testing=use_test_mode())
         try:
             paypal.process_passed(payment, get['token'], get['PayerID'])
         except ProviderError:
@@ -70,7 +69,7 @@ class TransactionAborted(RedirectView):
             raise Http404()  # belongs to different user
 
         get = self.request.GET
-        paypal = Paypal(testing=settings.OSSO_PAYMENT.get('test_mode', False))
+        paypal = Paypal(testing=use_test_mode())
         try:
             paypal.process_aborted(payment, get['token'])
         except Exception as e:

@@ -135,7 +135,7 @@ class Payment(models.Model):
 
     def get_url(self, when):
         '''
-        URL to jump to on success/abort/ou-need-to-wait-some-more.
+        URL to jump to on success/abort/you-need-to-wait-some-more.
         '''
         # Create: success_url, abort_url, toosoon_url
         path = settings.OSSO_PAYMENT.get('%s_url' % (when,), '/')

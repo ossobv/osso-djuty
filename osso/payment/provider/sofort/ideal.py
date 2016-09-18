@@ -6,26 +6,32 @@ from urllib2 import Request, urlopen
 # payment imports
 from osso.payment.xmlutils import dom2dictlist, string2dom, xmlescape
 # conditional django includes
-try: from django.conf import settings
-except ImportError: settings = None
-else: from django.core.urlresolvers import reverse
+try:
+    from django.conf import settings
+except ImportError:
+    settings = None
+else:
+    from django.core.urlresolvers import reverse
 
 
 __all__ = ('Ideal', 'IdealError')
 
-# Continue-URL, use hash-pass so we can confirm that the transaction was started.
-# (Note that it is unsafe to assume you get your money. But the odds are probably high.)
+# Continue-URL, use hash-pass so we can confirm that the transaction
+# was started.  (Note that it is unsafe to assume you get your money.
+# But the odds are probably high.)
 # http://-USER_VARIABLE_0-/api/sofortideal/-USER_VARIABLE_1-/cont/-USER_VARIABLE_1_HASH_PASS-/
 #
-# Abort-URL, no hash-pass checks so reverse engineering the 'cont' password is harder.
+# Abort-URL, no hash-pass checks so reverse engineering the 'cont'
+# password is harder.
 # (?error_codes=1234,5678 will get added)
 # http://-USER_VARIABLE_0-/api/sofortideal/-USER_VARIABLE_1-/abort/
 #
-# Delivery-report-URL, this will be done with POST-data and proper payment details.
+# Delivery-report-URL, this will be done with POST-data and proper
+# payment details.
 # http://-USER_VARIABLE_0-/api/sofortideal/-USER_VARIABLE_1-/dlr/
 
-# Sobald der Testmodus aktiviert ist, koennen Sie mit folgenden Betraegen verschiedene Statusmeldungen bei
-# iDEAL provozieren:
+# Sobald der Testmodus aktiviert ist, koennen Sie mit folgenden
+# Betraegen verschiedene Statusmeldungen bei iDEAL provozieren:
 # 1 EUR => Erfolgreiche Zahlung
 # 2 EUR => Abbruch der Zahlung
 # 4 EUR => Ausstehende Zahlung
@@ -52,31 +58,50 @@ class IdealError(ValueError):
 
 
 class Ideal(object):
-    OUT_REQUIRED = ('amount', 'reason_1', 'sender_bank_code', 'sender_country_id', 'project_password') # + user_id, project_id, hash
-    OUT_OPTIONAL = ('sender_holder', 'sender_account_number', 'reason_2', 'user_variable_0',
-                'user_variable_1', 'user_variable_2', 'user_variable_3', 'user_variable_4',
-                'user_variable_5') # technically, project_password is not required..
-    OUT_ORDER = ('user_id', 'project_id', 'sender_holder', 'sender_account_number',
-             'sender_bank_code', 'sender_country_id', 'amount', 'reason_1', 'reason_2',
-             'user_variable_0', 'user_variable_1', 'user_variable_2', 'user_variable_3',
-             'user_variable_4', 'user_variable_5', 'project_password')
-    IN_ORDER = ('transaction', 'user_id', 'project_id', 'sender_holder',
-                'sender_account_number', 'sender_bank_name', 'sender_bank_bic', 'sender_iban',
-                'sender_country_id', 'recipient_holder', 'recipient_account_number',
-                'recipient_bank_code', 'recipient_bank_name', 'recipient_bank_bic',
-                'recipient_iban', 'recipient_country_id', 'amount', 'currency_id', 'reason_1',
-                'reason_2', 'user_variable_0', 'user_variable_1', 'user_variable_2',
-                'user_variable_3', 'user_variable_4', 'user_variable_5', 'created', 'status',
-                'status_modified', 'notification_password') # optional: amount_refunded, amount_refunded_integer
+    OUT_REQUIRED = (
+        'amount', 'reason_1', 'sender_bank_code', 'sender_country_id',
+        'project_password'
+    )  # + user_id, project_id, hash
+    OUT_OPTIONAL = (
+        'sender_holder', 'sender_account_number', 'reason_2',
+        'user_variable_0', 'user_variable_1', 'user_variable_2',
+        'user_variable_3', 'user_variable_4',
+        'user_variable_5'
+    )  # technically, project_password is not required..
+    OUT_ORDER = (
+        'user_id', 'project_id', 'sender_holder', 'sender_account_number',
+        'sender_bank_code', 'sender_country_id', 'amount',
+        'reason_1', 'reason_2', 'user_variable_0', 'user_variable_1',
+        'user_variable_2', 'user_variable_3', 'user_variable_4',
+        'user_variable_5', 'project_password'
+    )
+    IN_ORDER = (
+        'transaction', 'user_id', 'project_id', 'sender_holder',
+        'sender_account_number', 'sender_bank_name', 'sender_bank_bic',
+        'sender_iban', 'sender_country_id', 'recipient_holder',
+        'recipient_account_number', 'recipient_bank_code',
+        'recipient_bank_name', 'recipient_bank_bic', 'recipient_iban',
+        'recipient_country_id', 'amount', 'currency_id', 'reason_1',
+        'reason_2', 'user_variable_0', 'user_variable_1',
+        'user_variable_2', 'user_variable_3', 'user_variable_4',
+        'user_variable_5', 'created', 'status', 'status_modified',
+        'notification_password'
+    )  # optional: amount_refunded, amount_refunded_integer
 
-    def __init__(self, testing=False, user_id=None, project_id=None, api_key=None, project_password=None):
-        sofort_settings = settings and getattr(settings, 'OSSO_PAYMENT_SOFORT', {}) or {}
+    def __init__(self, testing=False, user_id=None, project_id=None,
+                 api_key=None, project_password=None):
+        sofort_settings = (
+            settings and getattr(settings, 'OSSO_PAYMENT_SOFORT', {}) or {})
         user_id = user_id or sofort_settings['user_id']
         project_id = project_id or sofort_settings['project_id']
         api_key = api_key or sofort_settings['api_key']
-        project_password = project_password or sofort_settings['project_password']
-        if not user_id or not project_id or not api_key or not project_password:
-            raise TypeError("Required argument 'user_id', 'project_id', 'api_key' or 'project_password' not found")
+        project_password = (
+            project_password or sofort_settings['project_password'])
+        if (not user_id or not project_id or not api_key or
+                not project_password):
+            raise TypeError(
+                "Required argument 'user_id', 'project_id', 'api_key' or "
+                "'project_password' not found")
 
         self.testing = bool(testing)
         self.user_id = str(user_id)
@@ -87,7 +112,8 @@ class Ideal(object):
     def get_banks(self, banks_url=None):
         # Implement a fake mode
         if self.testing:
-            return [{'id': 31, 'name': 'ABN Amro'}, {'id': 91, 'name': 'Friesland Bank'}]
+            return [{'id': 31, 'name': 'ABN Amro'},
+                    {'id': 91, 'name': 'Friesland Bank'}]
 
         banks_url = banks_url or 'https://www.sofort.com/payment/ideal/banks'
         data = self.sofort_request(banks_url, self.user_id, self.api_key)
@@ -117,13 +143,17 @@ class Ideal(object):
         from osso.payment.signals import payment_updated
 
         # Re-create hash and compare.
-        project_password = getattr(settings, 'OSSO_PAYMENT_SOFORT', {}).get('project_password', '').encode('utf-8')
+        project_password = (
+            getattr(settings, 'OSSO_PAYMENT_SOFORT', {})
+            .get('project_password', '').encode('utf-8'))
         calculated_hash = sha256('%s%s' % (
             payment.get_unique_key(),
             project_password
         )).hexdigest()
         if calculated_hash.lower() != str(transaction_hash).lower():
-            raise ValueError('Hash for transaction passed mismatch for payment %s' % (payment.id,))
+            raise ValueError(
+                'Hash for transaction passed mismatch for payment %s' %
+                (payment.id,))
 
         # This raises a ValueError if this is not possible
         payment.mark_passed()
@@ -142,7 +172,9 @@ class Ideal(object):
 
         # Check if the sent transaction key matches.
         if payment.get_unique_key().lower() != str(transaction_key).lower():
-            raise ValueError('Key for transaction aborted mismatch for payment %s' % (payment.id,))
+            raise ValueError(
+                'Key for transaction aborted mismatch for payment %s' %
+                (payment.id,))
 
         # This raises a ValueError if this is not possible.
         payment.mark_aborted()
@@ -161,10 +193,13 @@ class Ideal(object):
                     data[key] = kwargs.pop(key, self.project_password)
                 elif key in ('reason_1', 'reason_2'):
                     value = kwargs.pop(key).encode('ascii', 'replace')
-                    if any(i not in '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz +,-.' for i in value):
-                        raise ValueError('Illegal character found in %s: %s' % (key, value))
+                    if any(i not in ('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+                                     'abcdefghijklmnopqrstuvwxyz +,-.') for i in value):
+                        raise ValueError(
+                            'Illegal character found in %s: %s' % (key, value))
                     if len(value) > 27:
-                        raise ValueError('Size of %s too large (max 27): %s' % (key, value))
+                        raise ValueError(
+                            'Size of %s too large (max 27): %s' % (key, value))
                     data[key] = value
                 else:
                     data[key] = kwargs.pop(key)
@@ -173,7 +208,9 @@ class Ideal(object):
         for key in self.OUT_OPTIONAL:
             data[key] = kwargs.pop(key, '')
         if kwargs:
-            raise TypeError("'%s' is an invalid keyword argument for this function" % (kwargs.keys()[0],))
+            raise TypeError(
+                "'%s' is an invalid keyword argument for this function" %
+                (kwargs.keys()[0],))
 
         # Set the other missing arguments and stringify all
         data['user_id'] = self.user_id
@@ -196,34 +233,44 @@ class Ideal(object):
         button_text = button_text or 'iDEAL'
         if not form_url:
             if self.testing:
-                form_url = reverse('sofort_fake_ideal', kwargs={'bank_code': kwargs['sender_bank_code']})
+                form_url = reverse(
+                    'sofort_fake_ideal',
+                    kwargs={'bank_code': kwargs['sender_bank_code']})
             else:
                 form_url = 'https://www.sofort.com/payment/ideal'
 
         fields = []
         for key, value in self._get_form_data(**kwargs).items():
-            fields.append('<input type="hidden" name="%s" value="%s"/>' % (str(key), xmlescape(value, '"')))
-        return '<form method="post" action="%(url)s">%(fields)s<input type="submit" value="%(button_text)s"/></form>' % {
-            'url': form_url, 'button_text': button_text, 'fields': ''.join(fields)
-        }
+            fields.append(
+                '<input type="hidden" name="%s" value="%s"/>' %
+                (str(key), xmlescape(value, '"')))
+        return (
+            '<form method="post" action="%(url)s">%(fields)s'
+            '<input type="submit" value="%(button_text)s"/></form>' % {
+                'url': form_url, 'button_text': button_text, 'fields': ''.join(fields)
+            })
 
     @classmethod
-    def sofort_request(cls, url, user_id, api_key, headers=(), postdata=None, extra_headers=()):
+    def sofort_request(cls, url, user_id, api_key, headers=(),
+                       postdata=None, extra_headers=()):
         '''
         Example urls:
         https://api.sofort.com/api/xml
         https://www.sofort.com/payment/ideal/banks <-- shall return a list of banks
         '''
         if postdata is None:
-            data = '' # must use data or we get a GET request
+            data = ''  # must use data or we get a GET request
         else:
             raise NotImplementedError('Should urlencode postdata into data..')
 
         request = Request(url)
         request.add_data(data)
-        request.add_header('Authorization', 'Basic %s' % (b64encode(':'.join([user_id, api_key])),)),
-        request.add_header('Content-Type', 'application/xml; charset=UTF-8')
-        request.add_header('Accept', 'application/xml; charset=UTF-8')
+        request.add_header(
+            'Authorization', 'Basic %s' % (b64encode(':'.join([user_id, api_key])),))
+        request.add_header(
+            'Content-Type', 'application/xml; charset=UTF-8')
+        request.add_header(
+            'Accept', 'application/xml; charset=UTF-8')
         for key, value in extra_headers:
             request.add_header(key, value)
 
@@ -232,7 +279,8 @@ class Ideal(object):
 
     @classmethod
     def validate_response(cls, data, notification_password=None):
-        sofort_settings = settings and getattr(settings, 'OSSO_PAYMENT_SOFORT', {}) or {}
+        sofort_settings = (
+            settings and getattr(settings, 'OSSO_PAYMENT_SOFORT', {}) or {})
         if 'notification_password' in data:
             raise TypeError("'notification_password' is not supposed to be in data")
         if notification_password is None:
@@ -307,15 +355,22 @@ class IdealTest(unittest.TestCase):
         data = ideal._get_form(amount=12.34, reason_1=u'my-rEason', sender_bank_code=91)
         self.assertTrue(data.startswith('<form '))
         self.assertTrue('"12.34"' in data)
-        #self.assertTrue('"my_r&#8364;ason"' in data) # <-- this was before cleaning up the description
+        # self.assertTrue('"my_r&#8364;ason"' in data)
+        # ^-- this was before cleaning up the description
         self.assertTrue('"my-rEason"' in data)
-        self.assertTrue('"88064715a88f79517612c2a7a082706d6fa1327a8c69890dfb74aec6d9678760"' in data)
+        self.assertTrue(
+            ('"88064715a88f79517612c2a7a082706d'
+             '6fa1327a8c69890dfb74aec6d9678760"') in data)
         self.assertFalse('"geheim"' in data)
         self.assertTrue(data.endswith('</form>'))
 
     def test_validate_response(self):
-        input = dict(unused=1, amount=12.34, reason_1=u'my_r\u20acason', sender_bank_code=91,
-                     hash='7004dd7f0ba4a3c679f5b9c4d97c129ffe420eff0b70e2e6431b25afd02aab43')
+        input = {
+            'unused': 1, 'amount': 12.34, 'reason_1': u'my_r\u20acason',
+            'sender_bank_code': 91,
+            'hash': ('7004dd7f0ba4a3c679f5b9c4d97c129f'
+                     'fe420eff0b70e2e6431b25afd02aab43'),
+        }
         Ideal.validate_response(input, notification_password='geheim')
 
 

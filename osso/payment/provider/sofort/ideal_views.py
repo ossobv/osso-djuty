@@ -1,10 +1,12 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
 from hashlib import sha256
+
 from django.conf import settings
 from django.core.mail import mail_admins
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.views.generic import RedirectView, View
+from osso.payment import use_test_mode
 from osso.payment.models import Payment
 from osso.payment.provider.sofort.ideal import Ideal
 from osso.payment.xmlutils import xmlescape
@@ -17,8 +19,7 @@ class TransactionPassed(RedirectView):
         except Payment.DoesNotExist as e:
             pass
         else:
-            ideal = Ideal(testing=settings.OSSO_PAYMENT.get('test_mode',
-                                                            False))
+            ideal = Ideal(testing=use_test_mode())
             try:
                 ideal.process_passed(payment, transaction_hash)
             except Exception as e:
@@ -43,8 +44,7 @@ class TransactionAborted(RedirectView):
         except Payment.DoesNotExist as e:
             pass
         else:
-            ideal = Ideal(testing=settings.OSSO_PAYMENT.get('test_mode',
-                                                            False))
+            ideal = Ideal(testing=use_test_mode())
             try:
                 ideal.process_aborted(payment, transaction_key)
             except Exception as e:
