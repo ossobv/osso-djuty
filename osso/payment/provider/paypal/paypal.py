@@ -5,6 +5,7 @@ import urllib
 import urllib2
 import urlparse
 
+from osso.autolog.utils import log
 from osso.payment import (
     BuyerError, PaymentAlreadyUsed, PaymentSuspect, TryDifferentPayment)
 from osso.payment import ProviderError, ProviderBadConfig, ProviderDown
@@ -287,8 +288,11 @@ class Paypal(object):
         params['SIGNATURE'] = self.signature
         params['VERSION'] = '78'  # not sure if needed
 
-        response = urllib2.urlopen(self.backend_url, urllib.urlencode(params))
+        urlencoded_params = urllib.urlencode(params)
+        log(self.backend_url + '?' + urlencoded_params, 'paypal', 'qry')
+        response = urllib2.urlopen(self.backend_url, urlencoded_params)
         data = response.read()
+        log(data, 'paypal', 'ret')
         decoded = urlparse.parse_qs(data)
 
         ack = decoded.get('ACK', ['Failure'])[0]

@@ -10,6 +10,7 @@ import urllib2
 import urlparse
 from lxml import objectify
 
+from osso.autolog.utils import log
 from osso.payment import BuyerError, PaymentAlreadyUsed, PaymentSuspect
 from osso.payment import ProviderError, ProviderBadConfig, ProviderDown
 from osso.payment.ideal import BaseIdeal
@@ -244,8 +245,10 @@ class Ideal(BaseIdeal):
         if self.testing:
             params['testmode'] = 'true'
         url = '%s?%s' % (self.api_url, urllib.urlencode(params))
+        log(url, 'mollie', 'qry')
         response = urllib2.urlopen(url, data=None, timeout=timeout_seconds)
         data = response.read()
+        log(data, 'mollie', 'ret')
 
         # Mollie implements error raising in more than one way. Find all
         # the available errors.

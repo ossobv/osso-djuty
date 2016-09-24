@@ -7,8 +7,11 @@ import urlparse
 from hashlib import md5
 from lxml import objectify
 from django.core.mail import mail_admins
+
+from osso.autolog.utils import log
 from osso.payment import PaymentAlreadyUsed, ProviderError
 from osso.payment.xmlutils import string2dom, xmlescape
+
 # conditional django includes
 try:
     from django.conf import settings
@@ -139,6 +142,11 @@ class MultiSafepay(object):
                 desc = error[0].getElementsByTagName('description')[0]
                 desc = u''.join(i.wholeText for i in desc.childNodes)
                 if code == '1006':  # Invalid transaction ID
+                    # User clicked back and a used payment was attempted
+                    # again, or it could simply be that the credentials are
+                    # bad.
+                    log('Credentials bad or payment already used',
+                        'msp', 'err')
                     raise PaymentAlreadyUsed()  # user clicked back somehow?
 
             payment_url_node = dom.getElementsByTagName('payment_url')[0]
@@ -387,8 +395,6 @@ class MultiSafepay(object):
         request = urllib2.Request(self.api_url, data=body.encode('utf-8'),
                                   headers=headers)
 
-        # TEMP/FIXME: replace with logging.logger
-        from osso.autolog.utils import log
         log(body, 'msp', 'out')
         try:
             response = urllib2.urlopen(request, timeout=timeout_seconds)
