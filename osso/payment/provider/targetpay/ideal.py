@@ -1,4 +1,5 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
+import json
 import urlparse
 from urllib import urlencode
 
@@ -11,6 +12,7 @@ from osso.payment import (
     BuyerError, PaymentAlreadyUsed, PaymentSuspect,
     ProviderError, ProviderBadConfig, ProviderDown)
 from osso.payment.ideal import BaseIdeal
+from osso.payment.signals import payment_updated
 
 
 class Ideal(BaseIdeal):
@@ -112,7 +114,7 @@ class Ideal(BaseIdeal):
 
         return form
 
-    def request_status(self, payment):
+    def request_status(self, payment, request):
         """
         Check status at payment backend and store value locally.
         """
@@ -140,14 +142,17 @@ class Ideal(BaseIdeal):
         if status == '000000':
             payment.mark_passed()
             payment.mark_succeeded()
-            qs = self.request.META.get('QUERY_STRING', '')
-            payment.set_blob('targetpay.ideal ?' + qs)
+            payment_updated.send(sender=payment, change='passed')
+            postdata = request.POST
+            payment.set_blob('targetpay.ideal: ' + json.dumps(postdata))
         elif status == 'TP0010':  # Transaction has not been completed
             assert payment.state == 'submitted', (payment.pk, payment.state)
         elif status == 'TP0011':  # Transaction has been cancelled
             payment.mark_aborted()
+            payment_updated.send(sender=payment, change='aborted')
         elif status == 'TP0012':  # Transaction has expired (10 minutes)
             payment.mark_aborted()
+            payment_updated.send(sender=payment, change='aborted')
         elif status == 'TP0014':  # Already used
             assert payment.state == 'final'
         else:

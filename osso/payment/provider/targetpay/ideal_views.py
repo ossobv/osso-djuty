@@ -5,6 +5,7 @@ from django.core.mail import mail_admins
 from django.http import HttpResponse, Http404
 from django.views.generic import RedirectView, View
 
+from osso.autolog.utils import log
 from osso.payment import use_test_mode
 from osso.payment.models import Payment
 from osso.payment.signals import payment_updated
@@ -57,10 +58,9 @@ class TransactionAbort(RedirectView):
         # Thusfar, we've always gotten the trxid via the GET too.
         assert self.request.GET.get('trxid') == payment.unique_key
 
-        # Trust the user for now. If he supposedly cancelled and it
-        # wasn't a cancel, we won't suffer.
-        if payment.mark_aborted():
-            payment_updated.send(sender=payment, change='aborted')
+        # # Don't do these. They are handled through the /report/ URL.
+        # payment.mark_aborted()
+        # payment_updated.send(sender=payment, change='aborted')
 
         return payment.get_url('abort')
 
@@ -73,10 +73,11 @@ class TransactionReport(View):
     The docs mention nothing about our response, so an 'OK' with a 200
     should probably be good.
     """
-    def get(self, request, payment_id):
-        content_type = 'text/plain; charset=UTF-8'
-        unique_key = request.GET.get('trxid')
+    def post(self, request, payment_id):
+        log(repr(request.POST), 'targetpay', 'report')
 
+        content_type = 'text/plain; charset=UTF-8'
+        unique_key = request.POST.get('trxid')
         try:
             payment = Payment.objects.get(id=payment_id)
             if payment.unique_key != unique_key:
@@ -92,7 +93,7 @@ class TransactionReport(View):
 
         targetpay = Ideal(testing=use_test_mode())
         try:
-            targetpay.request_status(payment)
+            targetpay.request_status(payment, request)
         except Exception as e:
             mail_admins(('Replying with NAK to bad message from '
                          'Targetpay (might indicate a problem)'),

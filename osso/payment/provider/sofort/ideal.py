@@ -3,8 +3,10 @@ import unittest
 from base64 import b64encode
 from hashlib import sha256
 from urllib2 import Request, urlopen
-# payment imports
+
 from osso.payment.xmlutils import dom2dictlist, string2dom, xmlescape
+from osso.payment.signals import payment_updated
+
 # conditional django includes
 try:
     from django.conf import settings
@@ -140,8 +142,6 @@ class Ideal(object):
         The payment_updated signal is fired to notify the application
         of the payment success.
         '''
-        from osso.payment.signals import payment_updated
-
         # Re-create hash and compare.
         project_password = (
             getattr(settings, 'OSSO_PAYMENT_SOFORT', {})
@@ -168,8 +168,6 @@ class Ideal(object):
         The payment_updated signal is fired to notify the application
         of the payment failure.
         '''
-        from osso.payment.signals import payment_updated
-
         # Check if the sent transaction key matches.
         if payment.get_unique_key().lower() != str(transaction_key).lower():
             raise ValueError(

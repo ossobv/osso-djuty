@@ -1,4 +1,5 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
+from django.views.decorators.csrf import csrf_exempt
 from osso.payment.provider.targetpay.ideal_views import (
     TransactionAbort, TransactionReport, TransactionReturn)
 
@@ -32,5 +33,5 @@ urlpatterns = patterns('',  # noqa
     # > - cname met de klantnaam, mits de betaling gelukt is
     # > - cbank met de klantbank, mits de betaling gelukt is
     url(r'^(?P<payment_id>[0-9A-Fa-f]+)/report/$',
-        TransactionReport.as_view(), name='targetpay_report'),
+        csrf_exempt(TransactionReport.as_view()), name='targetpay_report'),
 )

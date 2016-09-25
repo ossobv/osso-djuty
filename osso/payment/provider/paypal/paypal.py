@@ -9,6 +9,7 @@ from osso.autolog.utils import log
 from osso.payment import (
     BuyerError, PaymentAlreadyUsed, PaymentSuspect, TryDifferentPayment)
 from osso.payment import ProviderError, ProviderBadConfig, ProviderDown
+from osso.payment.signals import payment_updated
 
 # conditional django includes
 # TODO: does it make sense to keep these conditionals??
@@ -152,8 +153,6 @@ class Paypal(object):
         At this point we do not have the payment, but we're allowed to
         initiate it.
         '''
-        from osso.payment.signals import payment_updated
-
         # We stored the token in the unique_key. Get it from
         # payment.unique_key directly instead of using get_unique_key().
         # Otherwise we might be creating a bogus unique_key which we
@@ -254,8 +253,6 @@ class Paypal(object):
             payment_updated.send(sender=payment, change='aborted')
 
     def process_aborted(self, payment, token):
-        from osso.payment.signals import payment_updated
-
         # We stored the token in the unique_key. Get it from
         # payment.unique_key directly instead of using get_unique_key().
         # Otherwise we might be creating a bogus unique_key which we

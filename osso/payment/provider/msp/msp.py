@@ -10,6 +10,7 @@ from django.core.mail import mail_admins
 
 from osso.autolog.utils import log
 from osso.payment import PaymentAlreadyUsed, ProviderError
+from osso.payment.signals import payment_updated
 from osso.payment.xmlutils import string2dom, xmlescape
 
 # conditional django includes
@@ -181,8 +182,6 @@ class MultiSafepay(object):
         return form
 
     def request_status(self, payment):
-        from osso.payment.signals import payment_updated
-
         result = self.check_transaction(payment)
 
         # Example response:

@@ -14,6 +14,7 @@ from osso.autolog.utils import log
 from osso.payment import BuyerError, PaymentAlreadyUsed, PaymentSuspect
 from osso.payment import ProviderError, ProviderBadConfig, ProviderDown
 from osso.payment.ideal import BaseIdeal
+from osso.payment.signals import payment_updated
 from osso.payment.xmlutils import dom2dictlist, string2dom, xmlstrip
 
 # conditional django includes
@@ -183,8 +184,6 @@ class Ideal(BaseIdeal):
         The payment_updated signal is fired to notify the application
         of any success or failure.
         '''
-        from osso.payment.signals import payment_updated
-
         # We stored the transaction_id in the unique_key. Get it from
         # payment.unique_key directly instead of using get_unique_key().
         # Otherwise we might be creating a bogus unique_key which we
