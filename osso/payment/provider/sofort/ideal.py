@@ -4,16 +4,9 @@ from base64 import b64encode
 from hashlib import sha256
 from urllib2 import Request, urlopen
 
+from osso.payment.conditional import reverse, settings
 from osso.payment.xmlutils import dom2dictlist, string2dom, xmlescape
 from osso.payment.signals import payment_updated
-
-# conditional django includes
-try:
-    from django.conf import settings
-except ImportError:
-    settings = None
-else:
-    from django.core.urlresolvers import reverse
 
 
 __all__ = ('Ideal', 'IdealError')
@@ -40,7 +33,7 @@ __all__ = ('Ideal', 'IdealError')
 
 
 class IdealError(ValueError):
-    '''
+    """
     1000 Invalid request.
     1001 Technical error.
     6000 An unknown error occured.
@@ -55,7 +48,7 @@ class IdealError(ValueError):
     7014 Invalid hash.
 
     Example: error_codes=7012,7013,7014
-    '''
+    """
     pass
 
 
@@ -135,13 +128,13 @@ class Ideal(object):
         )
 
     def process_passed(self, payment, transaction_hash):
-        '''
+        """
         Check if the transaction_hash is valid and mark the payment as
         completed.
 
         The payment_updated signal is fired to notify the application
         of the payment success.
-        '''
+        """
         # Re-create hash and compare.
         project_password = (
             getattr(settings, 'OSSO_PAYMENT_SOFORT', {})
@@ -162,12 +155,12 @@ class Ideal(object):
         payment_updated.send(sender=payment, change='passed')
 
     def process_aborted(self, payment, transaction_key):
-        '''
+        """
         Mark the payment as failed.
 
         The payment_updated signal is fired to notify the application
         of the payment failure.
-        '''
+        """
         # Check if the sent transaction key matches.
         if payment.get_unique_key().lower() != str(transaction_key).lower():
             raise ValueError(
@@ -191,8 +184,9 @@ class Ideal(object):
                     data[key] = kwargs.pop(key, self.project_password)
                 elif key in ('reason_1', 'reason_2'):
                     value = kwargs.pop(key).encode('ascii', 'replace')
-                    if any(i not in ('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-                                     'abcdefghijklmnopqrstuvwxyz +,-.') for i in value):
+                    if any(i not in (
+                            '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+                            'abcdefghijklmnopqrstuvwxyz +,-.') for i in value):
                         raise ValueError(
                             'Illegal character found in %s: %s' % (key, value))
                     if len(value) > 27:
@@ -245,17 +239,20 @@ class Ideal(object):
         return (
             '<form method="post" action="%(url)s">%(fields)s'
             '<input type="submit" value="%(button_text)s"/></form>' % {
-                'url': form_url, 'button_text': button_text, 'fields': ''.join(fields)
+                'url': form_url,
+                'button_text': button_text,
+                'fields': ''.join(fields)
             })
 
     @classmethod
     def sofort_request(cls, url, user_id, api_key, headers=(),
                        postdata=None, extra_headers=()):
-        '''
+        """
         Example urls:
         https://api.sofort.com/api/xml
-        https://www.sofort.com/payment/ideal/banks <-- shall return a list of banks
-        '''
+        https://www.sofort.com/payment/ideal/banks
+         ^-- shall return a list of banks
+        """
         if postdata is None:
             data = ''  # must use data or we get a GET request
         else:
@@ -263,8 +260,9 @@ class Ideal(object):
 
         request = Request(url)
         request.add_data(data)
+        auth = b64encode(':'.join([user_id, api_key]))
         request.add_header(
-            'Authorization', 'Basic %s' % (b64encode(':'.join([user_id, api_key])),))
+            'Authorization', 'Basic %s' % (auth,))
         request.add_header(
             'Content-Type', 'application/xml; charset=UTF-8')
         request.add_header(
@@ -280,12 +278,15 @@ class Ideal(object):
         sofort_settings = (
             settings and getattr(settings, 'OSSO_PAYMENT_SOFORT', {}) or {})
         if 'notification_password' in data:
-            raise TypeError("'notification_password' is not supposed to be in data")
+            raise TypeError(
+                "'notification_password' is not supposed to be in data")
         if notification_password is None:
             if 'notification_password' in sofort_settings:
-                notification_password = sofort_settings['notification_password']
+                notification_password = (
+                    sofort_settings['notification_password'])
             else:
-                raise TypeError("Required parameter 'notification_password' not found")
+                raise TypeError(
+                    "Required parameter 'notification_password' not found")
         if 'hash' not in data:
             raise TypeError("Required key 'hash' not found in argument 'data'")
 
@@ -303,7 +304,7 @@ class Ideal(object):
 
 
 def banks2dictlist(xml):
-    '''
+    """
     Gets all /ideal/banks/bank elements as a list of dictionaries.
     (Don't try to be funny and add more banks elements. Only the first
     one will be scoured for bank elements.)
@@ -312,8 +313,8 @@ def banks2dictlist(xml):
 
     We replace the 'code'/'name' pairs with 'id'/'name' and cast the ids
     to integers.
-    '''
-    assert isinstance(xml, str), 'No, I\'m doing the decoding! Pass me a binary string.'
+    """
+    assert isinstance(xml, str), 'Pass me a binary string, not %r' % (xml,)
     dictlist = dom2dictlist(string2dom(xml), inside=('ideal', 'banks'))
     for dict in dictlist:
         assert dict['name']
@@ -349,8 +350,12 @@ class IdealTest(unittest.TestCase):
         self.assertEqual(output, expected)
 
     def test_getform(self):
-        ideal = Ideal(user_id=1, project_id=2, api_key=3, project_password='geheim')
-        data = ideal._get_form(amount=12.34, reason_1=u'my-rEason', sender_bank_code=91)
+        ideal = Ideal(
+            user_id=1, project_id=2, api_key=3,
+            project_password='geheim')
+        data = ideal._get_form(
+            amount=12.34, reason_1=u'my-rEason',
+            sender_bank_code=91)
         self.assertTrue(data.startswith('<form '))
         self.assertTrue('"12.34"' in data)
         # self.assertTrue('"my_r&#8364;ason"' in data)

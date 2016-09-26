@@ -3,14 +3,11 @@ import json
 import urlparse
 from urllib import urlencode
 
-from django.conf import settings
-from django.core.urlresolvers import reverse
-
-from osso.autolog.utils import log
 from osso.core.http.shortcuts import http_get
 from osso.payment import (
     BuyerError, PaymentAlreadyUsed, PaymentSuspect,
     ProviderError, ProviderBadConfig, ProviderDown)
+from osso.payment.conditional import log, reverse, settings
 from osso.payment.ideal import BaseIdeal
 from osso.payment.signals import payment_updated
 
@@ -184,12 +181,12 @@ class Ideal(BaseIdeal):
 
 
 def url2formdata(url):
-    '''
+    """
     Split the URL into a scheme+netloc+path and split up query
     components.
 
     FIXME: duplicate code, also found in ideal and msp..
-    '''
+    """
     obj = urlparse.urlparse(url)
     items = tuple(urlparse.parse_qsl(obj.query))
     return '%s://%s%s' % (obj.scheme, obj.netloc, obj.path), items

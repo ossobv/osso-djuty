@@ -1,6 +1,7 @@
 # Makefile to quickly test non-django functionality
 
 .PHONY: all test
+.SILENT:
 
 all: test
 

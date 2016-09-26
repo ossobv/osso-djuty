@@ -1,15 +1,12 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
-from osso.payment.provider.paypal.paypal_views import (TransactionPassed,
-    TransactionAborted)
+from osso.payment.conditional import patterns, url
 
-try:  # Django 1.4+
-    from django.conf.urls import patterns, url
-except ImportError:  # Django 1.3-
-    from django.conf.urls.defaults import patterns, url
+from .paypal_views import (
+    TransactionPassed, TransactionAborted)
 
 
 # We expect this to be included as ^api/paypal/
-urlpatterns = patterns('',
+urlpatterns = patterns('',  # noqa
     # URL: http://SOMEWHERE/api/paypal/PAYMENTID/cont/
     # Here we have to call the paypal API and check that the payment
     # succeeded.

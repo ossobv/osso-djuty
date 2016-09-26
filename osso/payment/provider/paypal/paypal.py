@@ -5,35 +5,22 @@ import urllib
 import urllib2
 import urlparse
 
-from osso.autolog.utils import log
 from osso.payment import (
     BuyerError, PaymentAlreadyUsed, PaymentSuspect, TryDifferentPayment)
 from osso.payment import ProviderError, ProviderBadConfig, ProviderDown
+from osso.payment.conditional import log, mail_admins, reverse, settings
 from osso.payment.signals import payment_updated
-
-# conditional django includes
-# TODO: does it make sense to keep these conditionals??
-try:
-    from django.conf import settings
-except ImportError:
-    settings = None
-else:
-    from django.core.urlresolvers import reverse
-try:
-    from django.core.mail import mail_admins
-except ImportError:
-    mail_admins = None
 
 
 class Paypal(object):
-    '''
+    """
     Implementing the PayPal express checkout.
 
     https://www.x.com/developers/paypal/products/express-checkout
     https://www.x.com/developers/paypal/documentation-tools/quick-start-guides/express-checkout-api
     https://www.x.com/developers/paypal/documentation-tools/api/setexpresscheckout-api-operation-nvp
     https://www.x.com/developers/paypal/documentation-tools/api/doexpresscheckoutpayment-api-operation-nvp
-    '''
+    """
     def __init__(self, testing=False, username=None, password=None,
                  signature=None):
         paypal_settings = (
@@ -149,10 +136,10 @@ class Paypal(object):
         return form
 
     def process_passed(self, payment, token, payer_id):
-        '''
+        """
         At this point we do not have the payment, but we're allowed to
         initiate it.
-        '''
+        """
         # We stored the token in the unique_key. Get it from
         # payment.unique_key directly instead of using get_unique_key().
         # Otherwise we might be creating a bogus unique_key which we
@@ -276,10 +263,10 @@ class Paypal(object):
         payment_updated.send(sender=payment, change='aborted')
 
     def _do_request(self, params):
-        '''
+        """
         Do request, check for failure and return original XML as binary
         string.
-        '''
+        """
         params['USER'] = self.username
         params['PWD'] = self.password
         params['SIGNATURE'] = self.signature
@@ -327,10 +314,10 @@ class Paypal(object):
 
 
 def listdict2stringdict(listdict):
-    '''
+    """
     Convert a dictionary of lists into a dictionary of strings. Raises a
     ValueError if a list with multiple values is found.
-    '''
+    """
     ret = {}
     for key, value in listdict.items():
         if len(value) > 1:

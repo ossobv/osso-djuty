@@ -2,19 +2,20 @@
 import decimal
 import random
 from datetime import datetime
-from django.conf import settings
+
 from django.contrib.auth.models import User
 from django.db import connection, models
 from django.utils.translation import ugettext_lazy as _
 
+from .conditional import settings
 
 # TODO: update the mark_* values in open instance?
 
 
 class Payment(models.Model):
-    '''
+    """
     Holds state of payment transactions.
-    '''
+    """
     created = models.DateTimeField(
         _('created'), auto_now_add=True,
         help_text=_('When this object was created.'))
@@ -80,7 +81,7 @@ class Payment(models.Model):
                     'the bank.'))
 
     def atomic_update(self, filter_kwargs, update_kwargs):
-        '''
+        """
         Perform an update of a column and return whether it succeded so
         we can return an error if the update was not supposed to happen.
 
@@ -88,7 +89,7 @@ class Payment(models.Model):
         update changed any rows; it probably is not relevant for NoSQL
         (non-ACID) storage either. In that case we will update and
         always return true.
-        '''
+        """
         # non-ACID db?
         is_BASE = bool('mongodb' in connection.settings_dict['ENGINE'])
 
@@ -117,7 +118,7 @@ class Payment(models.Model):
 
     @property
     def status(self):
-        '''The status of the payment as used for provider.get_url(status)'''
+        "The status of the payment as used for provider.get_url(status)"
         if self.is_success is None:
             return 'toosoon'
         elif self.is_success:
@@ -126,17 +127,15 @@ class Payment(models.Model):
             return 'abort'
 
     def get_amount(self):
-        '''
+        """
         Some databases (MongoDB!) don't have a 'decimal' type and store
         the decimal as a string. Use this function to be sure you get a
         decimal type.
-        '''
+        """
         return decimal.Decimal(self.amount)
 
     def get_url(self, when):
-        '''
-        URL to jump to on success/abort/you-need-to-wait-some-more.
-        '''
+        "URL to jump to on success/abort/you-need-to-wait-some-more."
         # Create: success_url, abort_url, toosoon_url
         path = settings.OSSO_PAYMENT.get('%s_url' % (when,), '/')
         try:
@@ -151,11 +150,11 @@ class Payment(models.Model):
         return '%s%s' % (scheme_and_host, path)
 
     def get_unique_key(self):
-        '''
+        """
         Returns an ASCII string between 32 and 64 octets long.
         If you need something unique, this will do. If you want to store
         a foreign transaction_id here, use set_unique_key() first.
-        '''
+        """
         if not self.pk:
             raise ValueError('Cannot create unique key for object without pk')
         if self.unique_key:
@@ -170,13 +169,13 @@ class Payment(models.Model):
         return str(self.unique_key)
 
     def set_unique_key(self, unique_key):
-        '''
+        """
         If you want full control over the unique key or if you want to
         store a transaction identifier here, use this. Now it's your job
         to ensure uniqueness if you (ever) need it. (Preferably by
         appending "-<PK>" to the key for consistency with automatic
         unique key generation.)
-        '''
+        """
         if self.unique_key:
             raise ValueError('Cannot reset an already set unique key')
 
@@ -187,7 +186,7 @@ class Payment(models.Model):
                 'Failed to set unique_key because it was already set in DB')
 
     def mark_reset(self):
-        '''Atomic resetting of the entire payment data (yuck, MSP).'''
+        "Atomic resetting of the entire payment data (yuck, MSP)."
         # You shouldn't have to call this. But MSP reuses transactions
         # if it can (restart a closed payment) and we need to cope with
         # that.
@@ -200,7 +199,7 @@ class Payment(models.Model):
                 'Attempt to reset Payment %s, failed' % (self.id,))
 
     def mark_submitted(self):
-        '''Atomic setting of initiated time.'''
+        "Atomic setting of initiated time."
         if not self.atomic_update(
                 {'transfer_initiated': None, 'is_success': None},
                 {'transfer_initiated': datetime.now()}):
@@ -208,7 +207,7 @@ class Payment(models.Model):
                 'Attempt to mark Payment %s as initiated, failed' % (self.id,))
 
     def mark_passed(self):
-        '''
+        """
         Atomic setting of allowed time.
 
         Observe that this state is generally set just before mark_succeded.
@@ -216,7 +215,7 @@ class Payment(models.Model):
         transaction can continue. Don't abuse it as meaning "submitted".
 
         See also: the payment_updated 'passed' vs. 'aborted' signals.
-        '''
+        """
         if not self.atomic_update(
                 {'transfer_allowed': None, 'is_success': None},
                 {'transfer_allowed': datetime.now()}):
@@ -224,7 +223,7 @@ class Payment(models.Model):
                 'Attempt to mark Payment %s as allowed, failed' % (self.id,))
 
     def mark_succeeded(self):
-        '''Atomic setting of finalized time + success.'''
+        "Atomic setting of finalized time + success."
         if not self.atomic_update(
                 {'transfer_finalized': None, 'is_success': None},
                 {'transfer_finalized': datetime.now(), 'is_success': True}):
@@ -232,7 +231,7 @@ class Payment(models.Model):
                 'Attempt to mark Payment %s as succeeded, failed' % (self.id,))
 
     def mark_aborted(self):
-        '''Atomic setting of finalized time + failure.'''
+        "Atomic setting of finalized time + failure."
         if not self.atomic_update(
                 {'transfer_allowed': None, 'transfer_finalized': None,
                  'is_success': None},

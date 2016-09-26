@@ -1,12 +1,14 @@
 # vim: set ts=8 sw=4 sts=4 et ai tw=79:
 import traceback
 
-from django.core.mail import mail_admins
 from django.http import HttpResponse, Http404
 from django.views.generic import RedirectView, View
+
 from osso.payment import use_test_mode
+from osso.payment.conditional import mail_admins
 from osso.payment.models import Payment
-from osso.payment.provider.msp.msp import MultiSafepay
+
+from .msp import MultiSafepay
 
 
 class TransactionReturn(RedirectView):

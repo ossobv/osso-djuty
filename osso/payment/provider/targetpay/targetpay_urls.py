@@ -1,12 +1,10 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
 from django.views.decorators.csrf import csrf_exempt
-from osso.payment.provider.targetpay.ideal_views import (
-    TransactionAbort, TransactionReport, TransactionReturn)
 
-try:  # Django 1.4+
-    from django.conf.urls import patterns, url
-except ImportError:  # Django 1.3-
-    from django.conf.urls.defaults import patterns, url
+from osso.payment.conditional import patterns, url
+
+from .ideal_views import (
+    TransactionAbort, TransactionReport, TransactionReturn)
 
 
 # We expect this to be included as ^api/targetpay/

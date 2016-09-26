@@ -6,24 +6,11 @@ import urlparse
 
 from hashlib import md5
 from lxml import objectify
-from django.core.mail import mail_admins
 
-from osso.autolog.utils import log
 from osso.payment import PaymentAlreadyUsed, ProviderError
+from osso.payment.conditional import log, mail_admins, reverse, settings
 from osso.payment.signals import payment_updated
 from osso.payment.xmlutils import string2dom, xmlescape
-
-# conditional django includes
-try:
-    from django.conf import settings
-except ImportError:
-    settings = None
-else:
-    from django.core.urlresolvers import reverse
-try:
-    from osso.aboutconfig.utils import aboutconfig
-except ImportError:
-    aboutconfig = None
 
 
 class MultiSafepay(object):
@@ -318,7 +305,9 @@ class MultiSafepay(object):
         payment.set_blob(result, overwrite=True)
 
     def start_transaction(self, payment, locale=None, remote_addr=None):
-        '''Called by the code before redirecting the user to MSP.'''
+        """
+        Called by the code before redirecting the user to MSP.
+        """
         locale = locale or 'nl_NL'
         assert len(locale.split('_')) == 2, locale  # looks like nl_NL ?
         remote_addr = remote_addr or ''
@@ -358,7 +347,9 @@ class MultiSafepay(object):
         return self._do_request(template, extra_kwargs)
 
     def check_transaction(self, payment):
-        '''Called on return from MSP to check with MSP what the status is.'''
+        """
+        Called on return from MSP to check with MSP what the status is.
+        """
         template = self.XML_STATUS_REQUEST
         extra_kwargs = {
             'transaction_id': payment.id,
@@ -420,12 +411,12 @@ class MultiSafepay(object):
 
 
 def url2formdata(url):
-    '''
+    """
     Split the URL into a scheme+netloc+path and split up query
     components.
 
     FIXME: duplicate code, also found in ideal..
-    '''
+    """
     obj = urlparse.urlparse(url)
     items = tuple(urlparse.parse_qsl(obj.query))
     return '%s://%s%s' % (obj.scheme, obj.netloc, obj.path), items

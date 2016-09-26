@@ -8,7 +8,7 @@ class ParseError(Exception):
 
 
 def xmlescape(string, escape_also=''):
-    '''
+    """
     Escapes & < and > to &amp; &lt; and &gt; and converts any unicode
     character not in the ASCII range into an &#NN; escape.
 
@@ -18,7 +18,7 @@ def xmlescape(string, escape_also=''):
 
     Don't do anything stupid like try to escape any of a..z 0..9
     & # ;
-    '''
+    """
     if isinstance(string, str):
         string = string.decode('utf-8')
     if not isinstance(string, unicode):
@@ -41,11 +41,11 @@ def xmlescape(string, escape_also=''):
 
 
 def xmlstrip(string):
-    '''
+    """
     Strip whitespace from nodes that do not contain text but *do*
     contain other nodes. Useful for storing XML blobs in a less verbose
     manner.
-    '''
+    """
     from lxml import etree  # should we use xml.dom instead?
     parser = etree.XMLParser(remove_blank_text=True)
     root = etree.fromstring(string, parser)
@@ -53,14 +53,14 @@ def xmlstrip(string):
 
 
 def string2dom(string):
-    '''
+    """
     Parse/convert a string into an opaque DOM.
-    '''
+    """
     return parseString(string)
 
 
 def dom2dictlist(dom, inside=(), li=None, strict=True):
-    '''
+    """
     Take the opaque DOM, go into the tags specified by inside and
     collect the dictionary contents.
 
@@ -71,7 +71,7 @@ def dom2dictlist(dom, inside=(), li=None, strict=True):
 
     If other elements than a list item can occur in <elems>, you must
     specify li.
-    '''
+    """
     # Dive into the DOM as long as there are elements in the 'inside'
     # list.
     if inside:

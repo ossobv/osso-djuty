@@ -1,16 +1,14 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
 from django.views.decorators.csrf import csrf_exempt
-from osso.payment.provider.sofort.ideal_views import (TransactionPassed,
-    TransactionAborted, TransactionReport, FakeIdeal)
 
-try:  # Django 1.4+
-    from django.conf.urls import patterns, url
-except ImportError:  # Django 1.3-
-    from django.conf.urls.defaults import patterns, url
+from osso.payment.conditional import patterns, url
+
+from .ideal_views import (
+    TransactionPassed, TransactionAborted, TransactionReport, FakeIdeal)
 
 
 # We expect this to be included as ^api/sofort/
-urlpatterns = patterns('',
+urlpatterns = patterns('',  # noqa
     # URL: http://SOMEWHERE/api/sofort/-USER_VAR_0-/idealcont/-USER_VAR_1_HASH_PASS-/
     url(r'^(?P<payment_id>[0-9A-Fa-f]+)/idealcont/(?P<transaction_hash>[0-9A-Fa-f]+)/$',
         TransactionPassed.as_view(), name='sofort_ideal_passed'),

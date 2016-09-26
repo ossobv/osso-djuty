@@ -1,10 +1,12 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
-from django.core.mail import mail_admins
 from django.http import Http404
 from django.views.generic import RedirectView
+
 from osso.payment import ProviderError, TryDifferentPayment, use_test_mode
+from osso.payment.conditional import mail_admins
 from osso.payment.models import Payment
-from osso.payment.provider.paypal.paypal import Paypal
+
+from .paypal import Paypal
 
 
 class TransactionPassed(RedirectView):

@@ -1,15 +1,12 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
-from osso.payment.provider.mollie.ideal_views import (TransactionReturn,
-    TransactionReport)
+from osso.payment.conditional import patterns, url
 
-try:  # Django 1.4+
-    from django.conf.urls import patterns, url
-except ImportError:  # Django 1.3-
-    from django.conf.urls.defaults import patterns, url
+from .ideal_views import (
+    TransactionReturn, TransactionReport)
 
 
 # We expect this to be included as ^api/mollie/
-urlpatterns = patterns('',
+urlpatterns = patterns('',  # noqa
     # URL: http://SOMEWHERE/api/mollie/PAYMENTID/return/
     # Here we have to call the mollie API and check that the payment
     # succeeded.

@@ -1,4 +1,5 @@
 .PHONY: all test
+.SILENT:
 
 all: test
 

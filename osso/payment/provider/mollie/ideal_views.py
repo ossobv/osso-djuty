@@ -1,10 +1,12 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
-from django.core.mail import mail_admins
 from django.http import HttpResponse
 from django.views.generic import RedirectView, View
+
 from osso.payment import use_test_mode
+from osso.payment.conditional import mail_admins
 from osso.payment.models import Payment
-from osso.payment.provider.mollie.ideal import Ideal
+
+from .ideal import Ideal
 
 
 class TransactionReturn(RedirectView):
@@ -45,12 +47,12 @@ class TransactionReturn(RedirectView):
 
 
 class TransactionReport(View):
-    '''
+    """
     This view is called by the Mollie backend while the user is still
     on the payment page.
 
     The only relevant output is the HTTP status code.
-    '''
+    """
     def get(self, request, payment_id):
         content_type = 'text/plain; charset=UTF-8'
 

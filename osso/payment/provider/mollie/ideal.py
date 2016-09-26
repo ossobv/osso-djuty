@@ -10,24 +10,13 @@ import urllib2
 import urlparse
 from lxml import objectify
 
-from osso.autolog.utils import log
-from osso.payment import BuyerError, PaymentAlreadyUsed, PaymentSuspect
-from osso.payment import ProviderError, ProviderBadConfig, ProviderDown
+from osso.payment import (
+    BuyerError, PaymentAlreadyUsed, PaymentSuspect,
+    ProviderError, ProviderBadConfig, ProviderDown)
+from osso.payment.conditional import aboutconfig, log, reverse, settings
 from osso.payment.ideal import BaseIdeal
 from osso.payment.signals import payment_updated
 from osso.payment.xmlutils import dom2dictlist, string2dom, xmlstrip
-
-# conditional django includes
-try:
-    from django.conf import settings
-except ImportError:
-    settings = None
-else:
-    from django.core.urlresolvers import reverse
-try:
-    from osso.aboutconfig.utils import aboutconfig
-except ImportError:
-    aboutconfig = None
 
 
 BANKS_MARCH_2012 = (
@@ -177,13 +166,13 @@ class Ideal(BaseIdeal):
         return form
 
     def process_report(self, payment, transaction_id):
-        '''
+        """
         Check if the payment has succeeded. It queries the mollie
         interface and updates the payment status.
 
         The payment_updated signal is fired to notify the application
         of any success or failure.
-        '''
+        """
         # We stored the transaction_id in the unique_key. Get it from
         # payment.unique_key directly instead of using get_unique_key().
         # Otherwise we might be creating a bogus unique_key which we
@@ -237,10 +226,10 @@ class Ideal(BaseIdeal):
             payment_updated.send(sender=payment, change='aborted')
 
     def _do_request(self, params, timeout_seconds=None):
-        '''
+        """
         Do request, check for failure and return original XML as binary
         string.
-        '''
+        """
         if self.testing:
             params['testmode'] = 'true'
         url = '%s?%s' % (self.api_url, urllib.urlencode(params))
@@ -286,10 +275,10 @@ class Ideal(BaseIdeal):
 
 
 def any2errorlist(xml):
-    '''
+    """
     Get either /item[@type="error"] elements, or an error inside some
     other element (using mollie's supercrappy <error>true</error> node.
-    '''
+    """
     assert isinstance(xml, str), \
         'No, I\'m doing the decoding! Pass me a binary string.'
     errors = []
@@ -311,12 +300,12 @@ def any2errorlist(xml):
 
 
 def banks2dictlist(xml):
-    '''
+    """
     Gets all /response/bank elements as a list of dictionaries.
 
     We replace the 'bank_id'/'bank_name' pairs with 'id'/'name' and cast
     the ids to integers.
-    '''
+    """
     assert isinstance(xml, str), \
         'No, I\'m doing the decoding! Pass me a binary string.'
     dictlist = dom2dictlist(string2dom(xml), inside=('response',), li='bank')
@@ -329,9 +318,9 @@ def banks2dictlist(xml):
 
 
 def order2dict(xml):
-    '''
+    """
     Reads the elements of the /response/order into a dictionary.
-    '''
+    """
     assert isinstance(xml, str), \
         'No, I\'m doing the decoding! Pass me a binary string.'
     dictlist = dom2dictlist(string2dom(xml), inside=('response',), li='order')
@@ -341,10 +330,10 @@ def order2dict(xml):
 
 
 def url2formdata(url):
-    '''
+    """
     Split the URL into a scheme+netloc+path and split up query
     components.
-    '''
+    """
     obj = urlparse.urlparse(url)
     items = tuple(urlparse.parse_qsl(obj.query))
     return '%s://%s%s' % (obj.scheme, obj.netloc, obj.path), items

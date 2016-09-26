@@ -1,15 +1,15 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
 from hashlib import sha256
 
-from django.conf import settings
-from django.core.mail import mail_admins
-from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.views.generic import RedirectView, View
+
 from osso.payment import use_test_mode
+from osso.payment.conditional import mail_admins, reverse, settings
 from osso.payment.models import Payment
-from osso.payment.provider.sofort.ideal import Ideal
 from osso.payment.xmlutils import xmlescape
+
+from .ideal import Ideal
 
 
 class TransactionPassed(RedirectView):
