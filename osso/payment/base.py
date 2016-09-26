@@ -6,7 +6,7 @@ similar to this::
     class PaymentBaseProceedView(CacheControlMixin, DetailView):
         '''
         Use the Cache mixin in an attempt to get fewer devices to re-attempt
-        to view the redirect page (which breaks, because certain veriables
+        to view the redirect page (which breaks, because certain variables
         are already set).
         '''
         cache_timeout = 365 * 86400  # a year..
