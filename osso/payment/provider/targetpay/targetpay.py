@@ -1,6 +1,5 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
 import json
-import urlparse
 from urllib import urlencode
 
 from osso.core.http.shortcuts import http_get
@@ -91,28 +90,7 @@ class TargetpayIdeal(IdealProvider):
 
         payment_url = self.start_transaction(payment, build_absolute_uri)
 
-        # Send user to URL.
-        # We have to split the URL into <input> boxes, or the form
-        # method won't work.
-        # FIXME: Duplicate code :(
-        next_url, data = url2formdata(payment_url)
-        inputs = []
-        for item in data:
-            inputs.append('<input type="hidden" name="%s" value="%s"/>' % (
-                (item[0].replace('&', '&amp;').replace('<', '&lt;')
-                 .replace('>', '&gt;').replace('"', '&#34;')),
-                (item[1].replace('&', '&amp;').replace('<', '&lt;')
-                 .replace('>', '&gt;').replace('"', '&#34;')),
-            ))
-
-        # Must use GET, we're fed a GET url after all.
-        form = (
-            '<form id="targetpay_form" method="GET" action="%s">%s</form>' % (
-                (next_url.replace('&', '&amp;').replace('<', '&lt;')
-                 .replace('>', '&gt;').replace('"', '&#34;')),
-                ''.join(inputs)))
-
-        return form
+        return self.create_html_form_from_url(payment_url, 'targetpay_form')
 
     def request_status(self, payment, request):
         """
@@ -181,15 +159,3 @@ class TargetpayIdeal(IdealProvider):
         log(ret, 'targetpay', 'ret')
 
         return ret
-
-
-def url2formdata(url):
-    """
-    Split the URL into a scheme+netloc+path and split up query
-    components.
-
-    FIXME: duplicate code, also found in ideal and msp..
-    """
-    obj = urlparse.urlparse(url)
-    items = tuple(urlparse.parse_qsl(obj.query))
-    return '%s://%s%s' % (obj.scheme, obj.netloc, obj.path), items

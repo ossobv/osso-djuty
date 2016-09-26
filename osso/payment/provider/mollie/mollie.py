@@ -7,7 +7,6 @@ import ssl
 import unittest
 import urllib
 import urllib2
-import urlparse
 from lxml import objectify
 
 from osso.payment import (
@@ -141,26 +140,7 @@ class Mollie(IdealProvider):
         unique_key = '%s-%s' % (order['transaction_id'], payment.id)
         payment.set_unique_key(unique_key)
 
-        # We have to split the URL into <input> boxes, or the form
-        # method won't work.
-        url, data = url2formdata(order['URL'])
-        inputs = []
-        for item in data:
-            inputs.append('<input type="hidden" name="%s" value="%s"/>' % (
-                (item[0].replace('&', '&amp;').replace('<', '&lt;')
-                 .replace('>', '&gt;').replace('"', '&#34;')),
-                (item[1].replace('&', '&amp;').replace('<', '&lt;')
-                 .replace('>', '&gt;').replace('"', '&#34;')),
-            ))
-
-        # Must use GET, mollie doesn't like POST here.
-        form = '<form id="ideal_form" method="GET" action="%s">%s</form>' % (
-            (url.replace('&', '&amp;').replace('<', '&lt;')
-             .replace('>', '&gt;').replace('"', '&#34;')),
-            ''.join(inputs),
-        )
-
-        return form
+        return self.create_html_form_from_url(order['URL'], 'mollie_form')
 
     def process_report(self, payment, transaction_id):
         """
@@ -326,17 +306,7 @@ def order2dict(xml):
     return dictlist[0]
 
 
-def url2formdata(url):
-    """
-    Split the URL into a scheme+netloc+path and split up query
-    components.
-    """
-    obj = urlparse.urlparse(url)
-    items = tuple(urlparse.parse_qsl(obj.query))
-    return '%s://%s%s' % (obj.scheme, obj.netloc, obj.path), items
-
-
-class IdealTest(unittest.TestCase):
+class MollieTest(unittest.TestCase):
     def test_test(self):
         self.assertEqual(1, 1)
 
@@ -439,21 +409,6 @@ Your customer should visit the given URL to make the payment</message>
         output = order2dict(input)
         self.assertEqual(output, expected)
 
-    def test_url2formdata(self):
-        input = ('http://www.mollie.nl/partners/ideal-test-bank?'
-                 'order_nr=M12345&transaction_id='
-                 'aaabbbcccdddeeefff00011122233344&trxid=0123')
-        expected = (
-            'http://www.mollie.nl/partners/ideal-test-bank',
-            (
-                ('order_nr', 'M12345'),
-                ('transaction_id', 'aaabbbcccdddeeefff00011122233344'),
-                ('trxid', '0123'),
-            )
-        )
-        output = url2formdata(input)
-        self.assertEqual(output, expected)
-
     def test_instance(self):
         # DISABLED: because it does an RPC call which might be
         # burdensome on the remote server if executed too often.
@@ -466,9 +421,5 @@ Your customer should visit the given URL to make the payment</message>
         pass
 
 
-def main():
-    unittest.main()
-
-
 if __name__ == '__main__':
-    main()
+    unittest.main()

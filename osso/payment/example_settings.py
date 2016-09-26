@@ -48,5 +48,5 @@ OSSO_PAYMENT_SOFORT = {
 
 # Targetpay settings
 OSSO_PAYMENT_TARGETPAY = {
-    'rtlo': 'FIXMEF',
+    'rtlo': 'ACCOUNT',
 }

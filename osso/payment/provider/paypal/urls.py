@@ -1,8 +1,7 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
 from osso.payment.conditional import patterns, url
 
-from .paypal_views import (
-    TransactionPassed, TransactionAborted)
+from .views import TransactionPassed, TransactionAborted
 
 
 # We expect this to be included as ^api/paypal/

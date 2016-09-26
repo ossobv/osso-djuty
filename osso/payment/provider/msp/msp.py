@@ -2,7 +2,6 @@
 import socket
 import time
 import urllib2
-import urlparse
 
 from hashlib import md5
 from lxml import objectify
@@ -148,26 +147,7 @@ class MultiSafepay(Provider):
             raise
 
         # (3) Send user to URL.
-        # We have to split the URL into <input> boxes, or the form
-        # method won't work.
-        url, data = url2formdata(payment_url)
-        inputs = []
-        for item in data:
-            inputs.append('<input type="hidden" name="%s" value="%s"/>' % (
-                (item[0].replace('&', '&amp;').replace('<', '&lt;')
-                 .replace('>', '&gt;').replace('"', '&#34;')),
-                (item[1].replace('&', '&amp;').replace('<', '&lt;')
-                 .replace('>', '&gt;').replace('"', '&#34;')),
-            ))
-
-        # Must use GET, we're fed a GET url after all.
-        form = '''<form id="msp_form" method="GET" action="%s">%s</form>''' % (
-            (url.replace('&', '&amp;').replace('<', '&lt;')
-             .replace('>', '&gt;').replace('"', '&#34;')),
-            ''.join(inputs),
-        )
-
-        return form
+        return self.create_html_form_from_url(payment_url, 'msp_form')
 
     def request_status(self, payment):
         result = self.check_transaction(payment)
@@ -405,15 +385,3 @@ class MultiSafepay(Provider):
             log(data, 'msp', 'in')
 
         return data
-
-
-def url2formdata(url):
-    """
-    Split the URL into a scheme+netloc+path and split up query
-    components.
-
-    FIXME: duplicate code, also found in ideal..
-    """
-    obj = urlparse.urlparse(url)
-    items = tuple(urlparse.parse_qsl(obj.query))
-    return '%s://%s%s' % (obj.scheme, obj.netloc, obj.path), items

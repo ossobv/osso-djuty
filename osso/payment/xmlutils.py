@@ -7,6 +7,11 @@ class ParseError(Exception):
     pass
 
 
+def htmlesc(raw):
+    return (raw.replace('&', '&amp;').replace('<', '&lt;')
+            .replace('>', '&gt;').replace('"', '&#34;'))
+
+
 def xmlescape(string, escape_also=''):
     """
     Escapes & < and > to &amp; &lt; and &gt; and converts any unicode
@@ -239,9 +244,5 @@ checked by you. (We give payed=true only once, for your protection)</message>
         self.assertEqual(xmlstrip(input), expected)
 
 
-def main():
-    unittest.main()
-
-
 if __name__ == '__main__':
-    main()
+    unittest.main()

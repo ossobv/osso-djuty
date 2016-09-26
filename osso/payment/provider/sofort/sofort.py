@@ -378,9 +378,5 @@ class SofortTest(unittest.TestCase):
         Sofort.validate_response(input, notification_password='geheim')
 
 
-def main():
-    unittest.main()
-
-
 if __name__ == '__main__':
-    main()
+    unittest.main()

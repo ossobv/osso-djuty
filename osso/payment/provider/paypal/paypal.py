@@ -11,6 +11,7 @@ from osso.payment import (
 from osso.payment.base import Provider
 from osso.payment.conditional import log, mail_admins, reverse, settings
 from osso.payment.signals import payment_updated
+from osso.payment.xmlutils import htmlesc
 
 
 class Paypal(Provider):
@@ -123,13 +124,8 @@ class Paypal(Provider):
             '<input type="hidden" name="token" value="%(token)s"/>'
             '</form>'
         ) % {
-            'action': (
-                self.frontend_url.replace('&', '&amp;')
-                .replace('<', '&lt;').replace('>', '&gt;')
-                .replace('"', '&#34;')),
-            'token': (
-                token.replace('&', '&amp;').replace('<', '&lt;')
-                .replace('>', '&gt;').replace('"', '&#34;')),
+            'action': htmlesc(self.frontend_url),
+            'token': htmlesc(token),
         }
         return form
 
@@ -338,9 +334,5 @@ class PaypalTest(unittest.TestCase):
         self.assertRaises(ValueError, listdict2stringdict, input)
 
 
-def main():
-    unittest.main()
-
-
 if __name__ == '__main__':
-    main()
+    unittest.main()
