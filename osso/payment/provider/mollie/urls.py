@@ -10,9 +10,11 @@ urlpatterns = patterns('',  # noqa
     # Here we have to call the mollie API and check that the payment
     # succeeded.
     url(r'^(?P<payment_id>[0-9A-Fa-f]+)/return/$',
-        TransactionReturn.as_view(), name='mollie_ideal_return'),
+        TransactionReturn.as_view(),
+        name='osso_payment_mollie_return'),
 
     # URL: http://SOMEWHERE/api/mollie/PAYMENTID/report/
     url(r'^(?P<payment_id>[0-9A-Fa-f]+)/report/$',
-        TransactionReport.as_view(), name='mollie_ideal_report'),
+        TransactionReport.as_view(),
+        name='osso_payment_mollie_report'),
 )

@@ -26,11 +26,14 @@ class TargetpayIdeal(IdealProvider):
             'description': payment.description,
             'amount': int(payment.amount * 100),
             'returnurl': build_absolute_uri(reverse(
-                'targetpay_return', kwargs={'payment_id': payment.id})),
+                'osso_payment_targetpay_return',
+                kwargs={'payment_id': payment.id})),
             'cancelurl': build_absolute_uri(reverse(
-                'targetpay_abort', kwargs={'payment_id': payment.id})),
+                'osso_payment_targetpay_abort',
+                kwargs={'payment_id': payment.id})),
             'reporturl': build_absolute_uri(reverse(
-                'targetpay_report', kwargs={'payment_id': payment.id})),
+                'osso_payment_targetpay_report',
+                kwargs={'payment_id': payment.id})),
             'ver': '3',
         }
         if self.test_mode:

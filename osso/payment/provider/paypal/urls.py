@@ -11,9 +11,11 @@ urlpatterns = patterns('',  # noqa
     # Here we have to call the paypal API and check that the payment
     # succeeded.
     url(r'^(?P<payment_id>[0-9A-Fa-f]+)/cont/$',
-        TransactionPassed.as_view(), name='paypal_passed'),
+        TransactionPassed.as_view(),
+        name='osso_payment_paypal_passed'),
 
     # URL: http://SOMEWHERE/api/paypal/PAYMENTID/stop/
     url(r'^(?P<payment_id>[0-9A-Fa-f]+)/stop/$',
-        TransactionAborted.as_view(), name='paypal_aborted'),
+        TransactionAborted.as_view(),
+        name='osso_payment_paypal_aborted'),
 )

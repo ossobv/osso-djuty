@@ -11,12 +11,14 @@ urlpatterns = patterns('',  # noqa
     # URL: http://SOMEWHERE/api/targetpay/PAYMENTID/return/
     # We expect ?trxid={...}&idealtrxid={...}&ec={...} as GET params.
     url(r'^(?P<payment_id>[0-9A-Fa-f]+)/return/$',
-        TransactionReturn.as_view(), name='targetpay_return'),
+        TransactionReturn.as_view(),
+        name='osso_payment_targetpay_return'),
 
     # URL: http://SOMEWHERE/api/targetpay/PAYMENTID/abort/
     # Abort/cancel the transaction.
     url(r'^(?P<payment_id>[0-9A-Fa-f]+)/abort/$',
-        TransactionAbort.as_view(), name='targetpay_abort'),
+        TransactionAbort.as_view(),
+        name='osso_payment_targetpay_abort'),
 
     # URL: http://SOMEWHERE/api/targetpay/PAYMENTID/report/
     # > Als u deze invult, dan roepen we de URL op uw server aan na de
@@ -30,5 +32,6 @@ urlpatterns = patterns('',  # noqa
     # > - cname met de klantnaam, mits de betaling gelukt is
     # > - cbank met de klantbank, mits de betaling gelukt is
     url(r'^(?P<payment_id>[0-9A-Fa-f]+)/report/$',
-        csrf_exempt(TransactionReport.as_view()), name='targetpay_report'),
+        csrf_exempt(TransactionReport.as_view()),
+        name='osso_payment_targetpay_report'),
 )

@@ -227,7 +227,7 @@ class Sofort(IdealProvider):
         if not form_url:
             if self.testing:
                 form_url = reverse(
-                    'sofort_fake_ideal',
+                    'osso_payment_sofort_fake_ideal',
                     kwargs={'bank_code': kwargs['sender_bank_code']})
             else:
                 form_url = 'https://www.sofort.com/payment/ideal'

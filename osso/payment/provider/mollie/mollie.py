@@ -88,13 +88,10 @@ class Mollie(IdealProvider):
             host = 'example.com'  # Mollie refuses 'localhost' even in testmode
         host_prefix = '%s://%s' % (scheme, host)
 
-        # FIXME: namespace? osso_payment_mollie_ideal_report? :)
-        report_url = '%s%s' % (
-            host_prefix,
-            reverse('mollie_ideal_report', kwargs={'payment_id': payment.id}))
-        return_url = '%s%s' % (
-            host_prefix,
-            reverse('mollie_ideal_return', kwargs={'payment_id': payment.id}))
+        report_url = '%s%s' % (host_prefix, reverse(
+            'osso_payment_mollie_report', kwargs={'payment_id': payment.id}))
+        return_url = '%s%s' % (host_prefix, reverse(
+            'osso_payment_mollie_return', kwargs={'payment_id': payment.id}))
 
         # Check whether we've "used" this payment already. If we don't
         # check this here, we might first find out when setting

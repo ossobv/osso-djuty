@@ -88,12 +88,12 @@ class FakeIdeal(View):
         # Display a page where we can choose what "has happened" and
         # redirect to the appropriate place.
         base_url = ''
-        path = reverse('sofort_ideal_passed',
+        path = reverse('osso_payment_sofort_passed',
                        kwargs={'payment_id': user_variable_0,
                                'transaction_hash': user_variable_1_hash_pass})
         passed_url = '%s%s' % (base_url, path)
 
-        path = reverse('sofort_ideal_aborted',
+        path = reverse('osso_payment_sofort_aborted',
                        kwargs={'payment_id': user_variable_0,
                                'transaction_key': user_variable_1})
         aborted_url = '%s%s' % (base_url, path)
