@@ -29,5 +29,5 @@ def clean_description(description):
 
 
 def get_instance():
-    from .ideal import Ideal
-    return Ideal(testing=use_test_mode())
+    from .targetpay import TargetpayIdeal
+    return TargetpayIdeal(testing=use_test_mode())

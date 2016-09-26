@@ -4,6 +4,4 @@
 all: test
 
 test:
-	@make -C mollie
-	@make -C paypal
-	@make -C sofort
+	@for provider in [a-z]*; do make -C $$provider; done

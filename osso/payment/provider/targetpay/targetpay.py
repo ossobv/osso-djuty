@@ -7,12 +7,12 @@ from osso.core.http.shortcuts import http_get
 from osso.payment import (
     BuyerError, PaymentAlreadyUsed, PaymentSuspect,
     ProviderError, ProviderBadConfig, ProviderDown)
+from osso.payment.base import IdealProvider
 from osso.payment.conditional import log, reverse, settings
-from osso.payment.ideal import BaseIdeal
 from osso.payment.signals import payment_updated
 
 
-class Ideal(BaseIdeal):
+class TargetpayIdeal(IdealProvider):
     def __init__(self, testing=False, rtlo=None):
         self.provider_url = 'https://www.targetpay.com'
         self.rtlo = (

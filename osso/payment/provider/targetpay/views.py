@@ -4,11 +4,10 @@ import traceback
 from django.http import HttpResponse, Http404
 from django.views.generic import RedirectView, View
 
-from osso.payment import use_test_mode
 from osso.payment.conditional import log, mail_admins
 from osso.payment.models import Payment
 
-from .ideal import Ideal
+from . import get_instance
 
 
 class TransactionReturn(RedirectView):
@@ -90,7 +89,7 @@ class TransactionReport(View):
             response.status_code = 500
             return response
 
-        targetpay = Ideal(testing=use_test_mode())
+        targetpay = get_instance()
         try:
             targetpay.request_status(payment, request)
         except Exception as e:

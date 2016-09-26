@@ -6,13 +6,14 @@ import urllib2
 import urlparse
 
 from osso.payment import (
-    BuyerError, PaymentAlreadyUsed, PaymentSuspect, TryDifferentPayment)
-from osso.payment import ProviderError, ProviderBadConfig, ProviderDown
+    BuyerError, PaymentAlreadyUsed, PaymentSuspect, TryDifferentPayment,
+    ProviderError, ProviderBadConfig, ProviderDown)
+from osso.payment.base import Provider
 from osso.payment.conditional import log, mail_admins, reverse, settings
 from osso.payment.signals import payment_updated
 
 
-class Paypal(object):
+class Paypal(Provider):
     """
     Implementing the PayPal express checkout.
 
@@ -199,7 +200,7 @@ class Paypal(object):
         #     &PAYMENTINFO_0_ERRORCODE=0&PAYMENTINFO_0_ACK=Success
         # There is lots of nice info in there. We store all of it for
         # later viewing in the blob.
-        payment.set_blob(repr(response))
+        payment.set_blob('paypal: ' + repr(response))
 
         # Get the actual payment status
         is_paid = (response['PAYMENTINFO_0_ACK'] == 'Success')

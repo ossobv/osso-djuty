@@ -4,12 +4,11 @@ from hashlib import sha256
 from django.http import HttpResponse
 from django.views.generic import RedirectView, View
 
-from osso.payment import use_test_mode
 from osso.payment.conditional import mail_admins, reverse, settings
 from osso.payment.models import Payment
 from osso.payment.xmlutils import xmlescape
 
-from .ideal import Ideal
+from . import get_instance
 
 
 class TransactionPassed(RedirectView):
@@ -19,9 +18,9 @@ class TransactionPassed(RedirectView):
         except Payment.DoesNotExist as e:
             pass
         else:
-            ideal = Ideal(testing=use_test_mode())
+            sofort = get_instance()
             try:
-                ideal.process_passed(payment, transaction_hash)
+                sofort.process_passed(payment, transaction_hash)
             except Exception as e:
                 pass
             else:
@@ -44,9 +43,9 @@ class TransactionAborted(RedirectView):
         except Payment.DoesNotExist as e:
             pass
         else:
-            ideal = Ideal(testing=use_test_mode())
+            sofort = get_instance()
             try:
-                ideal.process_aborted(payment, transaction_key)
+                sofort.process_aborted(payment, transaction_key)
             except Exception as e:
                 pass
             else:

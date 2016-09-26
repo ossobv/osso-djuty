@@ -3,8 +3,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from osso.payment.conditional import patterns, url
 
-from .ideal_views import (
-    TransactionAbort, TransactionReport, TransactionReturn)
+from .views import TransactionAbort, TransactionReport, TransactionReturn
 
 
 # We expect this to be included as ^api/targetpay/

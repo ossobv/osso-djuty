@@ -4,11 +4,10 @@ import traceback
 from django.http import HttpResponse, Http404
 from django.views.generic import RedirectView, View
 
-from osso.payment import use_test_mode
 from osso.payment.conditional import mail_admins
 from osso.payment.models import Payment
 
-from .msp import MultiSafepay
+from . import get_instance
 
 
 class TransactionReturn(RedirectView):
@@ -62,7 +61,7 @@ class TransactionAbort(RedirectView):
         assert payment_id == self.request.GET.get('transactionid')
 
         # Don't trust the user. Call and look up the result.
-        msp = MultiSafepay(testing=use_test_mode())
+        msp = get_instance()
         msp.request_status(payment)
 
         if payment.is_success is False:
@@ -113,7 +112,7 @@ class TransactionReport(View):
         except Payment.DoesNotExist as e:
             pass
         else:
-            msp = MultiSafepay(testing=use_test_mode())
+            msp = get_instance()
             try:
                 msp.request_status(payment)
             except Exception as e:

@@ -2,11 +2,10 @@
 from django.http import HttpResponse
 from django.views.generic import RedirectView, View
 
-from osso.payment import use_test_mode
 from osso.payment.conditional import mail_admins
 from osso.payment.models import Payment
 
-from .ideal import Ideal
+from . import get_instance
 
 
 class TransactionReturn(RedirectView):
@@ -62,9 +61,9 @@ class TransactionReport(View):
             pass
         else:
             transaction_id = self.request.GET.get('transaction_id')
-            ideal = Ideal(testing=use_test_mode())
+            mollie = get_instance()
             try:
-                ideal.process_report(payment, transaction_id)
+                mollie.process_report(payment, transaction_id)
             except Exception as e:
                 # XXX/FIXME: here we should:
                 # (a) do the lookup

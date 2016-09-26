@@ -1,6 +1,7 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
 """
-API: not found on the net anymore...
+API: http://www.mollie.nl/support/documentatie/betaaldiensten/ideal
+(not available in 2016)
 """
 import unicodedata
 
@@ -28,5 +29,5 @@ def clean_description(description):
 
 
 def get_instance():
-    from .ideal import Ideal
-    return Ideal(testing=use_test_mode())
+    from .mollie import Mollie
+    return Mollie(testing=use_test_mode())

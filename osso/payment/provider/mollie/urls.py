@@ -1,8 +1,7 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
 from osso.payment.conditional import patterns, url
 
-from .ideal_views import (
-    TransactionReturn, TransactionReport)
+from .views import TransactionReturn, TransactionReport
 
 
 # We expect this to be included as ^api/mollie/

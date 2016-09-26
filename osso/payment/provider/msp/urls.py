@@ -1,8 +1,7 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
 from osso.payment.conditional import patterns, url
 
-from .msp_views import (
-    TransactionAbort, TransactionReport, TransactionReturn)
+from .views import TransactionAbort, TransactionReport, TransactionReturn
 
 
 # We expect this to be included as ^api/msp/

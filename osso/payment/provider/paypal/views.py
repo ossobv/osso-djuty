@@ -2,11 +2,11 @@
 from django.http import Http404
 from django.views.generic import RedirectView
 
-from osso.payment import ProviderError, TryDifferentPayment, use_test_mode
+from osso.payment import ProviderError, TryDifferentPayment
 from osso.payment.conditional import mail_admins
 from osso.payment.models import Payment
 
-from .paypal import Paypal
+from . import get_instance
 
 
 class TransactionPassed(RedirectView):
@@ -25,7 +25,7 @@ class TransactionPassed(RedirectView):
             raise Http404()  # belongs to different user
 
         get = self.request.GET
-        paypal = Paypal(testing=use_test_mode())
+        paypal = get_instance()
         try:
             paypal.process_passed(payment, get['token'], get['PayerID'])
         except ProviderError:
@@ -71,7 +71,7 @@ class TransactionAborted(RedirectView):
             raise Http404()  # belongs to different user
 
         get = self.request.GET
-        paypal = Paypal(testing=use_test_mode())
+        paypal = get_instance()
         try:
             paypal.process_aborted(payment, get['token'])
         except Exception as e:

@@ -8,12 +8,13 @@ from hashlib import md5
 from lxml import objectify
 
 from osso.payment import PaymentAlreadyUsed, ProviderError
+from osso.payment.base import Provider
 from osso.payment.conditional import log, mail_admins, reverse, settings
 from osso.payment.signals import payment_updated
 from osso.payment.xmlutils import string2dom, xmlescape
 
 
-class MultiSafepay(object):
+class MultiSafepay(Provider):
     XML_PAYMENT_REQUEST = '''<?xml version="1.0" encoding="UTF-8"?>
     <redirecttransaction ua="%(ua)s">
         <merchant>
@@ -302,7 +303,7 @@ class MultiSafepay(object):
             # refunded?
             raise NotImplementedError('Status %s not implemented!' % (status,))
 
-        payment.set_blob(result, overwrite=True)
+        payment.set_blob('msp: ' + result, overwrite=True)
 
     def start_transaction(self, payment, locale=None, remote_addr=None):
         """

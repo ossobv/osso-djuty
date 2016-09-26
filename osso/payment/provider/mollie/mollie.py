@@ -13,8 +13,8 @@ from lxml import objectify
 from osso.payment import (
     BuyerError, PaymentAlreadyUsed, PaymentSuspect,
     ProviderError, ProviderBadConfig, ProviderDown)
+from osso.payment.base import IdealProvider
 from osso.payment.conditional import aboutconfig, log, reverse, settings
-from osso.payment.ideal import BaseIdeal
 from osso.payment.signals import payment_updated
 from osso.payment.xmlutils import dom2dictlist, string2dom, xmlstrip
 
@@ -28,7 +28,7 @@ BANKS_MARCH_2012 = (
 E_BANK_DOWN = -0x4321  # mollie uses negative index errors.. adding custom err
 
 
-class Ideal(BaseIdeal):
+class Mollie(IdealProvider):
     def __init__(self, testing=False, partner_id=None, profile_key=None,
                  api_url=None):
         mollie_settings = (
@@ -46,7 +46,7 @@ class Ideal(BaseIdeal):
     def get_banks(self):
         params = {'a': 'banklist'}
 
-        # We don't want to fail the bank showing just because there is a
+        # We don't want to fail the bank list just because there is a
         # temporary failure.
         try:
             response = self._do_request(params, timeout_seconds=1)
@@ -209,7 +209,7 @@ class Ideal(BaseIdeal):
         # But we ignore that for now. Instead, we store the entire XML
         # result so we can redo things later.
         new_blob = xmlstrip(response)
-        payment.set_blob(new_blob)
+        payment.set_blob('mollie.ideal: ' + new_blob)
 
         # Get the actual payment status
         is_paid = bool(domobj.order.payed)  # sic!

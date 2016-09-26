@@ -2,14 +2,17 @@
 
 # Payment/sofort settings
 OSSO_PAYMENT = {
-    'test_mode': True,
-    # == THE STUFF BELOW THIS LINE IS DEPRECATED ==
-    'provider': 'osso.payment.provider.mollie',
-    # Using %s in these URLs is optional, they will be replaced with
-    # the payment id.
+    # The user will get redirected to one of these after a payment
+    # status. Using %s in these URLs is optional, they will be replaced
+    # with the payment id.
     'success_url': '/payment_ok/',
     'abort_url': '/payment_failed/',
     'toosoon_url': '/payment_unknown/',
+    # Test mode?
+    'test_mode': True,
+    # DEPRECATED. Because you may want to have multiple payment
+    # providers at once, this is not a viable setting.
+    'provider': 'osso.payment.provider.mollie',
 }
 
 # Mollie payment settings:
