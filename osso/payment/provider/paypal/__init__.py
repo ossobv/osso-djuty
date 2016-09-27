@@ -6,6 +6,8 @@ import unicodedata
 
 from osso.payment import use_test_mode
 
+from .paypal import Paypal
+
 
 # Character length and limitations: 127 single-byte alphanumeric characters.
 VALID_DESCRIPTION_TOKENS = (
@@ -27,5 +29,4 @@ def clean_description(description):
 
 
 def get_instance():
-    from .paypal import Paypal
     return Paypal(testing=use_test_mode())

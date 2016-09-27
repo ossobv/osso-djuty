@@ -6,6 +6,8 @@ import unicodedata
 
 from osso.payment import use_test_mode
 
+from .sofort import Sofort
+
 
 # Only the following characters are allowed in the parameters reason_1
 # and reason_2: '0-9', 'a-z', 'A-Z', ' ', '+', ',', '-', '.'. Umlauts
@@ -31,5 +33,4 @@ def clean_description(description):
 
 
 def get_instance():
-    from .ideal import Ideal
-    return Ideal(testing=use_test_mode())
+    return Sofort(testing=use_test_mode())

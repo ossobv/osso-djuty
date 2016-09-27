@@ -13,8 +13,12 @@ similar to this::
         model = Payment
 
         def get_provider_instance(self):
-            # Set provider_id on your subclass.
-            return get_provider_by_id(self.provider_id).get_instance()
+            # Set provider_id and provider_sub on your subclass.
+            provider = get_provider_by_id(self.provider_id)
+
+            if self.provider_sub:
+                return provider.get_instance(self.provider_sub)
+            return provider.get_instance()
 
         def get_context_data(self, **kwargs):
             context = super(PaymentBaseProceedView, self).get_context_data(

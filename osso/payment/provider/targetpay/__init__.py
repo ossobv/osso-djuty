@@ -6,10 +6,15 @@ import unicodedata
 
 from osso.payment import use_test_mode
 
+from .targetpay import TargetpayIdeal, TargetpayMrCash
+
 
 # A clear description of the service. Maximum 32 characters. Only
 # letters, numbers and the following characters: , . - _ * [] () and
 # space.
+#
+# For MrCash it says "[alleen] letters of cijfers, maximaal 32 tekens
+# [...]" but I don't believe it would be only [A-Za-z0-9].
 VALID_DESCRIPTION_TOKENS = (
     '0123456789'
     'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
@@ -28,6 +33,14 @@ def clean_description(description):
     return description
 
 
-def get_instance():
-    from .targetpay import TargetpayIdeal
-    return TargetpayIdeal(testing=use_test_mode())
+def get_instance(provider_sub=None):
+    if provider_sub == 'ideal':
+        instance = TargetpayIdeal(testing=use_test_mode())
+    elif provider_sub == 'mrcash':
+        instance = TargetpayMrCash(testing=use_test_mode())
+    else:
+        raise NotImplementedError(
+            'one of "ideal" or "mrcash" is required, not {!r}'.format(
+                provider_sub))
+
+    return instance

@@ -6,6 +6,8 @@ import unicodedata
 
 from osso.payment import use_test_mode
 
+from .msp import MultiSafepay
+
 
 # This is not defined. But 29 chars appears to be a safe bet.
 VALID_DESCRIPTION_TOKENS = (
@@ -27,5 +29,4 @@ def clean_description(description):
 
 
 def get_instance():
-    from .msp import MultiSafepay
     return MultiSafepay(testing=use_test_mode())

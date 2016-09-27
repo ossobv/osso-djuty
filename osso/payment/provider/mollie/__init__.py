@@ -7,6 +7,8 @@ import unicodedata
 
 from osso.payment import use_test_mode
 
+from .mollie import Mollie
+
 
 # 29 characters is the Mollie limit for the description.
 # And we're pretty sure it doesn't like certain characters.
@@ -29,5 +31,4 @@ def clean_description(description):
 
 
 def get_instance():
-    from .mollie import Mollie
     return Mollie(testing=use_test_mode())

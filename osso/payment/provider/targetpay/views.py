@@ -26,7 +26,8 @@ class TransactionReturn(RedirectView):
             raise Http404()  # belongs to different user
 
         # Thusfar, we've always gotten the trxid via the GET too.
-        assert self.request.GET.get('trxid') == payment.unique_key
+        trxid = payment.unique_key.split('-', 1)[1]
+        assert self.request.GET.get('trxid') == trxid, trxid
 
         if payment.is_success is None:
             next_url = payment.get_url('toosoon')
@@ -54,7 +55,8 @@ class TransactionAbort(RedirectView):
             raise Http404()  # belongs to different user
 
         # Thusfar, we've always gotten the trxid via the GET too.
-        assert self.request.GET.get('trxid') == payment.unique_key
+        trxid = payment.unique_key.split('-', 1)[1]
+        assert self.request.GET.get('trxid') == trxid, trxid
 
         # # Don't do these. They are handled through the /report/ URL.
         # payment.mark_aborted()
@@ -75,10 +77,10 @@ class TransactionReport(View):
         log(repr(request.POST), 'targetpay', 'report')
 
         content_type = 'text/plain; charset=UTF-8'
-        unique_key = request.POST.get('trxid')
         try:
             payment = Payment.objects.get(id=payment_id)
-            if payment.unique_key != unique_key:
+            trxid = payment.unique_key.split('-', 1)[1]
+            if request.POST.get('trxid') != trxid:
                 raise Payment.DoesNotExist('bad trxid?')
         except Payment.DoesNotExist as e:
             mail_admins('Check failed at Targetpay TransactionReport',
@@ -89,7 +91,8 @@ class TransactionReport(View):
             response.status_code = 500
             return response
 
-        targetpay = get_instance()
+        provider_sub = payment.unique_key.split('-', 1)[0]
+        targetpay = get_instance(provider_sub)
         try:
             targetpay.request_status(payment, request)
         except Exception as e:

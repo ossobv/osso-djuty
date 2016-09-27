@@ -16,6 +16,8 @@ def get_provider_by_id(name):
         provider.clean_description("blah blah blah")
 
         instance = provider.get_instance()
+        # or, for some providers:
+        instance = provider.get_instance(subprovider)
     """
     module = import_module('osso.payment.provider.%s' % (name,))
     return module
