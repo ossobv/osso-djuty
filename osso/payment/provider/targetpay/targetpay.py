@@ -140,7 +140,10 @@ class TargetpayBase(object):
                 json_blob=json.dumps(postdata)))
         elif status == 'TP0010':  # Transaction has not been completed
             assert payment.state == 'submitted', (payment.pk, payment.state)
-        elif status == 'TP0011':  # Transaction has been cancelled
+        elif status in ('TP0011', 'TP0013'):
+            # TP0011: ideal: Transaction has been cancelled
+            # TP0011: mrcash: Transaction has failed
+            # TP0013: mrcash: Transaction has been cancelled (by user)
             payment.mark_aborted()
             payment_updated.send(sender=payment, change='aborted')
         elif status == 'TP0012':  # Transaction has expired (10 minutes)
