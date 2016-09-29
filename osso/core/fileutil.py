@@ -10,6 +10,7 @@ import stat
 from datetime import datetime, timedelta
 from subprocess import Popen, PIPE
 from sys import modules
+from tempfile import mkstemp
 
 
 __all__ = ('import_module', 'ascii_filename', 'assert_writable',
@@ -26,7 +27,7 @@ def _resolve_name(name, package, level):
     if not hasattr(package, 'rindex'):
         raise ValueError('\'package\' not set to a string')
     dot = len(package)
-    for x in xrange(level, 1, -1):
+    for x in range(level, 1, -1):
         try:
             dot = package.rindex('.', 0, dot)
         except ValueError:
@@ -118,10 +119,11 @@ def assert_writable(paths, for_other_user=False):
                 elif st.st_uid == expected_id:
                     pass
                 else:
-                    errors.append('%s: Expected uid %d (%s), but st_uid = %d '
-                                  'with mode %o.' %
-                                  (path, expected_id, for_other_user,
-                                   st.st_uid, st.st_mode))
+                    errors.append(
+                        '%s: Expected uid %d (%s), but st_uid = %d '
+                        'with mode %o.' % (
+                            path, expected_id, for_other_user,
+                            st.st_uid, st.st_mode))
         else:
             # We should be able to write to it.
             try:
@@ -129,18 +131,16 @@ def assert_writable(paths, for_other_user=False):
             except OSError:
                 pass  # file exists
             try:
-                file = open(os.path.join(path, 'tEsTfIlE.tXt'), 'w')
-                try:
-                    file.write('test')
-                finally:
-                    file.close()
-                os.unlink(file.name)
-            except IOError as e:
-                errors.append('%s: %s' % (path, ': '.join(unicode(i)
-                                                          for i in e.args)))
+                fd, filename = mkstemp(dir=path)
+            except OSError as e:
+                errors.append('%s: %s' % (path, e))
+            else:
+                os.close(fd)
+                os.unlink(filename)
     if errors:
-        raise AssertionError('Not all file paths are writable by the app:\n'
-                             '  %s' % ('\n  '.join(errors)))
+        raise AssertionError(
+            'Not all file paths are writable by the app:\n  %s' % (
+                 '\n  '.join(errors),))
 
 
 def file_needs_updating(filename, write_every, do_not_write_after=None):
