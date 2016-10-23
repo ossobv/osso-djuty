@@ -8,7 +8,12 @@ from osso.payment import (
     ProviderError, ProviderBadConfig, ProviderDown)
 from osso.payment.base import Provider
 from osso.payment.conditional import log, reverse, settings
+from osso.payment.models import AtomicUpdateFailed, Payment
 from osso.payment.signals import payment_updated
+
+
+class AtomicUpdateDupe(AtomicUpdateFailed):
+    pass
 
 
 class TargetpayBase(object):
@@ -131,26 +136,50 @@ class TargetpayBase(object):
             assert status != '000000', ret
 
         if status == '000000':
-            payment.mark_passed()
-            payment.mark_succeeded()
-            payment_updated.send(sender=payment, change='passed')
-            postdata = request.POST
-            payment.set_blob('targetpay.{provider_sub}: {json_blob}'.format(
-                provider_sub=self.provider_sub,
-                json_blob=json.dumps(postdata)))
+            try:
+                payment.mark_passed()
+                payment.mark_succeeded()
+            except AtomicUpdateFailed:
+                if Payment.objects.get(pk=payment.pk).is_success is True:
+                    raise AtomicUpdateDupe(status, rest)
+                raise
+            else:
+                payment_updated.send(sender=payment, change='passed')
+                postdata = request.POST
+                payment.set_blob(
+                    'targetpay.{provider_sub}: {json_blob}'.format(
+                        provider_sub=self.provider_sub,
+                        json_blob=json.dumps(postdata)))
+
         elif status == 'TP0010':  # Transaction has not been completed
             assert payment.state == 'submitted', (payment.pk, payment.state)
+
         elif status in ('TP0011', 'TP0013'):
             # TP0011: ideal: Transaction has been cancelled
             # TP0011: mrcash: Transaction has failed
             # TP0013: mrcash: Transaction has been cancelled (by user)
-            payment.mark_aborted()
-            payment_updated.send(sender=payment, change='aborted')
+            try:
+                payment.mark_aborted()
+            except AtomicUpdateFailed:
+                if Payment.objects.get(pk=payment.pk).is_success is False:
+                    raise AtomicUpdateDupe(status, rest)
+                raise
+            else:
+                payment_updated.send(sender=payment, change='aborted')
+
         elif status == 'TP0012':  # Transaction has expired (10 minutes)
-            payment.mark_aborted()
-            payment_updated.send(sender=payment, change='aborted')
+            try:
+                payment.mark_aborted()
+            except AtomicUpdateFailed:
+                if Payment.objects.get(pk=payment.pk).is_success is False:
+                    raise AtomicUpdateDupe(status, rest)
+                raise
+            else:
+                payment_updated.send(sender=payment, change='aborted')
+
         elif status == 'TP0014':  # Already used
             assert payment.state == 'final'
+
         else:
             # FIXME: Better exception.
             raise ValueError('bad status %s (%r) for %s' % (

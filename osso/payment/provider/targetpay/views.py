@@ -7,6 +7,7 @@ from django.views.generic import RedirectView, View
 from osso.payment.conditional import log, mail_admins
 from osso.payment.models import Payment
 
+from .targetpay import AtomicUpdateDupe
 from . import get_instance
 
 
@@ -83,7 +84,7 @@ class TransactionReport(View):
             if request.POST.get('trxid') != trxid:
                 raise Payment.DoesNotExist('bad trxid?')
         except Payment.DoesNotExist as e:
-            mail_admins('Check failed at Targetpay TransactionReport',
+            mail_admins('Check failed at TGP TransactionReport',
                         (u'Exception: %s (%r)\n\nGet: %r\n\nPost: %r\n\n'
                          u'Meta: %r' %
                          (e, e, request.GET, request.POST, request.META)))
@@ -96,22 +97,25 @@ class TransactionReport(View):
         try:
             targetpay.request_status(payment, request)
         except Exception as e:
+            dupe = isinstance(e, AtomicUpdateDupe)
+
+            reply = 'OK' if dupe else 'NAK'
             payinfo = {
                 'id': payment.id,
                 'created': payment.created,
                 'is_success': payment.is_success,
                 'blob': payment.blob,
             }
-            mail_admins((u'Replying with NAK to TGT report [%s, %s, %s] '
+            mail_admins((u'Replying with %s to TGP report [%s, %s, %s] '
                          u'(might indicate a problem)' % (
-                             payment.id, payment.is_success,
+                             reply, payment.id, payment.is_success,
                              payment.created)),
                         (u'Exception: %s (%s)\n\nGet: %r\n\nPost: %r\n\n'
                          u'Traceback: %s\n\nMeta: %r\n\nPayment: %r' % (
                              e, e, request.GET, request.POST,
-                            traceback.format_exc(), request.META,
-                            payinfo)))
-            response = HttpResponse('NAK', content_type=content_type)
+                             traceback.format_exc(), request.META,
+                             payinfo)))
+            response = HttpResponse(reply, content_type=content_type)
             response.status_code = 500
             return response
 

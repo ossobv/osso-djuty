@@ -12,6 +12,10 @@ from .conditional import settings
 # TODO: update the mark_* values in open instance?
 
 
+class AtomicUpdateFailed(ValueError):
+    pass
+
+
 class Payment(models.Model):
     """
     Holds state of payment transactions.
@@ -182,7 +186,7 @@ class Payment(models.Model):
         if not self.atomic_update(
                 {'unique_key': ''},
                 {'unique_key': unique_key}):
-            raise ValueError(
+            raise AtomicUpdateFailed(
                 'Failed to set unique_key because it was already set in DB')
 
     def mark_reset(self):
@@ -195,7 +199,7 @@ class Payment(models.Model):
                 {'transfer_initiated': None, 'transfer_allowed': None,
                  'transfer_finalized': None, 'transfer_revoked': None,
                  'is_success': None}):
-            raise ValueError(
+            raise AtomicUpdateFailed(
                 'Attempt to reset Payment %s, failed' % (self.id,))
 
     def mark_submitted(self):
@@ -203,7 +207,7 @@ class Payment(models.Model):
         if not self.atomic_update(
                 {'transfer_initiated': None, 'is_success': None},
                 {'transfer_initiated': datetime.now()}):
-            raise ValueError(
+            raise AtomicUpdateFailed(
                 'Attempt to mark Payment %s as initiated, failed' % (self.id,))
 
     def mark_passed(self):
@@ -219,7 +223,7 @@ class Payment(models.Model):
         if not self.atomic_update(
                 {'transfer_allowed': None, 'is_success': None},
                 {'transfer_allowed': datetime.now()}):
-            raise ValueError(
+            raise AtomicUpdateFailed(
                 'Attempt to mark Payment %s as allowed, failed' % (self.id,))
 
     def mark_succeeded(self):
@@ -227,7 +231,7 @@ class Payment(models.Model):
         if not self.atomic_update(
                 {'transfer_finalized': None, 'is_success': None},
                 {'transfer_finalized': datetime.now(), 'is_success': True}):
-            raise ValueError(
+            raise AtomicUpdateFailed(
                 'Attempt to mark Payment %s as succeeded, failed' % (self.id,))
 
     def mark_aborted(self):
@@ -236,7 +240,7 @@ class Payment(models.Model):
                 {'transfer_allowed': None, 'transfer_finalized': None,
                  'is_success': None},
                 {'transfer_finalized': datetime.now(), 'is_success': False}):
-            raise ValueError(
+            raise AtomicUpdateFailed(
                 'Attempt to mark Payment %s as finalized+failed, failed' %
                 (self.id,))
 
@@ -247,7 +251,7 @@ class Payment(models.Model):
         elif not self.atomic_update(
                 {'blob': ''},
                 {'blob': blob}):
-            raise ValueError(
+            raise AtomicUpdateFailed(
                 'Attempt to set Payment %s empty blob to something, failed' %
                 (self.id,))
 
