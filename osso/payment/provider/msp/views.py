@@ -116,12 +116,21 @@ class TransactionReport(View):
             try:
                 msp.request_status(payment)
             except Exception as e:
-                mail_admins(('Replying with NAK to bad message from '
-                             'MultiSafepay (might indicate a problem)'),
+                payinfo = {
+                    'id': payment.id,
+                    'created': payment.created,
+                    'is_success': payment.is_success,
+                    'blob': payment.blob,
+                }
+                mail_admins((u'Replying with NAK to MSP report [%s, %s, %s] '
+                             u'(might indicate a problem)' % (
+                                 payment.id, payment.is_success,
+                                 payment.created)),
                             (u'Exception: %s (%s)\n\nGet: %r\n\nPost: %r\n\n'
-                             u'Traceback: %s\n\nMeta: %r' %
-                             (e, e, request.GET, request.POST,
-                              traceback.format_exc(), request.META)))
+                             u'Traceback: %s\n\nMeta: %r\n\nPayment: %r' % (
+                                 e, e, request.GET, request.POST,
+                                 traceback.format_exc(), request.META,
+                                 payinfo)))
                 response = HttpResponse('NAK', content_type=content_type)
                 response.status_code = 500
                 return response
