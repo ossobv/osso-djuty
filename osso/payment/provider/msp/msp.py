@@ -13,6 +13,10 @@ from osso.payment.signals import payment_updated
 from osso.payment.xmlutils import string2dom, xmlescape
 
 
+class ProviderIsInactive(ProviderError):
+    pass
+
+
 class MultiSafepay(Provider):
     XML_PAYMENT_REQUEST = '''<?xml version="1.0" encoding="UTF-8"?>
     <redirecttransaction ua="%(ua)s">
@@ -191,6 +195,8 @@ class MultiSafepay(Provider):
         domobj = objectify.fromstring(result)
 
         if domobj.attrib['result'] != 'ok':
+            if str(domobj.error.code) == '1019':
+                raise ProviderIsInactive(result)
             raise ProviderError('MSP status result is not ok', result)
 
         status = domobj.ewallet.status
