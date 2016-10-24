@@ -97,9 +97,12 @@ class TransactionReport(View):
         try:
             targetpay.request_status(payment, request)
         except Exception as e:
-            dupe = isinstance(e, AtomicUpdateDupe)
+            if isinstance(e, AtomicUpdateDupe):
+                # "duplicate status"
+                status, reply = 200, 'OK'
+            else:
+                status, reply = 500, 'NAK'
 
-            reply = 'OK' if dupe else 'NAK'
             payinfo = {
                 'id': payment.id,
                 'created': payment.created,
@@ -116,7 +119,7 @@ class TransactionReport(View):
                              traceback.format_exc(), request.META,
                              payinfo)))
             response = HttpResponse(reply, content_type=content_type)
-            response.status_code = 500
+            response.status_code = status
             return response
 
         return HttpResponse('OK', content_type=content_type)

@@ -117,8 +117,14 @@ class TransactionReport(View):
             try:
                 msp.request_status(payment)
             except Exception as e:
-                is_inactive = isinstance(e, ProviderIsInactive)
-                reply = 'OK' if is_inactive else 'NAK'
+                if isinstance(e, ProviderIsInactive):
+                    # "provider account is inactive"; cope with MSP
+                    # sending reports even though they don't accept us
+                    # requesting the necessary info.
+                    status, reply = 200, 'OK'
+                else:
+                    status, reply = 500, 'NAK'
+
                 payinfo = {
                     'id': payment.id,
                     'created': payment.created,
@@ -135,7 +141,7 @@ class TransactionReport(View):
                                  traceback.format_exc(), request.META,
                                  payinfo)))
                 response = HttpResponse(reply, content_type=content_type)
-                response.status_code = 500
+                response.status_code = status
                 return response
             else:
                 return HttpResponse('OK', content_type=content_type)
