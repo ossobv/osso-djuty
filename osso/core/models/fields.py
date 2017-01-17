@@ -7,6 +7,23 @@ from osso.core.forms import fields
 from osso.core.types import cidr4
 
 
+class Creator(object):
+    """
+    A placeholder class that provides a way to set the attribute on the model.
+    https://docs.djangoproject.com/en/1.10/releases/1.8/#subfieldbase
+    """
+    def __init__(self, field):
+        self.field = field
+
+    def __get__(self, obj, type=None):
+        if obj is None:
+            return self
+        return obj.__dict__[self.field.name]
+
+    def __set__(self, obj, value):
+        obj.__dict__[self.field.name] = self.field.to_python(value)
+
+
 class SafeCharField(models.CharField):
     '''
     A CharField that silently discards all non-printable characters
@@ -24,8 +41,6 @@ class Cidr4Field(models.Field):
     '''
     An IPv4 address with netmask field.
     '''
-    __metaclass__ = models.SubfieldBase
-
     def __init__(self, **kwargs):
         assert 'max_length' not in kwargs
         kwargs['max_length'] = 18
@@ -66,6 +81,13 @@ class Cidr4Field(models.Field):
         }
         defaults.update(kwargs)
         return super(Cidr4Field, self).formfield(**defaults)
+
+    def from_db_value(self, value, expression, connection, context):
+        return self.to_python(value)
+
+    def contribute_to_class(self, cls, name, **kwargs):
+        super(Cidr4Field, self).contribute_to_class(cls, name, **kwargs)
+        setattr(cls, self.name, Creator(self))
 
 
 class DecimalField(models.DecimalField):
@@ -311,7 +333,6 @@ class PhoneNumberField(models.Field):
     The number is stored as a decimal, but in python it is a string with
     a + as prefix.
     '''
-    __metaclass__ = models.SubfieldBase
     empty_strings_allowed = False
 
     def __init__(self, verbose_name=None, name=None, blank=False, **kwargs):
@@ -345,3 +366,10 @@ class PhoneNumberField(models.Field):
         }
         defaults.update(kwargs)
         return super(PhoneNumberField, self).formfield(**defaults)
+
+    def from_db_value(self, value, expression, connection, context):
+        return self.to_python(value)
+
+    def contribute_to_class(self, cls, name, **kwargs):
+        super(PhoneNumberField, self).contribute_to_class(cls, name, **kwargs)
+        setattr(cls, self.name, Creator(self))
