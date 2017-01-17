@@ -1,0 +1,8 @@
+# test tools
+coverage
+mock
+
+# project dependencies
+django-registration<1.0
+lxml
+six
