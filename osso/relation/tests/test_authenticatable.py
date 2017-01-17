@@ -2,8 +2,7 @@
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser, User
 from django.contrib.sessions.middleware import SessionMiddleware
-from django.http import HttpRequest
-from django.test import TestCase
+from django.test import RequestFactory, TestCase
 
 from osso.core.decorators import login_with_profile_required
 from osso.relation.decorators import login_with_company_profile_required
@@ -23,7 +22,7 @@ class AuthenticatableTestCase(TestCase):
                 password='user2')
 
     def get_request(self, user):
-        req = HttpRequest()
+        req = RequestFactory().get('/')
         # relation middleware depends on session middleware
         m = SessionMiddleware()
         m.process_request(req)
