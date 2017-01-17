@@ -1,4 +1,6 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
+from json import JSONEncoder, dumps
+
 from django.conf import settings
 from django.db.models.query import QuerySet
 from django.http import HttpResponse
@@ -7,8 +9,6 @@ try:
 except ImportError:
     from django.utils.encoding import force_unicode as force_text
 from django.utils.functional import Promise
-from django.utils.simplejson import JSONEncoder, dumps
-from django.utils.translation import ugettext_lazy as _
 
 
 class _JsonEncoder(JSONEncoder):
