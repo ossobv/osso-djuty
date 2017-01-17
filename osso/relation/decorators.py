@@ -1,8 +1,9 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
+from functools import update_wrapper
+
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect
-from django.utils.functional import update_wrapper
 from django.utils.http import urlquote
 
 
