@@ -4,7 +4,7 @@ from osso.core.models import SafeCharField
 
 class DeliveryReportForward(models.Model):
     batch_prefix = SafeCharField(max_length=64, unique=True, help_text=_('The batch prefix to match delivery reports.'))
-    destination = models.URLField(verify_exists=False, help_text=_('The URL to forward the delivery report to.'))
+    destination = models.URLField(help_text=_('The URL to forward the delivery report to.'))
 
     def __unicode__(self):
         return '%s => %s' % (self.batch_prefix, self.destination)
