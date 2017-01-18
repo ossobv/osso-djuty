@@ -182,13 +182,6 @@ class FormatterBaseField(object):
         defaults.update(kwargs)
         return super(FormatterBaseField, self).formfield(**defaults)
 
-    def deconstruct(self):
-        name, path, args, kwargs = super(FormatterBaseField, self).deconstruct()
-        kwargs['format_fields'] = self.format_fields
-        kwargs['accept_newlines'] = self.accept_newlines
-        kwargs['clean_value'] = self.clean_value
-        return name, path, args, kwargs
-
 
 class FormatterCharField(FormatterBaseField, models.CharField):
     pass
@@ -198,11 +191,6 @@ class FormatterTextField(FormatterBaseField, models.TextField):
     def __init__(self, *args, **kwargs):
         kwargs['accept_newlines'] = True
         super(FormatterTextField, self).__init__(*args, **kwargs)
-
-    def deconstruct(self):
-        name, path, args, kwargs = super(FormatterTextField, self).deconstruct()
-        del kwargs['accept_newlines']
-        return name, path, args, kwargs
 
 
 class NonReversibleForeignKey(models.ForeignKey):
