@@ -2,6 +2,10 @@
 from django.contrib.auth.models import User
 from django.db import connection, models
 from django.utils.translation import ugettext_lazy as _
+try:
+    from django.db.models import GenericIPAddressField as IPAddressField
+except ImportError:
+    from django.db.models import IPAddressField
 
 
 class UserActivityLogManager(models.Manager):
@@ -47,7 +51,7 @@ class UserActivityLog(models.Model):
     '''
     user = models.ForeignKey(User,
             help_text=_('The user we\'re tracking logins and logouts of.'))
-    ip_address = models.IPAddressField(blank=False,
+    ip_address = IPAddressField(blank=False,
             help_text=_('The IP address of the user when logging in.'))
     first_activity = models.DateTimeField(blank=False,
             help_text=_('The time the user logged on.'))
