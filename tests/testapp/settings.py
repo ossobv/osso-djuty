@@ -5,7 +5,6 @@ import os
 from django import VERSION
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 DEBUG = True
@@ -19,7 +18,7 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'ENGINE': 'django.db.backends.sqlite3',  # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': ':memory:',                      # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3:
         'USER': '',
@@ -130,6 +129,9 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
     'osso.core',
+    'osso.cms.meeting',
+    'osso.cms.members',
+    'osso.cms.registration',
     'osso.relation',
     'osso.aboutconfig',
     'osso.autolog',
@@ -140,6 +142,7 @@ INSTALLED_APPS = (
     'osso.search',
     'osso.sequence',
     'osso.sms',
+    'osso.sms.backends.sms_wireless',
     'osso.useractivity',
     'osso.userchat',
     'osso.videmus',
