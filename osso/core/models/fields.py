@@ -346,11 +346,11 @@ class PhoneNumberField(models.Field):
     '''
     empty_strings_allowed = False
 
-    def __init__(self, verbose_name=None, name=None, blank=False, **kwargs):
+    def __init__(self, *args, **kwargs):
         self.max_digits = 32
         self.decimal_places = 0
-        super(PhoneNumberField, self).__init__(verbose_name, name, blank=blank,
-                                               null=blank, **kwargs)
+        kwargs['blank'] = kwargs['null'] = kwargs.get('blank', False)
+        super(PhoneNumberField, self).__init__(*args, **kwargs)
 
     def get_internal_type(self):
         return 'DecimalField'
