@@ -1,9 +1,10 @@
 # vim: set ts=8 sw=4 sts=4 et ai tw=79:
+from importlib import import_module
+
 from django.conf import settings
 from django.contrib.auth import SESSION_KEY
 from django.contrib.auth.models import User
 from django.contrib.sessions.models import Session
-from django.utils.importlib import import_module
 
 
 def ueber_logout(arg):

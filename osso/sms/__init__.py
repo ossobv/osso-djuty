@@ -1,10 +1,8 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
+from importlib import import_module
+
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
-try:
-    from django.utils.importlib import import_module
-except ImportError:
-    from osso.core.fileutil import import_module
 
 
 __all__ = ('BackendError', 'DestinationError', 'TransientError',

@@ -1,5 +1,5 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
-from django.utils.importlib import import_module
+from importlib import import_module
 
 from osso.payment import use_test_mode
 from osso.payment.conditional import settings
