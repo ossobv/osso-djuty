@@ -157,15 +157,11 @@ class FormatterBaseField(object):
     CLEAN_VALUE_WITH_ATTRIBUTES = \
         fields.FormatterCharField.CLEAN_VALUE_WITH_ATTRIBUTES
 
-    def __init__(self, format_fields, clean_value=None,
-                 accept_newlines=False):
-        self.format_fields = tuple(format_fields)
-        self.accept_newlines = accept_newlines
-
-        if clean_value is None:
-            self.clean_value = self.CLEAN_VALUE_DEFAULT
-        else:
-            self.clean_value = clean_value
+    def __init__(self, *args, **kwargs):
+        self.format_fields = kwargs.pop('format_fields', None) or ()
+        self.accept_newlines = kwargs.pop('accept_newlines', None) or False
+        self.clean_value = kwargs.pop('clean_value', None) or self.CLEAN_VALUE_DEFAULT
+        super(FormatterBaseField, self).__init__(*args, **kwargs)
 
     def formfield(self, **kwargs):
         defaults = {
@@ -177,21 +173,27 @@ class FormatterBaseField(object):
         defaults.update(kwargs)
         return super(FormatterBaseField, self).formfield(**defaults)
 
+    def deconstruct(self):
+        name, path, args, kwargs = super(FormatterBaseField, self).deconstruct()
+        kwargs['format_fields'] = self.format_fields
+        kwargs['accept_newlines'] = self.accept_newlines
+        kwargs['clean_value'] = self.clean_value
+        return name, path, args, kwargs
+
 
 class FormatterCharField(FormatterBaseField, models.CharField):
-    def __init__(self, *args, **kwargs):
-        FormatterBaseField.__init__(
-            self, format_fields=kwargs.pop('format_fields'),
-            clean_value=kwargs.pop('clean_value', None))
-        models.CharField.__init__(self, *args, **kwargs)
+    pass
 
 
 class FormatterTextField(FormatterBaseField, models.TextField):
     def __init__(self, *args, **kwargs):
-        FormatterBaseField.__init__(
-            self, format_fields=kwargs.pop('format_fields'),
-            clean_value=kwargs.pop('clean_value', None), accept_newlines=True)
-        models.TextField.__init__(self, *args, **kwargs)
+        kwargs['accept_newlines'] = True
+        super(FormatterTextField, self).__init__(*args, **kwargs)
+
+    def deconstruct(self):
+        name, path, args, kwargs = super(FormatterTextField, self).deconstruct()
+        del kwargs['accept_newlines']
+        return name, path, args, kwargs
 
 
 class NonReversibleForeignKey(models.ForeignKey):
