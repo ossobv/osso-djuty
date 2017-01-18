@@ -40,7 +40,7 @@ class Relation(Model):
     ...     owner=None, name=u'OSSO B.V.', code=u'', foreign_code=u'')
     >>> gntel, gntel_is_new = Relation.objects.get_or_create(
     ...     owner=osso, name=u'gnTel B.V.', code=u'006', foreign_code=u'040055')
-    >>> nl = Country.objects.get(code='nl')
+    >>> nl, is_new = Country.objects.get_or_create(code='nl', defaults={'name': 'NL'})
     >>> groningen, groningen_is_new = City.objects.get_or_create(
     ...     country=nl, name=u'Groningen')
     >>> mediacentrale, is_new = Address.objects.get_or_create(
@@ -50,8 +50,8 @@ class Relation(Model):
     ...   street=u'Helperpark',
     ...   city=groningen
     ... )
+    >>> at, is_new = AddressType.objects.get_or_create(identifier='POSTAL')
     >>> mediacentrale.address_type.add(*AddressType.objects.exclude(identifier='OTHER'))
-
     >>> gntel.postal_address.street
     u'Helperpark'
     >>> gntel.postal_address.number
