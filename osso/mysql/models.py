@@ -86,8 +86,6 @@ class BlobField(models.Field):
             return 'LONGBLOB'
 
     else:
-        __metaclass__ = models.SubfieldBase
-
         def to_python(self, value):
             """
             Differentiates between unicode and binary strings. If it's
