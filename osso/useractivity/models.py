@@ -95,6 +95,7 @@ class UserActivityLog(models.Model):
                     kwargs)
 
     class Meta:
+        app_label = 'useractivity'
         permissions = (
             ('view_useractivitylog', 'Can view useractivitylog'),
         )
