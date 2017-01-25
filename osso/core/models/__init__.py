@@ -37,23 +37,3 @@ class ClonableMixin(object):
             destination = getattr(copy, field.attname)
             destination.add(*source.all())
         return copy
-
-
-# If osso.search is loaded, add delete and save methods that add
-# indexing capabilities.
-if 'osso.search' in settings.INSTALLED_APPS:
-    from osso.search.utils import index_object, unindex_object
-
-    class SearchableMixin(object):
-        def save(self, force_insert=False, force_update=False, **kwargs):
-            super(SearchableMixin, self).save(force_insert=force_insert,
-                                              force_update=force_update,
-                                              **kwargs)
-            # save the object first so the object id is set
-            # then let the search app index it
-            index_object(self)
-
-        def delete(self):
-            # remove all references to the object from the search app
-            unindex_object(self)
-            super(SearchableMixin, self).delete()

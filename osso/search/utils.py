@@ -18,6 +18,21 @@ class SearchField(object):
         self.weight = weight
 
 
+class SearchableMixin(object):
+    def save(self, force_insert=False, force_update=False, **kwargs):
+        super(SearchableMixin, self).save(force_insert=force_insert,
+                                          force_update=force_update,
+                                          **kwargs)
+        # save the object first so the object id is set
+        # then let the search app index it
+        index_object(self)
+
+    def delete(self):
+        # remove all references to the object from the search app
+        unindex_object(self)
+        super(SearchableMixin, self).delete()
+
+
 def get_keywords(text):
     text = force_text(text)
     return [s.lower() for s in KEYWORD_REGEXP.findall(text)]
