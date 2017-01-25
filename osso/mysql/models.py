@@ -6,11 +6,7 @@ from django.conf import settings
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-try:
-    from django.utils.six import with_metaclass
-except ImportError:
-    def with_metaclass(meta, superclass):
-        return superclass
+from osso.core.models.fields import Creator
 
 
 def _db_engines():
@@ -71,7 +67,7 @@ class AsciiField(models.CharField):
             return self.get_prep_value(value)
 
 
-class BlobField(with_metaclass(models.SubfieldBase, models.Field)):
+class BlobField(models.Field):
     """
     MySQL blob/binary field. Please run the accompanying tests.
     """
@@ -128,3 +124,10 @@ class BlobField(with_metaclass(models.SubfieldBase, models.Field)):
         if lookup_type not in ('isnull',):
             raise TypeError('Lookup type %s is not supported.' % lookup_type)
         return super(BlobField, self).get_db_prep_lookup(lookup_type, value)
+
+    def from_db_value(self, value, expression, connection, context):
+        return self.to_python(value)
+
+    def contribute_to_class(self, cls, name, **kwargs):
+        super(BlobField, self).contribute_to_class(cls, name, **kwargs)
+        setattr(cls, self.name, Creator(self))
