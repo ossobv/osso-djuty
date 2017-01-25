@@ -3,7 +3,10 @@ import optparse
 
 from django import VERSION as django_version
 from django.contrib import admin
-from django.contrib.admin.util import get_deleted_objects
+try:
+    from django.contrib.admin.utils import get_deleted_objects
+except ImportError:
+    from django.contrib.admin.util import get_deleted_objects
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models

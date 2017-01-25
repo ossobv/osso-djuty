@@ -1,5 +1,8 @@
 # vim: set ts=8 sw=4 sts=4 et ai tw=79:
-from django.contrib.admin.util import NestedObjects
+try:
+    from django.contrib.admin.utils import NestedObjects
+except ImportError:
+    from django.contrib.admin.util import NestedObjects
 
 
 __all__ = ('flatten', 'get_flat_dependencies')
