@@ -54,7 +54,7 @@ class Relation(Model):
     >>> mediacentrale.address_type.add(*AddressType.objects.exclude(identifier='OTHER'))
     >>> gntel.postal_address.street
     u'Helperpark'
-    >>> gntel.postal_address.number
+    >>> int(gntel.postal_address.number)
     294
 
     Assert that nameless relations get their pk as name.
