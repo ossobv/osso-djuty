@@ -18,7 +18,6 @@ NEWVER=1  # from 1.6+ we take tests by the full dotted module
 test $MAJVER -eq 1 && test $MINVER -lt 6 && NEWVER=0
 
 # Apps to test. Exclude:
-# - cms because it is a namespace
 # - doc because it is no app
 # - locale because it is no app
 # - xhr because it has no models (nor tests)
@@ -35,7 +34,7 @@ if test -z "$APPS"; then
     APPS="`find osso -maxdepth 1 -type d -name '[A-Za-z0-9]*' |
            sed -e '
                /^osso$/d
-               /^osso\/\(cms\|doc\|locale\|xhr\)$/d
+               /^osso\/\(doc\|locale\|xhr\)$/d
                s/^osso\///
            ' | sort`"
 fi

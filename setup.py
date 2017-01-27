@@ -43,12 +43,8 @@ for root, dirs, files in os.walk(os.path.dirname(__file__) or '.'):
             data.append(os.path.join(new_root, file)[5:])
 
 # Remove some?
-packages = [i for i in packages if not i.startswith('osso.cms')]
-data = [i for i in data if not i.startswith('cms/')]  # relative to osso/
 packages = [i for i in packages if not i.startswith('osso.search')]
 data = [i for i in data if not i.startswith('search/')]  # relative to osso/
-# packages = [i for i in packages if not i.startswith('osso.sms')]
-# data = [i for i in data if not i.startswith('sms/')]
 
 
 # Add versioning; it's PEP386 compatible with:

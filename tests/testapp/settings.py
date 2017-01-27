@@ -129,9 +129,6 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
     'osso.core',
-    'osso.cms.meeting',
-    'osso.cms.members',
-    'osso.cms.registration',
     'osso.relation',
     'osso.aboutconfig',
     'osso.autolog',
