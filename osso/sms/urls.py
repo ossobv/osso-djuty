@@ -28,8 +28,3 @@ elif settings.SMS_BACKEND == 'osso.sms.backends.sms_wireless.WirelessSmsBackend'
         url(r'^in/$', 'incoming_text', name='sms_incoming_text'),
         url(r'^dlr/$', 'delivery_report', name='sms_delivery_report'),
     )
-elif settings.SMS_BACKEND == 'osso.sms.backends.sms_zjipz.ZjipzSmsBackend':
-    urlpatterns = patterns('osso.sms.backends.sms_zjipz.views',
-        url(r'^in/$', 'incoming_text', name='sms_incoming_text'),
-        url(r'^dlr/$', 'delivery_report', name='sms_delivery_report'),
-    )
