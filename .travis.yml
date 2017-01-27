@@ -2,6 +2,12 @@ sudo: false
 language: python
 python:
   - 2.7
+env:
+  - DJANGO=1.4
+  - DJANGO=1.5
+  - DJANGO=1.6
+  - DJANGO=1.7
+  - DJANGO=1.8
 install:
   - pip install tox-travis
 script:
