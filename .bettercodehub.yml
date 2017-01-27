@@ -1,0 +1,17 @@
+# https://bettercodehub.com
+
+# Search for project directories in the osso subdir (level 2).
+component_depth: 2
+
+languages:
+  - name: python
+
+    production:
+      exclude:
+        - /setup.py
+        - /test.sh
+        - .*/tests/.*
+
+    test:
+      include:
+        - .*/tests/.*
