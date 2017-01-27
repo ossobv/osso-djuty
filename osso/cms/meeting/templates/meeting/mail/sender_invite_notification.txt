@@ -1,8 +1,0 @@
-{% load i18n %}{% blocktrans with date|date:"j F Y" as date and time|time:"H:i" as time %}Dear {{ sender_name }},
-
-{{ invited_name }} has {{ notification_string }} your invitation for your conference call on {{ date }} at {{ time }} CET.
-
-Kind regards,
-
-http://{{ site_domain }}/en/
-{% endblocktrans %}

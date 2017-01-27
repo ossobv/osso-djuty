@@ -11,7 +11,6 @@ Contents
 |--------------|-----------------------------------------------------------|
 | aboutconfig  | Get/set basic settings from DB/cache.                     |
 | autolog      | Crappy alternative to proper `logging`.                   |
-| cms          | No idea.                                                  |
 | core         | Lots of nice Django stuff.                                |
 | l10n         | Localization utilities.                                   |
 | mysql        | MySQL fields.                                             |

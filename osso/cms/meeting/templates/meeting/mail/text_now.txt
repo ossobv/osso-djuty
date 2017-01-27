@@ -1,1 +1,0 @@
-{% load i18n %}{% spaceless %}{{ name }} nodigt jou en meer vrienden uit om NU te bellen naar 0900 1963 (15 ct per min) voor een gesprek met 3ofMeer. De pin code is {{ pin_code }}.{% endspaceless %}
