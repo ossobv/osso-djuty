@@ -10,8 +10,9 @@ languages:
       exclude:
         - /setup.py
         - /test.sh
+        - .*/migrations/.*
         - .*/tests/.*
 
     test:
       include:
-        - .*/tests/.*
+        - .*/tests/.*py
