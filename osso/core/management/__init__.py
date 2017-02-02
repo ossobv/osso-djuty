@@ -2,8 +2,13 @@
 from django.conf import settings
 from django.contrib.auth.management import (
     create_permissions, _get_all_permissions)
-from django.db.models import get_models
-from django.db.models.signals import post_syncdb
+try:
+    from django.apps import apps
+
+    def get_models(app):
+        return apps.get_app_config(app).get_models()
+except ImportError:
+    from django.db.models import get_models
 try:
     from django.utils.encoding import smart_text
 except ImportError:
@@ -52,6 +57,7 @@ except AttributeError:
     pass
 else:
     if settings.CONTENTTYPE_NO_TRAVERSE_PROXY:
+        from django.db.models.signals import post_syncdb
         post_syncdb.disconnect(
             create_permissions,
             dispatch_uid='django.contrib.auth.management.create_permissions')
