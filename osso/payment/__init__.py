@@ -1,5 +1,5 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
-from .conditional import settings
+from django.conf import settings
 
 
 class BuyerError(ValueError):
@@ -59,4 +59,4 @@ def use_test_mode():
 
     If there is no settings, it returns True as a nice test-default.
     """
-    return not settings or settings.OSSO_PAYMENT.get('test_mode', False)
+    return settings.OSSO_PAYMENT.get('test_mode', False)
