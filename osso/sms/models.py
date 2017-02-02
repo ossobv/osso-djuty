@@ -1,34 +1,17 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
 import re
+
 from django.db import models
+from django.db.models.signals import post_syncdb
 from django.utils.translation import ugettext_lazy as _
+
 from osso.core import pickle
+from osso.core.db import enumify
+from osso.core.models import (
+    Model, DecimalField, PhoneNumberField, SafeCharField)
+from osso.relation.models import Country
 from osso.sms import DestinationError
 from osso.sms.manager import OperatorManager, TextMessageManager
-
-# If we have osso.core.models, get value added behaviour.
-try:
-    from osso.core.models import (
-        Model, DecimalField, PhoneNumberField, SafeCharField)
-except ImportError:
-    class Model(models.Model):
-        created = models.DateTimeField(auto_now_add=True)
-
-        class Meta:
-            abstract = True
-    DecimalField = lambda *args, **kwargs: models.DecimalField(
-        decimal_places=5, max_digits=15, *args, **kwargs)
-    PhoneNumberField = lambda *args, **kwargs: models.CharField(
-        max_length=31, *args, **kwargs)
-    SafeCharField = models.CharField
-
-# If we have osso.relation.models, get the Country to relate the
-# telecom operator country to. If we don't, we'll use 2 letter
-# charfields.
-try:
-    from osso.relation.models import Country
-except ImportError:
-    Country = None
 
 
 STATUS_CHOICES = (
@@ -402,14 +385,7 @@ class Payout(Model):
 
 
 # Alter choicefields to use an enum type
-try:
-    from osso.core.db import enumify
-except ImportError:
-    pass
-else:
-    from django.db.models.signals import post_syncdb
-
-    def _enumify_choices(sender=None, **kwargs):
-        if sender.__name__ == 'osso.sms.models':
-            enumify(TextMessage, 'status', (i[0] for i in STATUS_CHOICES))
-    post_syncdb.connect(_enumify_choices)
+def _enumify_choices(sender=None, **kwargs):
+    if sender.__name__ == 'osso.sms.models':
+        enumify(TextMessage, 'status', (i[0] for i in STATUS_CHOICES))
+post_syncdb.connect(_enumify_choices)
