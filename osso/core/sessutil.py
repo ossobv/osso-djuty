@@ -28,13 +28,22 @@ def ueber_logout(arg):
         raise TypeError("expected a User object or a container of user.id's, "
                         "got %r" % (arg,))
 
+    # Bail early if the the container is empty.
+    if not user_ids:
+        return 0
+
     engine = import_module(settings.SESSION_ENGINE)
     sesskey = SESSION_KEY  # probably "_auth_user_id"
     deleted = 0
+    user_id_type = type(tuple(user_ids)[0])  # to convert from unicode to int
 
+    # Unfortunately this is a linear search of exactly N. We may have
+    # multiple sessions for the same user, so we cannot even short
+    # circuit.
     for session in Session.objects.order_by():
         sess_dict = session.get_decoded()
-        if sess_dict.get(sesskey) in user_ids:
+        user_id = user_id_type(sess_dict.get(sesskey))
+        if user_id in user_ids:
             # Going through the session store should make sure this
             # works immediately for cached backends as well.
             store = engine.SessionStore(session.session_key)
