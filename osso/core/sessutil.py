@@ -42,12 +42,23 @@ def ueber_logout(arg):
     # circuit.
     for session in Session.objects.order_by():
         sess_dict = session.get_decoded()
-        user_id = user_id_type(sess_dict.get(sesskey))
-        if user_id in user_ids:
-            # Going through the session store should make sure this
-            # works immediately for cached backends as well.
-            store = engine.SessionStore(session.session_key)
-            store.delete()
-            deleted += 1
+        try:
+            user_id = user_id_type(sess_dict.get(sesskey))
+        except TypeError:
+            # Possibly there is no sesskey ("_auth_user_id") in the
+            # session, e.g. if session is: {u'testcookie': u'worked'}
+            # => int(None) => TypeError
+            # Or possibly this session has a user ID from a different
+            # backend (less likely) which we cannot convert to the
+            # same type.
+            # => int('SOME_STR_GUID') => TypeError
+            pass
+        else:
+            if user_id in user_ids:
+                # Going through the session store should make sure this
+                # works immediately for cached backends as well.
+                store = engine.SessionStore(session.session_key)
+                store.delete()
+                deleted += 1
 
     return deleted
