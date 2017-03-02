@@ -16,14 +16,17 @@
 # sys.stderr has been destroyed as well. To tackle this, we close
 # sys.old_stdout immediately: now you'll get an error upon using
 # plain stdout immediately.
-#
-# DO USE THIS:
+
+# USE THIS ONLY IF YOU CANNOT USE Command.stdout:
 #   import sys; sys.stdout.whatever()
+# ALWAYS USE:
+# class Command(BaseCommand):
+#     def handle(self, *args, **kwargs):
+#         self.stdout.write('utf8 unbuffered heaven')
 #
-from __future__ import with_statement
+from __future__ import absolute_import, with_statement
 import atexit
 import sys
-from encodings.utf_8 import StreamWriter
 from os import fdopen
 
 from django.core.management.base import BaseCommand as DjangoBaseCommand
@@ -33,7 +36,11 @@ try:
 except ImportError:  # Django<1.2
     from django.db import connection
     connections = {'default': connection}
-CommandError  # users will expect this in same module
+
+from .compat import OutputWrapper
+
+
+__all__ = ['BaseCommand', 'CommandError', 'docstring']
 
 
 class BaseCommand(DjangoBaseCommand):
@@ -45,29 +52,22 @@ class BaseCommand(DjangoBaseCommand):
     - have a cronbg() method which wraps your cron() method to run it
       in the background.
     """
-    def __init__(self, *args, **kwargs):
-        """
-        Call super BaseCommand and reopen sys.stdout.
-        """
-        super(BaseCommand, self).__init__(*args, **kwargs)
-
-        # Replace stdout with a recoder that uses UTF-8 (everything in Django
-        # assumes UTF-8 anyway).
-        if sys.stdout.name == '<stdout>':  # only mess with the original
-            class LaxStreamWriter(StreamWriter):
-                def encode(self, string, errors):
-                    if isinstance(string, str):
-                        return (string, 1)
-                    return StreamWriter.encode(string, errors)
-
+    def execute(self, *args, **kwargs):
+        # Force unbuffered stdout.
+        if 'stdout' not in kwargs and getattr(sys.stdout, 'name', None) == '<stdout>':
             # Reopen without line buffering.
             reopened = fdopen(sys.stdout.fileno(), 'w', 0)
             # Disable/break the old one (see comment at the top).
             sys.stdout.close()
-            # Reassign.
-            sys.stdout = LaxStreamWriter(reopened)
+            kwargs['stdout'] = sys.stdout = reopened
+
+        # Wrap self.stdout/err with a wrapper that uses utf-8.
+        kwargs['stdout'] = OutputWrapper(kwargs.get('stdout') or sys.stdout)
+        kwargs['stderr'] = OutputWrapper(kwargs.get('stderr') or sys.stderr)
 
         atexit.register(_cleanup_connections)
+
+        return super(BaseCommand, self).execute(*args, **kwargs)
 
     def get_version(self):
         """
