@@ -16,6 +16,7 @@ class Command(BaseCommand):
 
     TODO: accept @groupname for group members.
     """)
+    use_argparse = False
 
     def handle(self, *usernames, **kwargs):
         verbose = int(kwargs.get('verbosity', '1'))
