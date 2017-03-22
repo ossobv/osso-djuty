@@ -1,9 +1,11 @@
 # vim: set ts=8 sw=4 sts=4 et ai tw=79:
+import argparse
 import sys
 
+from django import VERSION as django_version
 from django.contrib.auth.models import User
 from django.db.models import Q
-from osso.core.management.base import BaseCommand, docstring
+from osso.core.management.base import BaseCommand, CommandError, docstring
 from osso.core.sessutil import ueber_logout
 
 
@@ -16,12 +18,23 @@ class Command(BaseCommand):
 
     TODO: accept @groupname for group members.
     """)
-    use_argparse = False
+    missing_args_message = 'invalid/missing arguments, see logout --help'
 
-    def handle(self, *usernames, **kwargs):
+    if django_version >= (1, 8):
+        def add_arguments(self, parser):
+            parser.formatter_class = argparse.RawTextHelpFormatter
+            parser.add_argument(
+                'usernames', nargs='+', help='Usernames or groups')
+
+    def handle(self, *args, **kwargs):
+        if 'usernames' not in kwargs:
+            # Convert from optparse to argparse.
+            if len(args) < 2:
+                raise CommandError(self.missing_args_message)
+            kwargs['usernames'] = args
+
         verbose = int(kwargs.get('verbosity', '1'))
-
-        usernames = set(usernames)
+        usernames = set(kwargs['usernames'])
 
         try:
             usernames.remove('@@staff')
