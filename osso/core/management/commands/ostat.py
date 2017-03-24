@@ -27,7 +27,8 @@ class Command(BaseCommand):
     # Optparse was used up to Django 1.8.
     if django_version < (1, 8):
         option_list = BaseCommand.option_list + (
-            optparse.make_option('--rdepend-count', action='store_true',
+            optparse.make_option(
+                '--rdepend-count', action='store_true',
                 default=False, help='Print count of dependent objects'),
         )
 
@@ -37,7 +38,8 @@ class Command(BaseCommand):
         parser.formatter_class = argparse.RawTextHelpFormatter
         parser.add_argument('model', help='The app_label.model_name')
         parser.add_argument('args', nargs='+', help='The object primary keys')
-        parser.add_argument('--rdepend-count', action='store_true',
+        parser.add_argument(
+            '--rdepend-count', action='store_true',
             default=False, help='Print count of dependent objects')
 
     def handle(self, *args, **kwargs):
@@ -118,13 +120,16 @@ class Command(BaseCommand):
 
                 if django_version >= (1, 3):
                     using = 'default'
-                    retval = get_deleted_objects((object,), object._meta,
-                                                 AnonymousUser(), AdminSite(),
-                                                 using)
+                    retval = get_deleted_objects(
+                        (object,), object._meta,
+                        AnonymousUser(), AdminSite(), using)
+
                     if django_version >= (1, 8):
-                        (dependent_objects, _, perms_needed, protected) = retval
+                        (dependent_objects, _, perms_needed,
+                         protected) = retval
                     else:
-                        (dependent_objects, perms_needed, protected) = retval
+                        (dependent_objects, perms_needed,
+                         protected) = retval
                 else:
                     (dependent_objects, perms_needed) = \
                         get_deleted_objects((object,), object._meta,
