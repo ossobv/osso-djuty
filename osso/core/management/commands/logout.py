@@ -29,7 +29,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         if 'usernames' not in kwargs:
             # Convert from optparse to argparse.
-            if len(args) < 2:
+            if not args:
                 raise CommandError(self.missing_args_message)
             kwargs['usernames'] = args
 
