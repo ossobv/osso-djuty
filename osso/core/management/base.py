@@ -29,6 +29,7 @@ import atexit
 import sys
 from os import fdopen
 
+from django import VERSION as django_version
 from django.core.management.base import BaseCommand as DjangoBaseCommand
 from django.core.management.base import CommandError
 try:
@@ -66,6 +67,10 @@ class BaseCommand(DjangoBaseCommand):
         kwargs['stderr'] = OutputWrapper(kwargs.get('stderr') or sys.stderr)
 
         atexit.register(_cleanup_connections)
+
+        if django_version < (1, 2):
+            self.stdout = kwargs['stdout']
+            self.stderr = kwargs['stderr']
 
         return super(BaseCommand, self).execute(*args, **kwargs)
 
