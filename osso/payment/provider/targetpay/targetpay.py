@@ -102,7 +102,11 @@ class TargetpayBase(object):
         else:
             assert status != '000000', ret
 
-        if status != '000000':
+        if status == '000000':
+            pass
+        elif status == '000001' and self.test_mode:
+            pass
+        else:
             self.handle_error(self.payment, ret)
             assert False
 
@@ -205,6 +209,40 @@ class TargetpayBase(object):
         log(ret, 'targetpay', 'ret.{}'.format(self.provider_sub))
 
         return ret
+
+
+class TargetpayCreditcard(TargetpayBase, Provider):
+    provider_sub = 'creditcard'
+
+    def get_start_parameters(self):
+        parameters = super(TargetpayCreditcard, self).get_start_parameters()
+        parameters['currency'] = 'EUR'
+        del parameters['cancelurl']
+
+        if self.test_mode:
+            # > Deze parameter gebruikt u in combinatie met onze test
+            # > rtlo code. Stel deze parameter in op false, als u met uw
+            # > eigen layoutcode werkt en op true als u met onze test
+            # > rtlo code werkt.
+            # OK status will not be "000000" but "000001".
+            # TODO: A test rtlo? Where is it? What is it?
+            parameters['test'] = '1'
+
+        return parameters
+
+    def get_check_parameters(self, payment):
+        parameters = super(TargetpayCreditcard, self).get_check_parameters(
+            payment)
+
+        if self.test_mode:
+            # > Vul hier 1 in en de transactie wordt ook als OK
+            # > aangemerkt als deze nog niet betaald is. Alle andere
+            # > checks worden wel net als normaal doorlopen.
+            # Is still needed if you didn't replace the rtlo in the
+            # get_start_parameters test mode.
+            parameters['test'] = '1'
+
+        return parameters
 
 
 class TargetpayIdeal(TargetpayBase, Provider):
