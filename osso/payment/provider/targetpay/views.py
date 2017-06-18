@@ -4,6 +4,7 @@ import traceback
 from django.http import HttpResponse, Http404
 from django.views.generic import RedirectView, View
 
+from osso.payment import PaymentSuspect
 from osso.payment.conditional import log, mail_admins
 from osso.payment.models import Payment
 
@@ -75,6 +76,8 @@ class TransactionReport(View):
     should probably be good.
     """
     def post(self, request, payment_id):
+        self.check_remote_addr(request)
+
         log(repr(request.POST), 'targetpay', 'report')
 
         content_type = 'text/plain; charset=UTF-8'
@@ -123,3 +126,15 @@ class TransactionReport(View):
             return response
 
         return HttpResponse('OK', content_type=content_type)
+
+    def check_remote_addr(self, request):
+        """
+        Check source IP of reporter. This isn't strictly necessary because we
+        never trust the POST data itself; we check the payment API anyway.
+        """
+        ip4 = request.META['REMOTE_ADDR']
+        if ip4.lower().startswith('::ffff:'):
+            ip4 = ip4[7:]
+
+        if not ip4.startswith('78.152.58.'):
+            raise PaymentSuspect('Bad reporter IP')
