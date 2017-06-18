@@ -1,0 +1,447 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>Documentatie: creditcards ATOS</title>
+<meta name="robots" content="index,follow">
+<meta name="keywords" content="">
+<meta name="description" content="">
+<meta name="distribution" content="global">
+<meta name="audience" content="all">
+<body leftmargin="8" topmargin="8" marginwidth="0" marginheight="0">
+<table width="969" border="0" align="center" cellpadding="0" cellspacing="0">
+  <tr>
+    <td valign="top" background="/gfx/tp-bg-sub-white.gif"><table width="969" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td width="50" valign="top"></td>
+        <td width="919" valign="top"><br /><br />
+        <!-- begin content -->
+        <table width="820" cellspacing="0" cellpadding="0">
+          <tr>
+            <td><h1>Documentatie: creditcards ATOS</h1><table width="100%" cellspacing="0" cellpadding="0">   <tr>       <td><table border="0" cellpadding="0" cellspacing="0" width="620">
+			<tbody>
+				<tr>
+					<td valign="top">
+						<div class="contentDocuHeader">
+							1. Algemeen</div>
+						In dit document staat beschreven hoe u een creditcard (Visa/Mastercard) betaling afhandelt via TargetPay door gebruik te maken van onze API (technische koppeling).
+						Om hiermee aan de slag te kunnen heeft u technische kennis nodig.
+						<br />
+						<strong>1.1 Opmerking vooraf</strong><br />
+						Om integratie voor u gemakkelijk te maken hebben we een testaccount voor u.
+						Neem contact op met onze sales afdeling voor het aanvragen van de test rtlo code.
+						Met dze rtlo code doet u geen echte transacties, echter de werking is gelijk met de live omgeving.
+						<br />
+						<strong>1.2 Werking van de API in een notedop</strong><br />
+						Afrekenen met creditcard werkt als volgt:
+						<ol>
+							<li>
+								U roept bij Targetpay een url aan met uw rtlo en andere kenmerken;</li>
+							<li>
+								Na betaling wordt de bezoeker teruggestuurd naar uw site (zie <a class="Reflink2" href="#kop4">kopje 3</a>);</li>
+							<li>
+								U controleert bij ons of de betaling succesvol is geweest (zie <a class="Reflink2" href="#kop5">kopje 4</a>);</li>
+							<li>
+								Bij een succesvolle betaling levert u de gekozen dienst aan uw bezoeker.</li>
+						</ol>
+						<br />
+						<a name="kop3"></a>
+						<div class="contentDocuHeader">
+							2. Opvragen link naar betaalpagina</div>
+						<p>
+							<strong>2.1 Aanroep</strong><br />
+							<br />
+							 U kunt een transactie starten door het voorbeeld script uit de API te gebruiken of zelf een aanroep te doen via HTTP GET of POST naar:
+	<br><br>
+	<span class="contentOutput">https://www.targetpay.com/creditcard_atos/start</span>
+	<br></p>
+						<p>
+							<br />
+							Het script bevat of ontvangt de volgende parameters:<br />
+							&nbsp;</p>
+						<table bgcolor="#dadada" cellpadding="5" cellspacing="1">
+							<tbody>
+								<tr class="bg-table-hdr">
+									<td bgcolor="#ebebeb">
+										<b>Variabele</b></td>
+									<td bgcolor="#ebebeb">
+										<b>Naam</b></td>
+									<td bgcolor="#ebebeb">
+										<b>Formaat</b></td>
+									<td bgcolor="#ebebeb">
+										<b>Voorbeeld</b></td>
+									<td bgcolor="#ebebeb">
+										<b>Verplicht</b></td>
+								</tr>
+								<tr bgcolor="#ffffff">
+									<td>
+										rtlo</td>
+									<td>
+										Layoutcode</td>
+									<td>
+										Numeriek</td>
+									<td>
+										12345</td>
+									<td>
+										Ja</td>
+								</tr>
+								<tr bgcolor="#ffffff">
+									<td>
+										description</td>
+									<td>
+										Omschrijving</td>
+									<td>
+										Alfanumeriek</td>
+									<td>
+										300 credits</td>
+									<td>
+										Ja</td>
+								</tr>
+								<tr bgcolor="#ffffff">
+									<td>
+										amount</td>
+									<td>
+										Bedrag in centen (150 = 1,50)</td>
+									<td>
+										Alfanumeriek</td>
+									<td>
+										150</td>
+									<td>
+										Ja</td>
+								</tr>
+								<tr bgcolor="#ffffff">
+									<td>
+										returnurl</td>
+									<td>
+										Return URL</td>
+									<td>
+										Alfanumeriek</td>
+									<td>
+										http://mijnsite.nl/bedankt.php</td>
+									<td>
+										Ja</td>
+								</tr>
+								<tr bgcolor="#ffffff">
+									<td>
+										reporturl</td>
+									<td>
+										Report URL</td>
+									<td>
+										Alfanumeriek</td>
+									<td>
+										http://mijnsite.nl/reporturl.php</td>
+									<td>
+										Nee</td>
+								</tr>
+								<tr bgcolor="#ffffff">
+									<td>
+										test</td>
+									<td>
+										Test parameter</td>
+									<td>
+										0 of 1</td>
+									<td>
+										1</td>
+									<td>
+										Nee</td>
+								</tr>
+
+
+							</tbody>
+						</table>
+						<br />
+						Toelichting per variabele:
+						<ul>
+							<li>
+								<u>rtlo</u><br />
+								De layoutcode waarop de betaling geboekt moet worden. Zie <a class="reflink2" href="/subaccounts" target="_blank">subaccounts</a>.<br />
+								&nbsp;</li>
+							<li>
+								<u>description</u><br />
+								Duidelijke omschrijving van de te leveren dienst. Alleen letters of cijfers, maximaal 32 tekens.<br />
+								&nbsp;</li>
+							<li>
+								<u>amount</u><br />
+								Het in rekening te brengen bedrag <u><b>in (hele) Eurocenten</b></u>. Het minimum is 49 (49 cent)en het maximum is 100000 (1000 euro)<br />
+								&nbsp;</li>
+							<li>
+								<u>returnurl</u><br />
+								De URL waarnaar de bezoeker moet worden verwezen na betaling (zie kopje 3). Achter deze URL wordt de variabele <i>trxid</i> geplakt. Voorbeeld, als uw return URL is http://www.test.nl/activate?id=123,
+								dan zou in de praktijk aangeroepen worden http://www.test.nl/activate?id=123&amp;trxid=789 (waar 789 dan een fictief transactie ID is).<br />
+								&nbsp;</li>
+                            <li>
+							    <u>reporturl</u><br />
+							    Als u deze invult, dan roepen we deze URL aan met HTTP POST (vanaf onze server).
+							    Dit gebeurt ook als uw klant niet op de knop 'Verder klikte...'.<br>
+								Aan uw URL voegen we 4 parameters toe:<br>
+								<i>trxid</i> met daarin het bestelnummer<br>
+								<i>amount</i> met daarin het afgerekende bedrag in centen<br>
+								<i>rtlo</i> met daarin de rtlo code waarop deze transacie is gestart<br>
+								<i>status</i> met daarin de status Success, Expired, Cancelled of Failed.<br>
+								Dus als uw report URL 'www.test.nl/report' is dan roepen we bijvoorbeeld aan:<br>
+								http://www.test.nl/report<br>
+								Met HTTP POST parameters:<br>
+								trxid=105884&amount=4590&rtlo=12345&status=Success<br>
+								Let op: verwar de reporturl niet met de returnurl.
+							    Uw bezoeker krijgt de reporturl nooit te zien, dit gebeurt 'onder water'.<br />
+							    &nbsp;</li>
+                            <li>
+							    <u>test</u><br />
+							    Wanneer deze parameter meegegeven wordt als "1", vindt de bepaling plaats op het pre-productie platform.
+U kunt rtlo code 41980 gebruiken om te testen.
+Er kan een test kaartnummer gebruikt worden (Visa 4236 8615 8842 3130, vervaldatum in de toekomst, CVV 123).
+						</ul>
+						<br />
+						<strong>2.2 Resultaatcode&#39;s</strong><br />
+						De status van het proces wordt terug gemeld via de volgende codes :<br />
+						Als de aanroep succesvol is:<br />
+						000000 103084|https://www.targetpay.com/creditcard_dev/launch.php5?transactionID=103084 of<br />
+						000001 218|https://www.targetpay.com/creditcard_dev/launch.php5?transactionID=218&test=1 in de test mode<br />
+						<br />
+						U kunt in dat geval uw klant met een HTTP redirect doorsturen naar de URL <br />
+						https://www.targetpay.com/creditcard_dev/launch.php5?transactionID=103084<br /><br />
+						Als de aanroep niet goed is zal een van de onderstaande foutcodes worden weergegeven:<br />
+						<span class="contentOutput"> TP0001 No layoutcode specified<br />
+						TP0002 Amount too low<br />
+						TP0003 Amount too high<br />
+						TP0004 Invalid or no return URL<br />
+						TP0006 No description given<br /></span><br />
+						<br />
+						Controleer in geval van fouten of de parameters goed zijn overgenomen uit de documentatie. Als dit het geval lijkt te zijn. Neem dan contact op met TargetPay, vermeldt de aanroep en de foutmelding.<br />
+						<br />
+						<br />
+						<a name="kop4"></a>
+						<div class="contentDocuHeader">
+							3. Klant wordt doorverwezen</div>
+						Als uw klant klaar is met afrekenen via creditcard &oacute;f wanneer hij op &#39;annuleren&#39; klikt tijdens dit proces, wordt hij automatisch doorverwezen naar uw site, namelijk naar de opgegeven return URL. Daarbij wordt het Targetpay transactie ID meegegeven als GET variabele (trxid).<br />
+						<br />
+						<br />
+						<br />
+						<a name="kop5"></a>
+						<div class="contentDocuHeader">
+							4. Status opvragen</div>
+						<strong>4.1 Aanroep</strong><br />
+						U kunt nu met een aanroep naar TargetPay opvragen of de betaling afgerond is:<br />
+						<br />
+						<span class="contentOutput">https://www.targetpay.com/creditcard_atos/check</span><br />
+						<br />
+						Met de volgende parameters:<br />
+						<br />
+						<table bgcolor="#dadada" cellpadding="5" cellspacing="1">
+							<tbody>
+								<tr class="bg-table-hdr">
+									<td bgcolor="#ebebeb">
+										<b>Variabele</b></td>
+									<td bgcolor="#ebebeb">
+										<b>Naam</b></td>
+									<td bgcolor="#ebebeb">
+										<b>Formaat</b></td>
+									<td bgcolor="#ebebeb">
+										<b>Verplicht</b></td>
+								</tr>
+								<tr bgcolor="#ffffff">
+									<td>
+										rtlo</td>
+									<td>
+										Layoutcode</td>
+									<td>
+										Numeriek</td>
+									<td>
+										Ja</td>
+								</tr>
+								<tr bgcolor="#ffffff">
+									<td>
+										trxid</td>
+									<td>
+										Transactie ID</td>
+									<td>
+										Numeriek</td>
+									<td>
+										Ja</td>
+								</tr>
+								<tr bgcolor="#ffffff">
+									<td>
+										once</td>
+									<td>
+										Controle 1 keer toelaten</td>
+									<td>
+										0 of 1</td>
+									<td>
+										Nee</td>
+								</tr>
+								<tr bgcolor="#ffffff">
+									<td>
+										test</td>
+									<td>
+										Testmode</td>
+									<td>
+										0 of 1</td>
+									<td>
+										Nee</td>
+								</tr>
+							</tbody>
+						</table>
+						<br />
+						Toelichting per variabele:
+						<ul>
+							<li>
+								<u>rtlo</u><br />
+								Layoutcode (zelfde waarde als meegegeven onder 5.1)<br />
+								&nbsp;</li>
+							<li>
+								<u>trxid</u><br />
+								Transactie ID, geretourneerd in de vorige stap (8 tekens)<br />
+								&nbsp;</li>
+							<li>
+								<u>once</u><br />
+								Als u voor once &#39;1&#39; invult dan zal slechts 1x een OK status teruggegeven worden. Als de bovenstaande URL nog een keer wordt aangeroepen voor hetzelfde Transactie ID dan krijgt u een foutmelding TP00014 (Reeds ingewisseld) terug en de datum/tijd waarop deze voor het eerst ingewisseld was.<br />
+								Als u voor once &#39;0&#39; invult dan zal steeds een OK status terug blijven komen.<br />
+								Vul bij twijfel 1 in, zo weet u zeker dat een dienst niet meerdere malen geleverd wordt als de bezoeker op Refresh/F5 zou drukken.<br />
+								&nbsp;</li>
+							<li>
+								<u>test</u><br />
+								Vul hier 1 in als u een test-transactie controleert.<br />
+								&nbsp;</li>
+						</ul>
+						<strong>4.2 Resultaatcode&#39;s</strong><br />
+						Als de betaling met succes afgerond is, ontvangt u als antwoord:<br />
+						<br />
+						<span class="contentOutput">000000 OK</span><br />
+						<br />
+						Als de betaling nog niet is afgerond of de transactie is niet bekend:<br />
+						<br />
+						<span class="contentOutput"> TP0010 Transaction not finished, try again later<br />
+						TP0011 Transaction failed<br />
+						TP0012 Transaction not finished and expired<br />
+						TP0013 Transaction was cancelled<br />
+						TP0014 Already redeemed at YYYY-MM-DD HH:MM:SS<br />
+						TP0020 No layoutcode given<br />
+						TP0021 No transaction ID given<br />
+						TP0022 No transaction with this ID<br />
+						TP0023 Layoutcode doesn&#39;t match transaction<br />
+						</span><br />
+						&nbsp;</td>
+				</tr>
+			</tbody>
+		</table>
+<div class="contentDocuHeader">PHP voorbeeld</div>
+Hieronder staat een voorbeeld om een creditcard teansactie op te starten m.b.v. Targetpay.
+<pre>
+&lt;?php
+$rtlo=xxxxx;
+$description="Creditcard Example";
+$amount=100;
+$returnurl="http://www.uwsite.nl/CreditcardExample.php";
+$reporturl="http://www.uwsite.nl/CreditcardExample.php";
+$test='1';  // Set this parameter to '0' when testing is complete
+
+
+// The returnurl is called, now we check the transaction status
+if( isset($_GET['trxid'])){
+  // 000000 OK means Status is successful. We deliver the product
+  if( ($status = CheckReturnurl( $rtlo,  $_GET['trxid'], $test )) == "000000 OK" ){
+    // Update the orderinfo to success
+    die( "Status was Successful...<br>Thank you for your order" );
+  }
+  //In all other cases do not delever(yet)
+  // Update the orderinfo to failed
+  else die( $status );
+} elseif ( isset($_POST['trxid']) && isset($_POST['status']) ){
+  // The reporturl is called from the Targetpay server
+  HandleReporturl( $_POST['trxid'], $_POST['status'] );
+} else{
+  // Hier starten we met een redirect naar Paybox
+  $redirecturl = StartTransaction( $rtlo, $description, $amount, $returnurl, $reporturl, $test );
+  header ("Location: ".$redirecturl);
+  die();
+}
+
+// Paragraph 3. Request redirect URL to Atos
+function StartTransaction( $rtlo, $description,  $amount, $returnurl, $reporturl, $test='0' ){
+  $url= "https://www.targetpay.com/creditcard_atos/start?".
+  "rtlo=".$rtlo.
+  "&description=".urlencode(substr($description,0,32)).
+  "&amount=".$amount.
+  "&returnurl=".urlencode($returnurl).
+  "&reporturl=".urlencode($reporturl).
+  "&test=".$test;
+
+  $strResponse = httpGetRequest($url);
+  $aResponse = explode('|', $strResponse );
+  # Bad response
+  if ( !isset ( $aResponse[1] ) ) die('Error' . $aResponse[0] );
+
+  $responsetype = explode ( ' ', $aResponse[0] );
+  $trxid = $responsetype[1];
+
+  // You may add the trxid to your orderinfo here
+  if( $responsetype[0] == "000000" || $responsetype[0] == "000001" ) return $aResponse[1];
+  else die( $aResponse[0] );
+}
+
+// Paragraph 5. Request status in returnurl
+function CheckReturnurl($rtlo, $trxid, $test='0'){
+  $once=1;
+
+  $url= "https://www.targetpay.com/creditcard_atos/check?".
+  "rtlo=".$rtlo.
+  "&trxid=".$trxid.
+  "&once=".$once.
+  "&test=".$test;
+  return httpGetRequest($url);
+}
+
+// Handler for the reporturl.
+// Update your your orderstatus and deliver the product if $status = "000000 OK"
+function HandleReporturl($trxid, $amount ){
+  if( substr($_SERVER['REMOTE_ADDR'],0,9) == "78.152.58" ){
+    // Update your orderinfo status here.
+    //......
+
+    //reporturl should return OK to Targetpay.
+    die( "OK" );
+  }else{
+    die("IP address not correct... This call is not from Targetpay");
+  }
+}
+
+function httpGetRequest($url){
+  $ch = curl_init( $url );
+  curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1) ;
+  $strResponse = curl_exec($ch);
+  curl_close($ch);
+  if ( $strResponse === false )
+    die("Could not fetch response " . $url );
+  return $strResponse;
+}
+
+?&gt;
+</pre>
+</table>
+</td>   </tr></table>
+        </td>
+          </tr>
+        </table>
+        <!-- einde content -->
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" valign="top"><br /><br /><p align="center" class="copyr">&copy; TargetPay.com</p>
+          <p align="center">
+			<a href="/faq" class="tp-btm">F.A.Q.</a> <span class="divider">|</span>
+			<a href="/contact" class="tp-btm">Contact</a> <span class="divider">|</span>
+			<a href="/networkstatus" class="tp-btm">Netwerk status</a> <span class="divider">|</span>
+			<a href="/info/terms" class="tp-btm">Voorwaarden</a> <span class="divider">|</span>
+			<a href="/regulation/31" class="tp-btm">Regelgeving</a> <span class="divider">|</span>
+			<a href="http://www.targetmedia.nl/" class="tp-btm" target="_blank">Over ons...</a>
+             <span class="divider">|</span> <a href="/info/cc-docu-atos?printview=1" class="tp-btm">Print versie</a>
+		  </p><br />
+        </td>
+      </tr>
+      <tr>
+        <td height="1" colspan="2" valign="top"><img src="/gfx/tp-sub-btm.gif" width="969" height="1" /></td>
+      </tr>
+    </table></td>
+  </tr>
+</table>
+</body>
+</html>

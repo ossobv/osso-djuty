@@ -213,22 +213,33 @@ class TargetpayBase(object):
 
 class TargetpayCreditcard(TargetpayBase, Provider):
     provider_sub = 'creditcard'
+    provider_sub_url = 'creditcard_atos'  # or 'creditcard' for old style
+
+    def get_start_url(self):
+        return '{}/{}/start'.format(self.provider_url, self.provider_sub_url)
 
     def get_start_parameters(self):
         parameters = super(TargetpayCreditcard, self).get_start_parameters()
-        parameters['currency'] = 'EUR'
         del parameters['cancelurl']
 
+        # Unused, for old creditcard method.
+        if self.provider_sub_url == 'creditcard':
+            parameters['currency'] = 'EUR'
+
         if self.test_mode:
-            # > Deze parameter gebruikt u in combinatie met onze test
-            # > rtlo code. Stel deze parameter in op false, als u met uw
-            # > eigen layoutcode werkt en op true als u met onze test
-            # > rtlo code werkt.
+            # > Wanneer deze parameter meegegeven wordt als "1", vindt
+            # > de bepaling plaats op het pre-productie platform.
+            # > U kunt rtlo code 41980 gebruiken om te testen.
+            # > Er kan een test kaartnummer gebruikt worden (Visa 4236
+            # > 8615 8842 3130, vervaldatum in de toekomst, CVV 123).
             # OK status will not be "000000" but "000001".
-            # TODO: A test rtlo? Where is it? What is it?
             parameters['test'] = '1'
+            parameters['rtlo'] = '41980'
 
         return parameters
+
+    def get_check_url(self):
+        return '{}/{}/check'.format(self.provider_url, self.provider_sub_url)
 
     def get_check_parameters(self, payment):
         parameters = super(TargetpayCreditcard, self).get_check_parameters(
@@ -240,7 +251,8 @@ class TargetpayCreditcard(TargetpayBase, Provider):
             # > checks worden wel net als normaal doorlopen.
             # Is still needed if you didn't replace the rtlo in the
             # get_start_parameters test mode.
-            parameters['test'] = '1'
+            # #parameters['test'] = '1'
+            parameters['rtlo'] = '41980'
 
         return parameters
 

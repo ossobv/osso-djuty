@@ -2,6 +2,7 @@
 """
 API: https://www.targetpay.com/info/bankwire-docu
 API: https://www.targetpay.com/info/cc-docu
+API: https://www.targetpay.com/info/cc-atos-docu
 API: https://www.targetpay.com/info/ideal-docu
 API: https://www.targetpay.com/info/mrcash-docu
 """

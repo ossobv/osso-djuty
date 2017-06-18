@@ -4,6 +4,7 @@ Fetched::
 * 2016-09-04: https://www.targetpay.com/info/bankwire-docu "TargetPay_bankwire-docu.html"
 * 2016-09-04: https://www.targetpay.com/docs/TargetPay_MisterCash_V1.2_nl.pdf
 * 2017-06-17: https://www.targetpay.com/info/cc-docu "TargetPay_creditcard-docu.html"
+* 2017-06-18: https://www.targetpay.com/info/cc-docu-atos "TargetPay_creditcard-atos-docu.html"
 
 Example URL for iDEAL::
 
