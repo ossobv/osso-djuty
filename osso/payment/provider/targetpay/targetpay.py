@@ -158,6 +158,24 @@ class TargetpayBase(object):
         elif status == 'TP0010':  # Transaction has not been completed
             assert payment.state == 'submitted', (payment.pk, payment.state)
 
+        elif self.provider_sub == 'creditcard' and status == 'TP0011':
+            # TP0011: creditcard: Transaction failed
+            # However, this can apparently be reopened at any time,
+            # because this is known to be followed up by a Success
+            # state.
+            #
+            # Third example on 2017-07-05:
+            # 17:45:45+0200: report: <QueryDict: {u'status': [u'Failed'], ..}>
+            # 17:45:45+0200: qry.creditcard: ..com/creditcard_atos/check?...
+            # 17:45:45+0200: ret.creditcard: TP0011 Transaction failed
+            # 17:47:05+0200: report: <QueryDict: {u'status': [u'Success'], ..}>
+            # 17:47:05+0200: qry.creditcard: ..com/creditcard_atos/check?...
+            # 17:47:05+0200: ret.creditcard: 000000 OK
+            #
+            # Do not mark_aborted() because we cannot accept success
+            # later on.
+            assert payment.state == 'submitted', (payment.pk, payment.state)
+
         elif status in ('TP0011', 'TP0013'):
             # TP0011: ideal: Transaction has been cancelled
             # TP0011: mrcash: Transaction has failed
