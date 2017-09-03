@@ -86,6 +86,19 @@ class TargetpayBase(object):
         payment_url = self.start_transaction()
         return self.create_html_form_from_url(payment_url, 'targetpay_form')
 
+    def parse_status(self, text):
+        # 000000 OK
+        # TP0012 Transaction has expired
+        # .. or, also ..
+        # 000000 177XXX584|https://www.targetpay.com/SUB/launch?...
+
+        if ' ' in text:
+            status, rest = text.split(' ', 1)
+        else:
+            assert status != '000000', text
+            rest = ''
+        return status, rest
+
     def start_transaction(self):
         parameters = self.get_start_parameters()
 
@@ -97,26 +110,23 @@ class TargetpayBase(object):
         ret = self._do_request(self.get_start_url(), parameters)
         # 000000 177XXX584|https://www.targetpay.com/SUB/launch?
         #   trxid=177XXX584&ec=779XXXXXXXXX273
-        if ' ' in ret:
-            status, rest = ret.split(' ', 1)
-        else:
-            assert status != '000000', ret
+        status_code, status_text = self.parse_status(ret)
 
-        if status == '000000':
+        if status_code == '000000':
             pass
-        elif status == '000001' and self.test_mode:
+        elif status_code == '000001' and self.test_mode:
             pass
         else:
-            self.handle_error(self.payment, ret)
-            assert False
+            self.handle_status_error(self.payment, ret)
+            assert False  # should not get here
 
         try:
-            trxid, payment_url = rest.split('|', 1)
+            trxid, payment_url = status_text.split('|', 1)
             if not payment_url.startswith('https:'):
                 raise ValueError('no https?')
         except ValueError:
-            self.handle_error(self.payment, ret)
-            assert False
+            self.handle_status_error(self.payment, ret)
+            assert False  # should not get here
 
         # Initiate it and store the unique_key with our submethod as
         # first argument. (Does an atomic check.)
@@ -134,31 +144,30 @@ class TargetpayBase(object):
         # 000000 OK
         # TP0012 Transaction has expired
         # etc..
-        if ' ' in ret:
-            status, rest = ret.split(' ', 1)
-        else:
-            assert status != '000000', ret
+        status_code, status_text = self.parse_status(ret)
+        self.handle_status(
+            payment, status_code, status_text, request_data=request.POST)
 
-        if status == '000000':
+    def handle_status(self, payment, status_code, status_text, request_data):
+        if status_code == '000000':
             try:
                 payment.mark_passed()
                 payment.mark_succeeded()
             except AtomicUpdateFailed:
                 if Payment.objects.get(pk=payment.pk).is_success is True:
-                    raise AtomicUpdateDupe(status, rest)
+                    raise AtomicUpdateDupe(status_code, status_text)
                 raise
             else:
                 payment_updated.send(sender=payment, change='passed')
-                postdata = request.POST
                 payment.set_blob(
                     'targetpay.{provider_sub}: {json_blob}'.format(
                         provider_sub=self.provider_sub,
-                        json_blob=json.dumps(postdata)))
+                        json_blob=json.dumps(request_data)))
 
-        elif status == 'TP0010':  # Transaction has not been completed
+        elif status_code == 'TP0010':  # Transaction has not been completed
             assert payment.state == 'submitted', (payment.pk, payment.state)
 
-        elif self.provider_sub == 'creditcard' and status == 'TP0011':
+        elif self.provider_sub == 'creditcard' and status_code == 'TP0011':
             # TP0011: creditcard: Transaction failed
             # However, this can apparently be reopened at any time,
             # because this is known to be followed up by a Success
@@ -176,7 +185,7 @@ class TargetpayBase(object):
             # later on.
             assert payment.state == 'submitted', (payment.pk, payment.state)
 
-        elif status in ('TP0011', 'TP0013'):
+        elif status_code in ('TP0011', 'TP0013'):
             # TP0011: ideal: Transaction has been cancelled
             # TP0011: mrcash: Transaction has failed
             # TP0013: mrcash: Transaction has been cancelled (by user)
@@ -184,37 +193,38 @@ class TargetpayBase(object):
                 payment.mark_aborted()
             except AtomicUpdateFailed:
                 if Payment.objects.get(pk=payment.pk).is_success is False:
-                    raise AtomicUpdateDupe(status, rest)
+                    raise AtomicUpdateDupe(status_code, status_text)
                 raise
             else:
                 payment_updated.send(sender=payment, change='aborted')
 
-        elif status == 'TP0012':  # Transaction has expired (10 minutes)
+        elif status_code == 'TP0012':  # Transaction has expired (10 minutes)
             try:
                 payment.mark_aborted()
             except AtomicUpdateFailed:
                 if Payment.objects.get(pk=payment.pk).is_success is False:
-                    raise AtomicUpdateDupe(status, rest)
+                    raise AtomicUpdateDupe(status_code, status_text)
                 raise
             else:
                 payment_updated.send(sender=payment, change='aborted')
 
-        elif status == 'TP0014':  # Already used
+        elif status_code == 'TP0014':  # Already used
             assert payment.state == 'final'
 
         else:
-            # FIXME: Better exception.
-            raise ValueError('bad status %s (%r) for %s' % (
-                status, ret, payment.pk))
+            self.handle_status_error(
+                payment, '{} {}'.format(status_code, status_text))
+            assert False  # should not get here
 
-    def handle_error(self, payment, response):
-        if False:  # TEMP: make flake happy
+    def handle_status_error(self, payment, response):
+        # FIXME: For error that we didn't handle, we should raise one
+        # of the exceptions below:
+        if False:
             raise BuyerError()
             raise PaymentSuspect()
             raise ProviderBadConfig()
             raise ProviderError()
             raise ProviderDown()
-        # FIXME
         raise ValueError('payment: %d\nresponse: %r' % (
             payment.id, response))
 
