@@ -150,63 +150,21 @@ class TargetpayBase(object):
 
     def handle_status(self, payment, status_code, status_text, request_data):
         if status_code == '000000':
-            try:
-                payment.mark_passed()
-                payment.mark_succeeded()
-            except AtomicUpdateFailed:
-                if Payment.objects.get(pk=payment.pk).is_success is True:
-                    raise AtomicUpdateDupe(status_code, status_text)
-                raise
-            else:
-                payment_updated.send(sender=payment, change='passed')
-                payment.set_blob(
-                    'targetpay.{provider_sub}: {json_blob}'.format(
-                        provider_sub=self.provider_sub,
-                        json_blob=json.dumps(request_data)))
+            self.handle_status_paid(
+                payment, status_code, status_text, request_data)
 
         elif status_code == 'TP0010':  # Transaction has not been completed
             assert payment.state == 'submitted', (payment.pk, payment.state)
 
-        elif self.provider_sub == 'creditcard' and status_code == 'TP0011':
-            # TP0011: creditcard: Transaction failed
-            # However, this can apparently be reopened at any time,
-            # because this is known to be followed up by a Success
-            # state.
-            #
-            # Third example on 2017-07-05:
-            # 17:45:45+0200: report: <QueryDict: {u'status': [u'Failed'], ..}>
-            # 17:45:45+0200: qry.creditcard: ..com/creditcard_atos/check?...
-            # 17:45:45+0200: ret.creditcard: TP0011 Transaction failed
-            # 17:47:05+0200: report: <QueryDict: {u'status': [u'Success'], ..}>
-            # 17:47:05+0200: qry.creditcard: ..com/creditcard_atos/check?...
-            # 17:47:05+0200: ret.creditcard: 000000 OK
-            #
-            # Do not mark_aborted() because we cannot accept success
-            # later on.
-            assert payment.state == 'submitted', (payment.pk, payment.state)
-
-        elif status_code in ('TP0011', 'TP0013'):
+        elif status_code in ('TP0011', 'TP0012', 'TP0013'):
+            # TP0011: creditcard: Transaction has been cancelled
             # TP0011: ideal: Transaction has been cancelled
             # TP0011: mrcash: Transaction has failed
+            # TP0012: ideal: Transaction has expired
+            # TP0012: mrcash: Transaction not finished and expired
+            # TP0013: creditcard: Transaction was cancelled
             # TP0013: mrcash: Transaction has been cancelled (by user)
-            try:
-                payment.mark_aborted()
-            except AtomicUpdateFailed:
-                if Payment.objects.get(pk=payment.pk).is_success is False:
-                    raise AtomicUpdateDupe(status_code, status_text)
-                raise
-            else:
-                payment_updated.send(sender=payment, change='aborted')
-
-        elif status_code == 'TP0012':  # Transaction has expired (10 minutes)
-            try:
-                payment.mark_aborted()
-            except AtomicUpdateFailed:
-                if Payment.objects.get(pk=payment.pk).is_success is False:
-                    raise AtomicUpdateDupe(status_code, status_text)
-                raise
-            else:
-                payment_updated.send(sender=payment, change='aborted')
+            self.handle_status_aborted(payment, status_code, status_text)
 
         elif status_code == 'TP0014':  # Already used
             assert payment.state == 'final'
@@ -215,6 +173,32 @@ class TargetpayBase(object):
             self.handle_status_error(
                 payment, '{} {}'.format(status_code, status_text))
             assert False  # should not get here
+
+    def handle_status_paid(self, payment, status_code, status_text,
+                           request_data):
+        try:
+            payment.mark_passed()
+            payment.mark_succeeded()
+        except AtomicUpdateFailed:
+            if Payment.objects.get(pk=payment.pk).is_success is True:
+                raise AtomicUpdateDupe(status_code, status_text)
+            raise
+        else:
+            payment_updated.send(sender=payment, change='passed')
+            payment.set_blob(
+                'targetpay.{provider_sub}: {json_blob}'.format(
+                    provider_sub=self.provider_sub,
+                    json_blob=json.dumps(request_data)))
+
+    def handle_status_aborted(self, payment, status_code, status_text):
+        try:
+            payment.mark_aborted()
+        except AtomicUpdateFailed:
+            if Payment.objects.get(pk=payment.pk).is_success is False:
+                raise AtomicUpdateDupe(status_code, status_text)
+            raise
+        else:
+            payment_updated.send(sender=payment, change='aborted')
 
     def handle_status_error(self, payment, response):
         # FIXME: For error that we didn't handle, we should raise one
@@ -283,6 +267,57 @@ class TargetpayCreditcard(TargetpayBase, Provider):
             parameters['rtlo'] = '41980'
 
         return parameters
+
+    def handle_status_DISABLED(
+            self, payment, status_code, status_text, request_data):
+        """
+        This is called handle_status_DISABLED instead of handle_status,
+        because we're not using it right now.
+
+        Last occurrence of "Transaction failed" was 11-jul-2017. We
+        haven't seen any faulty resumptions since then. Perhaps the
+        issue has been fixed.
+        """
+        if status_code == 'TP0011':
+            # TP0011: creditcard: Transaction failed
+            #
+            # However, this can apparently be reopened at any time,
+            # because it has happened that this was followed up by
+            # Success state.
+            #
+            # Third example on 2017-07-05:
+            # 17:45:45+0200: report: <QueryDict: {u'status': [u'Failed'], ..}>
+            # 17:45:45+0200: qry.creditcard: ..com/creditcard_atos/check?...
+            # 17:45:45+0200: ret.creditcard: TP0011 Transaction failed
+            # 17:47:05+0200: report: <QueryDict: {u'status': [u'Success'], ..}>
+            # 17:47:05+0200: qry.creditcard: ..com/creditcard_atos/check?...
+            # 17:47:05+0200: ret.creditcard: 000000 OK
+            #
+            # Do not mark_aborted() because we cannot accept success
+            # later on.
+            assert payment.state == 'submitted', (payment.pk, payment.state)
+
+        elif status_code == 'TP0013':
+            # TP0013: creditcard: Transaction was cancelled
+            #
+            # However, this can apparently be reopened at any time,
+            # because it has happened that this was followed up by
+            # Success state.
+            #
+            # First example on 2017-06-29:
+            # 22:16:03+0200: report: <QueryDict: {u'status': [u'Cancelled']..}>
+            # 22:16:03+0200: qry.creditcard: ..com/creditcard_atos/check?...
+            # 22:16:03+0200: ret.creditcard: TP0013 Transaction was cancelled
+            # 22:16:49+0200: report: <QueryDict: {u'status': [u'Success'], ..}>
+            # 22:16:49+0200: qry.creditcard: ..com/creditcard_atos/check?...
+            # 22:16:49+0200: ret.creditcard: 000000 OK
+            #
+            # Do not mark_aborted() because we cannot accept success
+            # later on.
+            assert payment.state == 'submitted', (payment.pk, payment.state)
+
+        else:
+            self.handle_status(payment, status_code, status_text, request_data)
 
 
 class TargetpayIdeal(TargetpayBase, Provider):
