@@ -268,15 +268,14 @@ class TargetpayCreditcard(TargetpayBase, Provider):
 
         return parameters
 
-    def handle_status_DISABLED(
+    def handle_status(
             self, payment, status_code, status_text, request_data):
         """
-        This is called handle_status_DISABLED instead of handle_status,
-        because we're not using it right now.
+        The Transaction failed status apparently is non-final for
+        creditcard payments.
 
-        Last occurrence of "Transaction failed" was 11-jul-2017. We
-        haven't seen any faulty resumptions since then. Perhaps the
-        issue has been fixed.
+        Occurrence was last seen on 2017-09-04 after which this
+        "fix"/workaround was re-enabled.
         """
         if status_code == 'TP0011':
             # TP0011: creditcard: Transaction failed
@@ -297,27 +296,28 @@ class TargetpayCreditcard(TargetpayBase, Provider):
             # later on.
             assert payment.state == 'submitted', (payment.pk, payment.state)
 
-        elif status_code == 'TP0013':
-            # TP0013: creditcard: Transaction was cancelled
-            #
-            # However, this can apparently be reopened at any time,
-            # because it has happened that this was followed up by
-            # Success state.
-            #
-            # First example on 2017-06-29:
-            # 22:16:03+0200: report: <QueryDict: {u'status': [u'Cancelled']..}>
-            # 22:16:03+0200: qry.creditcard: ..com/creditcard_atos/check?...
-            # 22:16:03+0200: ret.creditcard: TP0013 Transaction was cancelled
-            # 22:16:49+0200: report: <QueryDict: {u'status': [u'Success'], ..}>
-            # 22:16:49+0200: qry.creditcard: ..com/creditcard_atos/check?...
-            # 22:16:49+0200: ret.creditcard: 000000 OK
-            #
-            # Do not mark_aborted() because we cannot accept success
-            # later on.
-            assert payment.state == 'submitted', (payment.pk, payment.state)
+        # elif status_code == 'TP0013':
+        #     # TP0013: creditcard: Transaction was cancelled
+        #     #
+        #     # However, this can apparently be reopened at any time,
+        #     # because it has happened that this was followed up by
+        #     # Success state.
+        #     #
+        #     # First example on 2017-06-29:
+        #     # 22:16:03+0200: report: <QueryDict: {u'status': [u'Cancelled']..
+        #     # 22:16:03+0200: qry.creditcard: ..com/creditcard_atos/check?...
+        #     # 22:16:03+0200: ret.creditcard: TP0013 Transaction was cancelled
+        #     # 22:16:49+0200: report: <QueryDict: {u'status': [u'Success']..
+        #     # 22:16:49+0200: qry.creditcard: ..com/creditcard_atos/check?...
+        #     # 22:16:49+0200: ret.creditcard: 000000 OK
+        #     #
+        #     # Do not mark_aborted() because we cannot accept success
+        #     # later on.
+        #     assert payment.state == 'submitted', (payment.pk, payment.state)
 
         else:
-            self.handle_status(payment, status_code, status_text, request_data)
+            super(TargetpayCreditcard, self).handle_status(
+                payment, status_code, status_text, request_data)
 
 
 class TargetpayIdeal(TargetpayBase, Provider):
