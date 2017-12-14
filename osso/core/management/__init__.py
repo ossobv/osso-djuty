@@ -43,7 +43,7 @@ def create_permissions_respecting_proxy(app, created_models, verbosity,
                 codename=codename, content_type__pk=ctype.id,
                 defaults={'name': name, 'content_type': ctype})
             if created and verbosity >= 2:
-                print("Adding permission '%s'" % p)
+                print(("Adding permission '%s'" % p))
 
 
 # Replace the original handling with our modified one if

@@ -79,7 +79,7 @@ class UserActivityLog(models.Model):
     def __unicode__(self):
         kwargs = {
             'user': self.user.username,
-            'implicit': (_(' implicitly'), u'')[self.explicit_login],
+            'implicit': (_(' implicitly'), '')[self.explicit_login],
             'login_datetime': self.first_activity,
         }
         if self.explicit_logout is None:
@@ -88,7 +88,7 @@ class UserActivityLog(models.Model):
         else:
             kwargs.update({
                 'logout_datetime': self.last_activity,
-                'implicit2': (_(' implicitly'), u'')[self.explicit_logout],
+                'implicit2': (_(' implicitly'), '')[self.explicit_logout],
             })
             return (_('%(user)s logged in %(login_datetime)s%(implicit)s '
                       'and logged out %(logout_datetime)s%(implicit2)s') %

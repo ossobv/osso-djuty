@@ -1,8 +1,8 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
 try:
-    from cPickle import dumps, loads
-except ImportError:
     from pickle import dumps, loads
+except ImportError:
+    from .pickle import dumps, loads
 
 
 __all__ = ('cescape', 'cunescape', 'dumpascii', 'loadascii')

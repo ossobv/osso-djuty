@@ -1,9 +1,9 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
 import decimal
 import unittest
-import urllib
-import urllib2
-import urlparse
+import urllib.request, urllib.parse, urllib.error
+import urllib.request, urllib.error, urllib.parse
+import urllib.parse
 
 from osso.payment import (
     BuyerError, PaymentAlreadyUsed, PaymentSuspect, TryDifferentPayment,
@@ -266,12 +266,12 @@ class Paypal(Provider):
         params['SIGNATURE'] = self.signature
         params['VERSION'] = '78'  # not sure if needed
 
-        urlencoded_params = urllib.urlencode(params)
+        urlencoded_params = urllib.parse.urlencode(params)
         log(self.backend_url + '?' + urlencoded_params, 'paypal', 'qry')
-        response = urllib2.urlopen(self.backend_url, urlencoded_params)
+        response = urllib.request.urlopen(self.backend_url, urlencoded_params)
         data = response.read()
         log(data, 'paypal', 'ret')
-        decoded = urlparse.parse_qs(data)
+        decoded = urllib.parse.parse_qs(data)
 
         ack = decoded.get('ACK', ['Failure'])[0]
         if ack != 'Success':
@@ -313,7 +313,7 @@ def listdict2stringdict(listdict):
     ValueError if a list with multiple values is found.
     """
     ret = {}
-    for key, value in listdict.items():
+    for key, value in list(listdict.items()):
         if len(value) > 1:
             raise ValueError('Unexpected list of more than 1 item', value)
         ret[key] = ''.join(value)

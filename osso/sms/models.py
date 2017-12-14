@@ -43,7 +43,7 @@ class OperatorCountryCode(models.Model):
         help_text=_('A three digit GSM country code.'))
 
     def __unicode__(self):
-        return u'%s (%s)' % (self.country, self.code)
+        return '%s (%s)' % (self.country, self.code)
 
     class Meta:
         if Country:
@@ -77,10 +77,10 @@ class Operator(Model):
 
     if Country:
         def __unicode__(self):
-            return u'%s %s (%s)' % (self.entire_code(), self.name, self.country.code)
+            return '%s %s (%s)' % (self.entire_code(), self.name, self.country.code)
     else:
         def __unicode__(self):
-            return u'%s %s (%s)' % (self.entire_code(), self.name, self.country)
+            return '%s %s (%s)' % (self.entire_code(), self.name, self.country)
 
     class Meta:
         unique_together = ('code', 'country')
@@ -358,7 +358,7 @@ class TextMessageExtra(models.Model):
         return float(self.tariff_cent) / 100
 
     def __str__(self):
-        return 'SMS Info #%d @ %s %s \u00a4 %d (%s, %s)' % (
+        return 'SMS Info #%d @ %s %s \\u00a4 %d (%s, %s)' % (
             self.textmessage_id, self.shortcode, self.keyword, self.tariff_cent, self.foreign_reference, self.foreign_status or '...'
         )
 

@@ -44,7 +44,7 @@ def get_video_metadata(file_or_path, validate=False):
                 if 'x' in part:
                     part = part.split(' ')[0]
                     try:
-                        width, height = map(int, part.split('x'))
+                        width, height = list(map(int, part.split('x')))
                     except ValueError:
                         pass
                 elif 'kb/s' in part:
@@ -62,7 +62,7 @@ def get_video_metadata(file_or_path, validate=False):
             part = line.split(', ')[0]
             part = part.split(' ')[-1]
             part, microsecond = part.split('.')
-            hour, minute, second = map(int, part.split(':'))
+            hour, minute, second = list(map(int, part.split(':')))
             try:
                 length = datetime.time(hour, minute, second, int(microsecond))
             except ValueError:

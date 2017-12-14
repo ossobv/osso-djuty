@@ -8,14 +8,14 @@ from osso.sms.backends.sms_console.forms import IncomingTextMessageForm
 
 class HttpResponseOk(HttpResponse):
     def __init__(self, message=None, saved=None):
-        super(HttpResponseOk, self).__init__(content=u'OK', content_type='text/plain; charset=UTF-8')
+        super(HttpResponseOk, self).__init__(content='OK', content_type='text/plain; charset=UTF-8')
 
 
 class HttpResponseFail(HttpResponseServerError):
     def __init__(self, message='(unknown)'):
-        super(HttpResponseFail, self).__init__(content=u'ERROR: %s' % message, content_type='text/plain; charset=UTF-8')
+        super(HttpResponseFail, self).__init__(content='ERROR: %s' % message, content_type='text/plain; charset=UTF-8')
 
 
 def incoming_text(request):
-    return simple_form_view(request, form_class=IncomingTextMessageForm, heading=_(u'Incoming SMS'),
+    return simple_form_view(request, form_class=IncomingTextMessageForm, heading=_('Incoming SMS'),
             httpresponse_ok=HttpResponseOk, httpresponse_fail=HttpResponseFail, mail_on_fail=True)

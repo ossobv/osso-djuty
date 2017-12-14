@@ -21,9 +21,9 @@ def visualize_sms_concatenation(value, highlight=None):
         esc = escape
 
     if not highlight:
-        return mark_safe(esc(unicode(value)).replace(u'\u2060', u'<span class="word-joiner">&#xb7;</span>'))
+        return mark_safe(esc(str(value)).replace('\u2060', '<span class="word-joiner">&#xb7;</span>'))
 
-    items = unicode(value).split(u'\u2060')
+    items = str(value).split('\u2060')
     ret = []
     for i, item in enumerate(items):
         if i + 1 == highlight:
@@ -31,4 +31,4 @@ def visualize_sms_concatenation(value, highlight=None):
         else:
             ret.append(esc(item))
 
-    return mark_safe(u'<span class="word-joiner">&#xb7;</span>'.join(ret))
+    return mark_safe('<span class="word-joiner">&#xb7;</span>'.join(ret))

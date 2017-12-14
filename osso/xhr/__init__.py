@@ -27,7 +27,7 @@ class JsonResponse(HttpResponse):
     This one is used by clean xmlhttp requests.
     '''
     def __init__(self, request, json_response, compact=False):
-        if not isinstance(json_response, basestring):
+        if not isinstance(json_response, str):
             json_kwargs = {
                 'check_circular': False,
                 'cls': _JsonEncoder,

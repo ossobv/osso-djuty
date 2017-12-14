@@ -8,7 +8,7 @@ class ItemAdmin(admin.ModelAdmin):
 
     def internal_value(self, object):
         value = repr(object.value)
-        return u'%s%s' % (value[:64], ('', '...')[len(value) > 64])
+        return '%s%s' % (value[:64], ('', '...')[len(value) > 64])
 
 
 admin.site.register(Item, ItemAdmin)

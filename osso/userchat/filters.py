@@ -26,7 +26,7 @@ def pre_send_add(filter):
 
 def pre_send_run(message, channel_id=None, group_ids=None):
     for filter in _pre_send_filters:
-        message = filter(message, channel_id=channel_id, group_ids=group_ids)
+        message = list(filter(message, channel_id=channel_id, group_ids=group_ids))
         if message is None:
             return None
     return message

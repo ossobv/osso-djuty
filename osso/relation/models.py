@@ -18,7 +18,7 @@ class RelationManager(models.Manager):
         ids_to_return = include and [relation.id] or []
         added_last = [relation.id]
         while True:
-            added_last = [i.id for i in filter(lambda i: i.owner_id in added_last, items)]
+            added_last = [i.id for i in [i for i in items if i.owner_id in added_last]]
             if not added_last:
                 break
             ids_to_return.extend(added_last)
@@ -128,7 +128,7 @@ class Relation(Model):
     def __unicode__(self):
         if self.code == '':
             return self.name
-        return u'%s - %s' % (self.code, self.name)
+        return '%s - %s' % (self.code, self.name)
 
     class Meta:
         """Django metaclass information."""
@@ -167,7 +167,7 @@ class AuthenticatableContact(Contact):
             related_name='authenticatablecontact')
 
     def __unicode__(self):
-        return u'%s (%s)' % (self.user, self.relation)
+        return '%s (%s)' % (self.user, self.relation)
 
     class Meta:
         """Django metaclass information."""
@@ -207,7 +207,7 @@ class City(Model):
             help_text=_('The city name.'))
 
     def __unicode__(self):
-        return (_(u'%(city)s (%(countrycode)s)') %
+        return (_('%(city)s (%(countrycode)s)') %
                 {'city': self.name, 'countrycode': self.country.code})
 
     class Meta:
@@ -270,9 +270,9 @@ class Address(Model):
             help_text=_('For the attention of'))
 
     def __unicode__(self):
-        return _(u'%(relation)s addresses: %(address_types)s') % {
+        return _('%(relation)s addresses: %(address_types)s') % {
             'relation': self.relation,
-            'address_types': ', '.join(unicode(addr) for addr in self.address_type.all()),
+            'address_types': ', '.join(str(addr) for addr in self.address_type.all()),
         }
 
     class Meta:
@@ -306,11 +306,11 @@ class PhoneNumber(Model):
             help_text=_('Optional comments about the number\'s use (or "Fax").'))
 
     def __unicode__(self):
-        return _(u'%(relation)s phone number: %(number)s%(comment)s%(active)s') % {
+        return _('%(relation)s phone number: %(number)s%(comment)s%(active)s') % {
             'relation': self.relation,
             'number': self.number,
-            'comment': (u'', u' (%s)' % self.comment)[self.comment != ''],
-            'active': (_(' INACTIVE'), u'')[self.active],
+            'comment': ('', ' (%s)' % self.comment)[self.comment != ''],
+            'active': (_(' INACTIVE'), '')[self.active],
         }
 
     class Meta:

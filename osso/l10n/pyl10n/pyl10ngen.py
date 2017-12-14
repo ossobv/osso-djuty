@@ -97,14 +97,14 @@ def parse_args(string, escape_char):
             ret[i] = int(ret[i])
         elif ret[i][0] == '"':
             try:
-                ret[i] = unicode(ret[i][1:-1].replace(escape_char * 2,
+                ret[i] = str(ret[i][1:-1].replace(escape_char * 2,
                                                       escape_char))
                 j = 0
                 while j < len(ret[i]):
                     if (ret[i][j] == '<' and ret[i][j + 1] == 'U' and
                             ret[i][j + 6] == '>'):
                         ret[i] = (ret[i][0:j] +
-                                  unichr(int(ret[i][(j + 2):(j + 6)], 16)) +
+                                  chr(int(ret[i][(j + 2):(j + 6)], 16)) +
                                   ret[i][(j + 7):])
                     j += 1
             except UnicodeDecodeError:
@@ -237,7 +237,7 @@ def parse_libc_localedata(filename, loop_check=None):
                 pass
 
     # Purge empty categories
-    for key in ret.keys():
+    for key in list(ret.keys()):
         if len(ret[key]) == 0:
             del ret[key]
     return ret
@@ -256,7 +256,7 @@ def get_libc_sources(locale_path='/usr/share/i18n/locales'):
 
 def convert_all_libc_locales(src_path, dst_path):
     try:
-        import cPickle as pickle
+        import pickle as pickle
     except:
         import pickle
     import sys
@@ -287,7 +287,7 @@ def convert_all_libc_locales(src_path, dst_path):
             sys.stderr.write('Language file %s corrupt: %s\n' %
                              (language[1], e))
 
-    print('\r%s\r...done' % (' ' * 16,))
+    print(('\r%s\r...done' % (' ' * 16,)))
 
 
 if __name__ == '__main__':

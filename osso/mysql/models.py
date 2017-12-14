@@ -12,7 +12,7 @@ from osso.core.models.fields import Creator
 def _db_engines():
     if django_version >= (1, 2):
         engines = set(i['ENGINE'].rsplit('.', 1)[-1]
-                      for i in settings.DATABASES.values())
+                      for i in list(settings.DATABASES.values()))
     else:
         engines = set([settings.DATABASE_ENGINE])
     return engines
@@ -102,7 +102,7 @@ class BlobField(models.Field):
             Return unicode to flag that we're dealing with serialized data.
             """
             value = self._get_val_from_obj(obj)
-            return unicode(b64encode(value))
+            return str(b64encode(value))
 
         def get_prep_value(self, value):
             if value is None:

@@ -208,11 +208,11 @@ class IncomingTextMessageForm(forms.Form):
                         #     _('Expected dcs field for binary message.'))
                         # This is always "Operator: 204-16 T-Mobile (nl)".
                         try:
-                            chars = [unichr(int(message[i:(i + 4)], 16))
+                            chars = [chr(int(message[i:(i + 4)], 16))
                                      for i in range(0, len(message), 4)]
-                            message_txt = u''.join(chars)
+                            message_txt = ''.join(chars)
                         except Exception as e:
-                            message_txt = u'<UNDECIPHERABLE: %r / %s>' % (e, e)
+                            message_txt = '<UNDECIPHERABLE: %r / %s>' % (e, e)
                         mail_admins(
                             'Mollie is missing DCS in binary message :(',
                             ('Message was: %r\nUDH: %r\nGuess: %r\n'
@@ -364,9 +364,9 @@ class DeliveryReportForm(forms.Form):
             # are when an ack is sent twice (delivery_date is set on the
             # second try) or if DLRs are sent out of order.
             mail_admins(
-                u'SMS API warn: sms_mollie2 reference %s' % (message.id,),
-                (u'DLR caused an update of 0 rows.\nIn data: %r\n'
-                 u'Orig data: %r\n') %
+                'SMS API warn: sms_mollie2 reference %s' % (message.id,),
+                ('DLR caused an update of 0 rows.\nIn data: %r\n'
+                 'Orig data: %r\n') %
                 (self.cleaned_data, (message.status, message.delivery_date)),
                 fail_silently=True
             )

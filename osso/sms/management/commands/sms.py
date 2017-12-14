@@ -58,8 +58,8 @@ Choose one of:
             else:
                 old = old[0]
                 if not quiet:
-                    print('Updating SMS %d with operator %s.' %
-                          (new.id, old.remote_operator))
+                    print(('Updating SMS %d with operator %s.' %
+                          (new.id, old.remote_operator)))
                 new.remote_operator = old.remote_operator
                 new.save()
 
@@ -84,8 +84,8 @@ Choose one of:
 
             msg = msg[0]
             if not quiet:
-                print('Selecting message %d to send (created %s)...' %
-                      (msg.id, msg.created))
+                print(('Selecting message %d to send (created %s)...' %
+                      (msg.id, msg.created)))
 
             # XXX: we could get the arguments from TextMessageExtra here
             # to supply to send(), or we can obsolete those parameters
@@ -97,6 +97,6 @@ Choose one of:
             except Exception as e:
                 if quiet:
                     raise
-                print('Got exception (dst %s):' % (msg.remote_address,))
+                print(('Got exception (dst %s):' % (msg.remote_address,)))
                 print(e)
                 skip_destinations.append(msg.remote_address)

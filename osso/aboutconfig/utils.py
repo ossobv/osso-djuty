@@ -1,6 +1,6 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
 try:
-    u, py2 = unicode, True
+    u, py2 = str, True
 except NameError:
     u, py2 = str, False
 
@@ -37,14 +37,14 @@ class ConfigError(ValueError):
         return 'ConfigError(%r, %r, %r)' % self.args
 
     def __unicode__(self):
-        return (u'Configuration item in AboutConfig bad/missing:\n'
-                u'  lookup key  = %r\n'
-                u'  found value = %r\n'
-                u'%s') % self.args
+        return ('Configuration item in AboutConfig bad/missing:\n'
+                '  lookup key  = %r\n'
+                '  found value = %r\n'
+                '%s') % self.args
 
     if py2:
         def __str__(self):
-            return unicode(self).encode('utf-8')
+            return str(self).encode('utf-8')
     else:
         __str__ = __unicode__
 

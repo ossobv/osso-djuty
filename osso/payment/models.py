@@ -100,7 +100,7 @@ class Payment(models.Model):
         count = Payment.objects.filter(id=self.id, **filter_kwargs).update(
             **update_kwargs)
         if is_BASE or count == 1:
-            for key, value in update_kwargs.items():
+            for key, value in list(update_kwargs.items()):
                 setattr(self, key, value)
             return True
 

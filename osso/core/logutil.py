@@ -59,7 +59,7 @@ class IgnoreUploadError(logging.Filter):
             class_, exception, tb = record.exc_info
             if (class_ == IOError and
                     exception.args and
-                    isinstance(exception.args[0], basestring)):
+                    isinstance(exception.args[0], str)):
                 for substring in self.error_substrings:
                     if exception.args[0].find(substring) != -1:
                         # Don't report this error.
@@ -78,7 +78,7 @@ def get_open_fds():
     # SUPERYUCK! We don't know which loggers we'll need.. fetching all loggers
     # that we have registered.
     handlers = set()
-    for logkey in settings.LOGGING['loggers'].keys():
+    for logkey in list(settings.LOGGING['loggers'].keys()):
         logger = logging.getLogger(logkey)
         handlers |= set(logger.handlers)
 

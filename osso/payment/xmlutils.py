@@ -26,7 +26,7 @@ def xmlescape(string, escape_also=''):
     """
     if isinstance(string, str):
         string = string.decode('utf-8')
-    if not isinstance(string, unicode):
+    if not isinstance(string, str):
         raise TypeError("xmlescape() argument must be a string type, "
                         "not '%s'" % (type(string).__name__,))
     if not isinstance(escape_also, str):
@@ -37,7 +37,7 @@ def xmlescape(string, escape_also=''):
         raise ValueError("xmlescape() will not handle your escape_also "
                          "arguments like you expect")
 
-    safe = (unicode(string).replace('&', '&amp;').replace('<', '&lt;')
+    safe = (str(string).replace('&', '&amp;').replace('<', '&lt;')
             .replace('>', '&gt;'))
     ascii = safe.encode('ascii', 'xmlcharrefreplace')
     for i in escape_also:
@@ -153,8 +153,8 @@ class UtilsTest(unittest.TestCase):
             </def>
         </abc>
         '''
-        expected = [{u'a': u'1'}, {u'a': u'1', u'b': u'2'},
-                    {u'a': u'3', u'b': u'5'}, {}, {u'br': u''}]
+        expected = [{'a': '1'}, {'a': '1', 'b': '2'},
+                    {'a': '3', 'b': '5'}, {}, {'br': ''}]
         output = dom2dictlist(parseString(input), inside=('abc', 'def'))
         self.assertEqual(expected, output)
 
@@ -186,7 +186,7 @@ class UtilsTest(unittest.TestCase):
     def test_dom2dictlist5b(self):
         input = (b'<?xml version="1.0" encoding="UTF-8"?>'
                  b'<a><b><c>1</c></b><b><d>2</d></b><b><e><f/></e></b></a>')
-        expected = [{u'c': u'1'}, {u'd': u'2'}, {u'e': None}]
+        expected = [{'c': '1'}, {'d': '2'}, {'e': None}]
         output = dom2dictlist(parseString(input), inside=('a'), li='b',
                               strict=False)
         self.assertEqual(expected, output)
@@ -197,7 +197,7 @@ class UtilsTest(unittest.TestCase):
         self.assertEqual(expected, xmlescape(input))
 
     def test_xmlescape2(self):
-        input = u'ABC&amp;"\u20ac'
+        input = 'ABC&amp;"\u20ac'
         expected = 'ABC&amp;amp;"&#8364;'
         self.assertEqual(expected, xmlescape(input))
 
@@ -208,11 +208,11 @@ class UtilsTest(unittest.TestCase):
 
     def test_xmlescape4(self):
         self.assertEqual(xmlescape('123'), '123')
-        self.assertEqual(xmlescape(u'abc'), 'abc')
+        self.assertEqual(xmlescape('abc'), 'abc')
         self.assertEqual(xmlescape('<&>'), '&lt;&amp;&gt;')
-        self.assertEqual(xmlescape(u'<&>'), '&lt;&amp;&gt;')
+        self.assertEqual(xmlescape('<&>'), '&lt;&amp;&gt;')
         self.assertEqual(xmlescape('\xe2\x82\xac'), '&#8364;')
-        self.assertEqual(xmlescape(u'\u20ac'), '&#8364;')
+        self.assertEqual(xmlescape('\u20ac'), '&#8364;')
         self.assertEqual(xmlescape('1<2'), '1&lt;2')
 
     def test_xmlstrip1(self):

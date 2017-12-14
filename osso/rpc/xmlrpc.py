@@ -1,6 +1,6 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
-import urlparse, xmlrpclib
-from xmlrpclib import Error, ProtocolError; Error # put in this scope
+import urllib.parse, xmlrpc.client
+from xmlrpc.client import Error, ProtocolError; Error # put in this scope
 
 import logging
 logger = logging.getLogger('osso.rpc')
@@ -22,7 +22,7 @@ class CookieTransportHelper:
     #
     # In python 2.6 and older we have to overload request()
     #
-    if hasattr(xmlrpclib.Transport, '_parse_response'):
+    if hasattr(xmlrpc.client.Transport, '_parse_response'):
         def request(self, host, handler, request_body, verbose=0):
             h = self.make_connection(host)
             if verbose:
@@ -63,23 +63,23 @@ class CookieTransportHelper:
                          (self.cookie,))
             return self.parent.parse_response(self, response)
 
-class CookieTransport(CookieTransportHelper, xmlrpclib.Transport):
+class CookieTransport(CookieTransportHelper, xmlrpc.client.Transport):
     def __init__(self):
-        CookieTransportHelper.__init__(self, xmlrpclib.Transport)
+        CookieTransportHelper.__init__(self, xmlrpc.client.Transport)
 
-class SafeCookieTransport(CookieTransportHelper, xmlrpclib.SafeTransport):
+class SafeCookieTransport(CookieTransportHelper, xmlrpc.client.SafeTransport):
     def __init__(self):
-        CookieTransportHelper.__init__(self, xmlrpclib.SafeTransport)
+        CookieTransportHelper.__init__(self, xmlrpc.client.SafeTransport)
 
 
-class ServerProxy(xmlrpclib.ServerProxy):
+class ServerProxy(xmlrpc.client.ServerProxy):
     def __init__(self, url):
-        parts = urlparse.urlparse(url)
+        parts = urllib.parse.urlparse(url)
         if parts.scheme == 'https':
             transport = SafeCookieTransport()
         else:
             transport = CookieTransport()
         # Using use_datetime=True because Django will not auto-convert the
         # XMLRPC DateTime objects to a usable time.
-        xmlrpclib.ServerProxy.__init__(self, url, transport=transport,
+        xmlrpc.client.ServerProxy.__init__(self, url, transport=transport,
                                        use_datetime=True)

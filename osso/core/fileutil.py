@@ -44,12 +44,12 @@ def ascii_filename(path, replacement='X'):
     '''
     if isinstance(path, str):
         return ascii_filename.str_re.sub(replacement, path)
-    if isinstance(path, unicode):
+    if isinstance(path, str):
         return ascii_filename.uni_re.sub(replacement, path)
     raise TypeError('Expected basestring, got %s: %r' %
                     (path.__class__.__name__, path))
 ascii_filename.str_re = re.compile(r'[\x00-\x1f\x80-\xff]')
-ascii_filename.uni_re = re.compile(u'[\u0000-\u001f\u0080-\uffff]')
+ascii_filename.uni_re = re.compile('[\u0000-\u001f\u0080-\uffff]')
 
 
 def assert_writable(paths, for_other_user=False):

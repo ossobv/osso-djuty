@@ -1,7 +1,7 @@
 # vim: set ts=8 sw=4 sts=4 et ai tw=79:
 import socket
 import time
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 
 from hashlib import md5
 from lxml import objectify
@@ -130,9 +130,9 @@ class MultiSafepay(Provider):
             error = dom.getElementsByTagName('error')
             if error:
                 code = error[0].getElementsByTagName('code')[0]
-                code = u''.join(i.wholeText for i in code.childNodes)
+                code = ''.join(i.wholeText for i in code.childNodes)
                 desc = error[0].getElementsByTagName('description')[0]
-                desc = u''.join(i.wholeText for i in desc.childNodes)
+                desc = ''.join(i.wholeText for i in desc.childNodes)
                 if code == '1006':  # Invalid transaction ID
                     # User clicked back and a used payment was attempted
                     # again, or it could simply be that the credentials are
@@ -142,7 +142,7 @@ class MultiSafepay(Provider):
                     raise PaymentAlreadyUsed()  # user clicked back somehow?
 
             payment_url_node = dom.getElementsByTagName('payment_url')[0]
-            payment_url = u''.join(
+            payment_url = ''.join(
                 i.wholeText for i in payment_url_node.childNodes)
         except PaymentAlreadyUsed:
             raise
@@ -365,13 +365,13 @@ class MultiSafepay(Provider):
         socket.setdefaulttimeout(20)
 
         timeout_seconds = 5
-        request = urllib2.Request(self.api_url, data=body.encode('utf-8'),
+        request = urllib.request.Request(self.api_url, data=body.encode('utf-8'),
                                   headers=headers)
 
         log(body, 'msp', 'out')
         try:
-            response = urllib2.urlopen(request, timeout=timeout_seconds)
-        except urllib2.HTTPError as e:
+            response = urllib.request.urlopen(request, timeout=timeout_seconds)
+        except urllib.error.HTTPError as e:
             # TEMP: this could use some tweaking
             contents = e.read()
             mail_admins('Incoming error to this XML',

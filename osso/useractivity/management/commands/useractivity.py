@@ -34,14 +34,14 @@ Choose one of:
         assert idle_max >= 0
 
         if not quiet:
-            print('Useractivity cleanup, running prune_idlers '
-                  'with idle_max set to %d seconds.' % idle_max)
+            print(('Useractivity cleanup, running prune_idlers '
+                  'with idle_max set to %d seconds.' % idle_max))
 
         pruned_users = prune_idlers(idle_max)
         if not quiet:
-            print('Sent logout signal for %d logged on user(s): %s' %
+            print(('Sent logout signal for %d logged on user(s): %s' %
                   (len(pruned_users),
-                   ', '.join(i.username for i in pruned_users)))
+                   ', '.join(i.username for i in pruned_users))))
 
         # Prune the table every now and then. And since we recommend
         # that this command is ran every minute, this should fix that
@@ -52,8 +52,8 @@ Choose one of:
                                         KEEP_DAYS_DEFAULT))
             if keep_days > 0:
                 if not quiet:
-                    print('Useractivity cleanup, running prune_table keeping '
-                          '%s days.' % keep_days)
+                    print(('Useractivity cleanup, running prune_table keeping '
+                          '%s days.' % keep_days))
                 prune_table(keep_days)
             else:
                 if not quiet:

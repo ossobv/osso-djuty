@@ -15,17 +15,17 @@ except ImportError:
 
 
 STATUS_CHOICES = (
-    (0, _(u'---')),
-    (50, _(u'Delivered')),
-    (51, _(u'Sent')),
-    (52, _(u'Buffered')),
-    (53, _(u'Delivery failed')),
-    (54, _(u'Delivery disallowed/impossible')),
-    (55, _(u'Destination disabled')),
-    (56, _(u'Destination unresponsive')),
-    (57, _(u'Destination failure')),
-    (58, _(u'Destination memory full')),
-    (59, _(u'Unknown destination')),
+    (0, _('---')),
+    (50, _('Delivered')),
+    (51, _('Sent')),
+    (52, _('Buffered')),
+    (53, _('Delivery failed')),
+    (54, _('Delivery disallowed/impossible')),
+    (55, _('Destination disabled')),
+    (56, _('Destination unresponsive')),
+    (57, _('Destination failure')),
+    (58, _('Destination memory full')),
+    (59, _('Unknown destination')),
 )
 
 # Het blijkt toch moeilijk bij Mollie om je eigen documentatie te
@@ -52,10 +52,10 @@ STATUS_CHOICES = (
 # > moet deze loze check geen showstopper zijn. Het lijkt me daarom geen
 # > fatale error.
 SUBSCRIPTION_CHOICES = (
-    ('', _(u'---')),
-    ('OFF', _(u'Off')),  # off/uit/stop
-    ('OK', _(u'Confirmed')),  # ja/ok
-    ('ON', _(u'On')),  # aan/on
+    ('', _('---')),
+    ('OFF', _('Off')),  # off/uit/stop
+    ('OK', _('Confirmed')),  # ja/ok
+    ('ON', _('On')),  # aan/on
 )
 
 
@@ -68,14 +68,14 @@ class IncomingTextMessageForm(forms.Form):
     The SMS gateway calls this for incoming text messages.
     http://www.mollie.nl/support/documentatie/sms-diensten/keyword/mo/
     '''
-    shortcode = forms.CharField(max_length=32, initial='1008', help_text=_(u'The shortcode that the text message was sent to.'))
-    keyword = forms.CharField(max_length=64, initial='EXAMPLE', required=False, help_text=_(u'The keyword used.'))
-    message = forms.CharField(max_length=2048, required=False, initial='example hello world', help_text=_(u'The full message (including the keyword).'))
-    originator = forms.CharField(max_length=32, initial='31612345678', help_text=_(u'The remote phone number.'))
-    operator = forms.CharField(max_length=32, required=False, initial='204-08', help_text=_(u'Mobile operator code (e.g. "204-08" for KPN Telecom).'))
-    mid = forms.CharField(max_length=64, initial='0123456789abcdef', help_text=_(u'The Mollie message ID. You need this when replying to incoming messages.'))
-    subscription = forms.ChoiceField(choices=SUBSCRIPTION_CHOICES, required=False, help_text=_(u'(Optional) The OK, ON or OFF for a subcription message.'))
-    receive_datetime = forms.CharField(max_length=14, initial=now, help_text=_(u'Time the message was received by the operator.'))
+    shortcode = forms.CharField(max_length=32, initial='1008', help_text=_('The shortcode that the text message was sent to.'))
+    keyword = forms.CharField(max_length=64, initial='EXAMPLE', required=False, help_text=_('The keyword used.'))
+    message = forms.CharField(max_length=2048, required=False, initial='example hello world', help_text=_('The full message (including the keyword).'))
+    originator = forms.CharField(max_length=32, initial='31612345678', help_text=_('The remote phone number.'))
+    operator = forms.CharField(max_length=32, required=False, initial='204-08', help_text=_('Mobile operator code (e.g. "204-08" for KPN Telecom).'))
+    mid = forms.CharField(max_length=64, initial='0123456789abcdef', help_text=_('The Mollie message ID. You need this when replying to incoming messages.'))
+    subscription = forms.ChoiceField(choices=SUBSCRIPTION_CHOICES, required=False, help_text=_('(Optional) The OK, ON or OFF for a subcription message.'))
+    receive_datetime = forms.CharField(max_length=14, initial=now, help_text=_('Time the message was received by the operator.'))
 
     def __init__(self, *args, **kwargs):
         if 'data' in kwargs:
@@ -120,7 +120,7 @@ class IncomingTextMessageForm(forms.Form):
                     message = decoded  # use the decoded message
 
         # Replace any \u2060 with \ufeff because we use 2060 internally.
-        return message.replace(u'\u2060', u'\ufeff')  # we use 2060 as concat delim
+        return message.replace('\u2060', '\ufeff')  # we use 2060 as concat delim
 
     def clean_operator(self):
         # Get the operator, but do not die if this fails.
@@ -133,7 +133,7 @@ class IncomingTextMessageForm(forms.Form):
     def clean_originator(self):
         value = self.cleaned_data['originator'].strip()
         if any(i not in '0123456789' for i in value) or len(value) == 0 or value[0] == '0':
-            raise forms.ValidationError(_(u'Expected phone number to be clean and complete.'))
+            raise forms.ValidationError(_('Expected phone number to be clean and complete.'))
         return '+%s' % value
 
     def clean_receive_datetime(self):
@@ -141,7 +141,7 @@ class IncomingTextMessageForm(forms.Form):
             value = time.strptime(self.cleaned_data['receive_datetime'], '%Y%m%d%H%M%S')
             value = datetime.datetime(*value[:6])
         except ValueError:
-            raise forms.ValidationError(_(u'The time does not have the required formatting, expected YYYYmmddHHMMSS.'))
+            raise forms.ValidationError(_('The time does not have the required formatting, expected YYYYmmddHHMMSS.'))
         return value
 
     def save(self):
@@ -178,7 +178,7 @@ class IncomingTextMessageForm(forms.Form):
                 # must be 153 or 67 septets long. (For GSM-charset, it
                 # can be more, with the odd s/\x1B/ /g replacements
                 # going on.)
-                last_part = message.body.split(u'\u2060')[-1]
+                last_part = message.body.split('\u2060')[-1]
                 # A bit of odd logic here: at this point, we don't know
                 # if the message was in ucs-2 or gsm-0338, so we need to
                 # check both lengths.
@@ -200,10 +200,10 @@ class IncomingTextMessageForm(forms.Form):
             message.delivery_date = self.cleaned_data['receive_datetime']
             # Append the message delimited by a word-joiner (zero width,
             # no breaks).
-            message.body += u'\u2060' + body
+            message.body += '\u2060' + body
             message.body_count += 1
             message.meta_append(meta, commit=False)
-            assert len([i for i in message.body if i == u'\u2060']) + 1 == message.body_count
+            assert len([i for i in message.body if i == '\u2060']) + 1 == message.body_count
             message.save()
             incoming_message.send(sender=TextMessage, instance=message, appended=True)
         else:
@@ -227,9 +227,9 @@ class DeliveryReportForm(forms.Form):
     messages.
     http://www.mollie.nl/support/documentatie/sms-diensten/keyword/mo/
     '''
-    reference = forms.CharField(max_length=64, initial='1', help_text=_(u'Text message reference (max 60 chars).'))
-    recipient = forms.CharField(max_length=32, initial='31612345678', help_text=_(u'The remote phone number.'))
-    status = forms.ChoiceField(choices=STATUS_CHOICES, initial=50, help_text=_(u'The status code.'))
+    reference = forms.CharField(max_length=64, initial='1', help_text=_('Text message reference (max 60 chars).'))
+    recipient = forms.CharField(max_length=32, initial='31612345678', help_text=_('The remote phone number.'))
+    status = forms.ChoiceField(choices=STATUS_CHOICES, initial=50, help_text=_('The status code.'))
 
     def __init__(self, *args, **kwargs):
         if 'data' in kwargs:
@@ -252,13 +252,13 @@ class DeliveryReportForm(forms.Form):
             value = TextMessage.objects.get(id=int(value))
             value.id_suffix = letter  # hack ;)
         except (ValueError, TextMessage.DoesNotExist):
-            raise forms.ValidationError(_(u'Reference not found.'))
+            raise forms.ValidationError(_('Reference not found.'))
         return value
 
     def clean_recipient(self):
         value = self.cleaned_data['recipient'].strip()
         if any(i not in '0123456789' for i in value) or len(value) == 0 or value[0] == '0':
-            raise forms.ValidationError(_(u'Expected phone number to be clean and complete.'))
+            raise forms.ValidationError(_('Expected phone number to be clean and complete.'))
         return '+%s' % value
 
     def clean_status(self):
@@ -266,7 +266,7 @@ class DeliveryReportForm(forms.Form):
             value = int(self.cleaned_data['status'])
             assert 50 <= value <= 59
         except (AssertionError, ValueError):
-            raise forms.ValidationError(_(u'Expected status value between 50 and 59.'))
+            raise forms.ValidationError(_('Expected status value between 50 and 59.'))
         return value
 
     def clean(self):
@@ -274,9 +274,9 @@ class DeliveryReportForm(forms.Form):
         message = self.cleaned_data.get('reference')
         if message:
             if message.remote_address != self.cleaned_data['recipient']:
-                raise forms.ValidationError(_(u'Reference, recipient and status mismatch (a).'))
+                raise forms.ValidationError(_('Reference, recipient and status mismatch (a).'))
             if message.status == 'in':
-                raise forms.ValidationError(_(u'Reference, recipient and status mismatch (b).'))
+                raise forms.ValidationError(_('Reference, recipient and status mismatch (b).'))
             # Mollie sometimes sends the DLR twice where it only listens to
             # the 500 error of the second message.
             #if message.id_suffix is None and message.status in ('ack', 'nak'):

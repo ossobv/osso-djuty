@@ -11,7 +11,7 @@ BUGS
   0x0391.
 '''
 try:
-    unicode
+    str
 except NameError:
     def bchr(i):
         return bytes([i])
@@ -115,7 +115,7 @@ def decode(input, errors='strict'):
                 raise UnicodeDecodeError('gsm-0338', input, i, i + 1,
                                          'ordinal not in range(128)')
         i += 1
-    return u''.join(ret), j
+    return ''.join(ret), j
 
 
 # == Encodings module API ==
@@ -128,88 +128,88 @@ def getregentry(name):
 # == Decoding/Encoding Map ==
 
 decoding_table = [i for i in (
-    u'@\xa3$\xa5\xe8\xe9\xf9\xec\xf2\xe7\n\xd8\xf8\r\xc5\xe5'
-    u'\u0394_\u03a6\u0393\u039b\u03a9\u03a0\u03a8\u03a3\u0398\u039e\xa0'
-    u'\xc6\xe6\xdf\xc9'
-    u' !"#\xa4%&\'()*+,-./'
-    u'0123456789:;<=>?'
-    u'\xa1ABCDEFGHIJKLMNOPQRSTUVWXYZ\xc4\xd6\xd1\xdc\xa7'
-    u'\xbfabcdefghijklmnopqrstuvwxyz\xe4\xf6\xf1\xfc\xe0'
+    '@\xa3$\xa5\xe8\xe9\xf9\xec\xf2\xe7\n\xd8\xf8\r\xc5\xe5'
+    '\u0394_\u03a6\u0393\u039b\u03a9\u03a0\u03a8\u03a3\u0398\u039e\xa0'
+    '\xc6\xe6\xdf\xc9'
+    ' !"#\xa4%&\'()*+,-./'
+    '0123456789:;<=>?'
+    '\xa1ABCDEFGHIJKLMNOPQRSTUVWXYZ\xc4\xd6\xd1\xdc\xa7'
+    '\xbfabcdefghijklmnopqrstuvwxyz\xe4\xf6\xf1\xfc\xe0'
 )]
 
 decoding_extensions = {
-    b'\x1b\x0a': u'\f',
-    b'\x1b\x14': u'^',
-    b'\x1b\x28': u'{',
-    b'\x1b\x29': u'}',
-    b'\x1b\x2f': u'\\',
-    b'\x1b\x3c': u'[',
-    b'\x1b\x3d': u'~',
-    b'\x1b\x3e': u']',
-    b'\x1b\x40': u'|',
-    b'\x1b\x65': u'\u20ac',
+    b'\x1b\x0a': '\f',
+    b'\x1b\x14': '^',
+    b'\x1b\x28': '{',
+    b'\x1b\x29': '}',
+    b'\x1b\x2f': '\\',
+    b'\x1b\x3c': '[',
+    b'\x1b\x3d': '~',
+    b'\x1b\x3e': ']',
+    b'\x1b\x40': '|',
+    b'\x1b\x65': '\u20ac',
 }
 
 encoding_table = dict((bord(c), bchr(i))
                       for i, c in enumerate(decoding_table))
 encoding_table.update(dict((bord(c), i)
-                           for i, c in decoding_extensions.items()))
+                           for i, c in list(decoding_extensions.items())))
 
 replacement_table = {
-    u'\t': b' ',
-    u'`': b'\'',
-    u'\xa2': b'c',
-    u'\xa6': b'|',
-    u'\xa8': b'"',
-    u'\xa9': b'c',
-    u'\xaa': b'a',
-    u'\xab': b'<',
-    u'\xae': b'r',
-    u'\xb5': b'u',
-    u'\xb6': b'P',
-    u'\xb7': b'\'',
-    u'\xbb': b'>',
-    u'\xc0': b'A',
-    u'\xc1': b'A',
-    u'\xc2': b'A',
-    u'\xc3': b'A',
-    u'\xc7': b'C',
-    u'\xc8': b'E',
-    u'\xca': b'E',
-    u'\xcb': b'E',
-    u'\xcc': b'I',
-    u'\xcd': b'I',
-    u'\xce': b'I',
-    u'\xcf': b'I',
-    u'\xd0': b'D',
-    u'\xd2': b'O',
-    u'\xd3': b'O',
-    u'\xd4': b'O',
-    u'\xd5': b'O',
-    u'\xd7': b'x',
-    u'\xd9': b'U',
-    u'\xda': b'U',
-    u'\xdb': b'U',
-    u'\xdd': b'Y',
-    u'\xde': b'b',
-    u'\xe1': b'a',
-    u'\xe2': b'a',
-    u'\xe3': b'a',
-    u'\xea': b'e',
-    u'\xeb': b'e',
-    u'\xed': b'i',
-    u'\xee': b'i',
-    u'\xef': b'i',
-    u'\xf0': b'd',
-    u'\xf3': b'o',
-    u'\xf4': b'o',
-    u'\xf5': b'o',
-    u'\xf7': b'/',
-    u'\xfa': b'u',
-    u'\xfb': b'u',
-    u'\xfd': b'y',
-    u'\xfe': b'b',
-    u'\xff': b'y',
+    '\t': b' ',
+    '`': b'\'',
+    '\xa2': b'c',
+    '\xa6': b'|',
+    '\xa8': b'"',
+    '\xa9': b'c',
+    '\xaa': b'a',
+    '\xab': b'<',
+    '\xae': b'r',
+    '\xb5': b'u',
+    '\xb6': b'P',
+    '\xb7': b'\'',
+    '\xbb': b'>',
+    '\xc0': b'A',
+    '\xc1': b'A',
+    '\xc2': b'A',
+    '\xc3': b'A',
+    '\xc7': b'C',
+    '\xc8': b'E',
+    '\xca': b'E',
+    '\xcb': b'E',
+    '\xcc': b'I',
+    '\xcd': b'I',
+    '\xce': b'I',
+    '\xcf': b'I',
+    '\xd0': b'D',
+    '\xd2': b'O',
+    '\xd3': b'O',
+    '\xd4': b'O',
+    '\xd5': b'O',
+    '\xd7': b'x',
+    '\xd9': b'U',
+    '\xda': b'U',
+    '\xdb': b'U',
+    '\xdd': b'Y',
+    '\xde': b'b',
+    '\xe1': b'a',
+    '\xe2': b'a',
+    '\xe3': b'a',
+    '\xea': b'e',
+    '\xeb': b'e',
+    '\xed': b'i',
+    '\xee': b'i',
+    '\xef': b'i',
+    '\xf0': b'd',
+    '\xf3': b'o',
+    '\xf4': b'o',
+    '\xf5': b'o',
+    '\xf7': b'/',
+    '\xfa': b'u',
+    '\xfb': b'u',
+    '\xfd': b'y',
+    '\xfe': b'b',
+    '\xff': b'y',
 }
 
 # == Register codec ==
@@ -222,10 +222,10 @@ if __name__ == '__main__':
     assert pack7(b'A!AaBbCc') == b'\xc1P0,\x14\x0f\xc7'
     assert unpack7(b'\xc1P0,\x14\x0f\xc7') == b'A!AaBbCc'
     x = 'abc[]@\xe5'.encode('gsm-0338')
-    print(repr(x))
+    print((repr(x)))
     x = x.decode('gsm-0338')
-    print(repr(x))
+    print((repr(x)))
     # E8 32 9B FD 06 DD DF 72 36 19
-    print(' '.join('%02X' % bord(i) for i in pack7(b'hello world')))
+    print((' '.join('%02X' % bord(i) for i in pack7(b'hello world'))))
     # D0 65 36 FB 0D BA BF E5 6C 32
-    print(' '.join('%02X' % bord(i) for i in pack7(b'hello world', 1)))
+    print((' '.join('%02X' % bord(i) for i in pack7(b'hello world', 1))))

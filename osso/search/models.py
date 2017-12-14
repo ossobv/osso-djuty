@@ -27,5 +27,5 @@ class KeywordOccurrence(models.Model):
     objects = SearchManager()
 
     def __unicode__(self):
-        return (u'%s, frequency=%d, weight=%d' %
+        return ('%s, frequency=%d, weight=%d' %
                 (self.keyword, self.frequency, self.weight))

@@ -5,8 +5,8 @@
 # * http://www.mollie.nl/support/documentatie/sms-diensten/dlr/
 # (parts taken from m3r consultancy mollie-python-1.0.0 example by Ivo
 # van der Wijk)
-import urllib
-import urllib2
+import urllib.request, urllib.parse, urllib.error
+import urllib.request, urllib.error, urllib.parse
 import time
 from xml.dom.minidom import parseString
 
@@ -188,12 +188,12 @@ class MollieSmsBackend(BaseSmsBackend):
     def _send_regular(self, message, recipient_list, local_address,
                       reference=None, gateway=None):
         args = self.default_args.copy()
-        args['recipients'] = u','.join(recipient_list).encode('utf-8')
+        args['recipients'] = ','.join(recipient_list).encode('utf-8')
         args['originator'] = local_address.encode('utf-8')
         if reference is not None:
-            args['reference'] = unicode(reference).encode('utf-8')
+            args['reference'] = str(reference).encode('utf-8')
         if gateway is not None:
-            args['gateway'] = unicode(gateway).encode('utf-8')
+            args['gateway'] = str(gateway).encode('utf-8')
 
         return self._send(message, args)
 
@@ -202,22 +202,22 @@ class MollieSmsBackend(BaseSmsBackend):
                       tariff_cent=0, member=False,
                       shortcode=None, keyword=None):
         args = self.default_args.copy()
-        args['recipients'] = u','.join(recipient_list).encode('utf-8')
+        args['recipients'] = ','.join(recipient_list).encode('utf-8')
         args['originator'] = local_address.encode('utf-8')
         if reference is not None:
-            args['reference'] = unicode(reference).encode('utf-8')
+            args['reference'] = str(reference).encode('utf-8')
         if gateway is not None:
-            args['gateway'] = unicode(gateway).encode('utf-8')
+            args['gateway'] = str(gateway).encode('utf-8')
         if mollie_id is not None:
-            args['mid'] = unicode(mollie_id).encode('utf-8')
+            args['mid'] = str(mollie_id).encode('utf-8')
 
         args['tariff'] = '%03d' % tariff_cent  # three-char tariff
         args['member'] = ('false', 'true')[bool(member)]
 
         if shortcode is not None:
-            args['shortcode'] = unicode(shortcode).encode('utf-8')
+            args['shortcode'] = str(shortcode).encode('utf-8')
         if keyword is not None:
-            args['keyword'] = unicode(keyword).encode('utf-8')
+            args['keyword'] = str(keyword).encode('utf-8')
 
         return self._send(message, args)
 
@@ -306,7 +306,7 @@ class MollieSmsBackend(BaseSmsBackend):
         return status, body_count
 
     def _send_part(self, args):
-        url = self.url + '?' + urllib.urlencode(args)
+        url = self.url + '?' + urllib.parse.urlencode(args)
 
         log('data: %r' % args, log='sms', subsys='mollie-out',
             fail_silently=True)
@@ -321,15 +321,15 @@ class MollieSmsBackend(BaseSmsBackend):
             # http://svn.python.org/view?view=rev&revision=80453
             # http://svn.python.org/view/python/branches/release26-maint/\
             #   Lib/ssl.py?r1=80453&r2=80452&pathrev=80453&diff_format=u
-            response = urllib2.urlopen(url, timeout=20)
+            response = urllib.request.urlopen(url, timeout=20)
             responsexml = response.read()
-        except urllib2.URLError as e:  # (should catch more errors here?)
+        except urllib.error.URLError as e:  # (should catch more errors here?)
             log('result: %r' % (e.args,), log='sms', subsys='mollie-out',
                 fail_silently=True)
             mail_admins(
                 'SMS API fail: sms_mollie reference %s' % args['reference'],
-                (u'Sending message failed with sms_mollie sms backend.\n\n'
-                 u'URL: %s\n\nData: %r\n\nErrors: %r\n') %
+                ('Sending message failed with sms_mollie sms backend.\n\n'
+                 'URL: %s\n\nData: %r\n\nErrors: %r\n') %
                 (url.replace(args['md5_password'], '<hidden>'), args, e.args),
                 fail_silently=True
             )
@@ -363,8 +363,8 @@ class MollieSmsBackend(BaseSmsBackend):
                              .childNodes[0].data)
             mail_admins(
                 'SMS API fail: sms_mollie reference %s' % args['reference'],
-                (u'Sending message failed with sms_mollie sms backend.\n\n'
-                 u'URL: %s\n\nData: %r\n\nError: %s (%s)\n\nResponse: %s\n') %
+                ('Sending message failed with sms_mollie sms backend.\n\n'
+                 'URL: %s\n\nData: %r\n\nError: %s (%s)\n\nResponse: %s\n') %
                 (url.replace(args['md5_password'], '<hidden>'), args,
                  resultmessage, resultcode, responsexml),
                 fail_silently=True

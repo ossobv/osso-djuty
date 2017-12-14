@@ -1,5 +1,5 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
-import hashlib, time, urllib, urllib2
+import hashlib, time, urllib.request, urllib.parse, urllib.error, urllib.request, urllib.error, urllib.parse
 from osso.aboutconfig.utils import aboutconfig
 from osso.sms import BaseSmsBackend
 
@@ -122,13 +122,13 @@ class WirelessSmsBackend(BaseSmsBackend):
         })
         if extra_args is not None:
             args.update(extra_args)
-        urlencoded_args = urllib.urlencode(args)
+        urlencoded_args = urllib.parse.urlencode(args)
 
         for url in (self.url, self.backup_url):
             if not url:
                 continue
             try:
-                f = urllib2.urlopen('%s%s' % (url, request_path), urlencoded_args)
+                f = urllib.request.urlopen('%s%s' % (url, request_path), urlencoded_args)
                 response = f.read()
                 # response: <code>=<info>
                 code, info = response.split('=', 2)
@@ -143,7 +143,7 @@ class WirelessSmsBackend(BaseSmsBackend):
                 # code 200: internal error, try again on the next server
                 if code == '200':
                     continue
-            except urllib2.URLError:
+            except urllib.error.URLError:
                 # server unavailable, try the next server
                 continue
 

@@ -1,6 +1,6 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
 try:
-    u = unicode
+    u = str
 except NameError:
     u = str
 

@@ -99,7 +99,7 @@ def group_by(keys, list_of_dictionaries):
         inner = output[key]
 
         # Add all, except the keys
-        for k, v in i.items():
+        for k, v in list(i.items()):
             if k not in keys:
                 if k not in inner:
                     inner[k] = []

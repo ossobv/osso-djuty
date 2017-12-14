@@ -21,7 +21,7 @@
 
 import os
 try:
-    import cPickle as pickle
+    import pickle as pickle
 except:
     import pickle
 # set default locale path to ../locale/

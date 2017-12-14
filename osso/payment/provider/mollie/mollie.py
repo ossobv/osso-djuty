@@ -5,8 +5,8 @@
 import ast
 import ssl
 import unittest
-import urllib
-import urllib2
+import urllib.request, urllib.parse, urllib.error
+import urllib.request, urllib.error, urllib.parse
 from lxml import objectify
 
 from osso.payment import (
@@ -49,7 +49,7 @@ class Mollie(IdealProvider):
         # temporary failure.
         try:
             response = self._do_request(params, timeout_seconds=1)
-        except (ProviderError, urllib2.URLError, ssl.SSLError):
+        except (ProviderError, urllib.error.URLError, ssl.SSLError):
             # ProviderError can be "(-99, u'Service (temporary) unavailable')"
             if aboutconfig:
                 banks = ast.literal_eval(
@@ -175,9 +175,9 @@ class Mollie(IdealProvider):
         }
         response = self._do_request(params)
         domobj = objectify.fromstring(response)
-        assert unicode(domobj.order.transaction_id) == unicode(transaction_id)
+        assert str(domobj.order.transaction_id) == str(transaction_id)
         assert int(domobj.order.amount) == int(payment.get_amount() * 100)
-        assert unicode(domobj.order.currency) == 'EUR'
+        assert str(domobj.order.currency) == 'EUR'
 
         # There is a bit of customer info in:
         #   order.consumer.consumerAccount,
@@ -209,9 +209,9 @@ class Mollie(IdealProvider):
         """
         if self.testing:
             params['testmode'] = 'true'
-        url = '%s?%s' % (self.api_url, urllib.urlencode(params))
+        url = '%s?%s' % (self.api_url, urllib.parse.urlencode(params))
         log(url, 'mollie', 'qry')
-        response = urllib2.urlopen(url, data=None, timeout=timeout_seconds)
+        response = urllib.request.urlopen(url, data=None, timeout=timeout_seconds)
         data = response.read()
         log(data, 'mollie', 'ret')
 

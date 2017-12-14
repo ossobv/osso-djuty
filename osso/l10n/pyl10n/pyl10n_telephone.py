@@ -114,11 +114,11 @@ def _tel2string(phone_tuple, fmt, locale_dict=None):
 
 
 def pyl10n_telephone_test():
-    print(teldom2string((31, 50, 1234567), 'en_US'))
-    print(telint2string((31, 50, 1234567), 'en_US'))
-    print(teldom2string((31, 50, 1234567), 'en_GB'))
-    print(telint2string((31, 50, 1234567), 'en_GB'))
-    print(teldom2string((31, 50, 1234567), 'nl_NL'))
-    print(telint2string((31, 50, 1234567), 'nl_NL'))
-    print(teldom2string((31, 50, 1234567), 'sv_SE'))
-    print(telint2string((31, 50, 1234567), 'sv_SE'))
+    print((teldom2string((31, 50, 1234567), 'en_US')))
+    print((telint2string((31, 50, 1234567), 'en_US')))
+    print((teldom2string((31, 50, 1234567), 'en_GB')))
+    print((telint2string((31, 50, 1234567), 'en_GB')))
+    print((teldom2string((31, 50, 1234567), 'nl_NL')))
+    print((telint2string((31, 50, 1234567), 'nl_NL')))
+    print((teldom2string((31, 50, 1234567), 'sv_SE')))
+    print((telint2string((31, 50, 1234567), 'sv_SE')))

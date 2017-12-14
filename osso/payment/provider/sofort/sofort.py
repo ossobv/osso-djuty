@@ -2,7 +2,7 @@
 import unittest
 from base64 import b64encode
 from hashlib import sha256
-from urllib2 import Request, urlopen
+from urllib.request import Request, urlopen
 
 from osso.payment.base import IdealProvider
 from osso.payment.conditional import reverse, settings
@@ -203,13 +203,13 @@ class Sofort(IdealProvider):
         if kwargs:
             raise TypeError(
                 "'%s' is an invalid keyword argument for this function" %
-                (kwargs.keys()[0],))
+                (list(kwargs.keys())[0],))
 
         # Set the other missing arguments and stringify all
         data['user_id'] = self.user_id
         data['project_id'] = self.project_id
-        for key, value in data.items():
-            data[key] = unicode(value).encode('utf-8')
+        for key, value in list(data.items()):
+            data[key] = str(value).encode('utf-8')
 
         # Create hash over the arguments
         values = []
@@ -233,7 +233,7 @@ class Sofort(IdealProvider):
                 form_url = 'https://www.sofort.com/payment/ideal'
 
         fields = []
-        for key, value in self._get_form_data(**kwargs).items():
+        for key, value in list(self._get_form_data(**kwargs).items()):
             fields.append(
                 '<input type="hidden" name="%s" value="%s"/>' %
                 (str(key), xmlescape(value, '"')))
@@ -294,12 +294,12 @@ class Sofort(IdealProvider):
         # Create hash over the arguments
         values = []
         for key in cls.IN_ORDER:
-            values.append(unicode(data.get(key, '')).encode('utf-8'))
-        values.append(unicode(notification_password).encode('utf-8'))
+            values.append(str(data.get(key, '')).encode('utf-8'))
+        values.append(str(notification_password).encode('utf-8'))
         calculated_hash = sha256('|'.join(values)).hexdigest().strip().lower()
 
         # Check hash
-        received_hash = unicode(data['hash']).encode('utf-8').strip().lower()
+        received_hash = str(data['hash']).encode('utf-8').strip().lower()
         if received_hash != calculated_hash:
             raise SofortIdealError(7014, 'Invalid hash')
 
@@ -355,7 +355,7 @@ class SofortTest(unittest.TestCase):
             user_id=1, project_id=2, api_key=3,
             project_password='geheim')
         data = ideal._get_form(
-            amount=12.34, reason_1=u'my-rEason',
+            amount=12.34, reason_1='my-rEason',
             sender_bank_code=91)
         self.assertTrue(data.startswith('<form '))
         self.assertTrue('"12.34"' in data)
@@ -370,7 +370,7 @@ class SofortTest(unittest.TestCase):
 
     def test_validate_response(self):
         input = {
-            'unused': 1, 'amount': 12.34, 'reason_1': u'my_r\u20acason',
+            'unused': 1, 'amount': 12.34, 'reason_1': 'my_r\u20acason',
             'sender_bank_code': 91,
             'hash': ('7004dd7f0ba4a3c679f5b9c4d97c129f'
                      'fe420eff0b70e2e6431b25afd02aab43'),

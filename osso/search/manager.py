@@ -38,7 +38,7 @@ class SearchHitManager(object):
         type = 'or': return the hits that match any of the keywords
         '''
         results = set(self.hit_total.keys())
-        for hits in self.hit_keywords.values():
+        for hits in list(self.hit_keywords.values()):
             if type == 'or':
                 results.update(hits)
             else:

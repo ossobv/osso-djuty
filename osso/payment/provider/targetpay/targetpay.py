@@ -1,6 +1,6 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
 import json
-from urllib import urlencode
+from urllib.parse import urlencode
 
 from osso.core.http.shortcuts import http_get
 from osso.payment import (

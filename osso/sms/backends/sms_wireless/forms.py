@@ -9,7 +9,7 @@ if 0xffffffff == -1:
 
 import datetime
 import time
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 
 from django import forms
 from django.core.mail import mail_admins
@@ -270,7 +270,7 @@ class DeliveryReportForwardForm(forms.Form):
         post_data = request.POST.urlencode()
         destination = self.dlr_forward.destination
         try:
-            f = urllib2.urlopen(destination, post_data)
+            f = urllib.request.urlopen(destination, post_data)
             response = f.read()
             f.close()
         except Exception as e:
@@ -283,9 +283,9 @@ class DeliveryReportForwardForm(forms.Form):
         )
         # response does not match the wireless format
         # notify the admins and mark the report as accepted
-        if not response.startswith(u'[RESPONSE'):
+        if not response.startswith('[RESPONSE'):
             self.mail_admins(log)
-            return u'[RESPONSE-OK]'
+            return '[RESPONSE-OK]'
         return response
 
     def log(self, request):
@@ -300,9 +300,9 @@ class DeliveryReportForwardForm(forms.Form):
 
     def mail_admins(self, log):
         mail_admins(
-            u'Unable to forward delivery report',
-            (u'DLR Log ID: %d\nBatch prefix: %s\nDestination: %s\n'
-             u'Response: %s\nPOST: %s') %
+            'Unable to forward delivery report',
+            ('DLR Log ID: %d\nBatch prefix: %s\nDestination: %s\n'
+             'Response: %s\nPOST: %s') %
             (log.pk, log.batch_prefix, log.destination, log.response,
              log.post_data),
             fail_silently=True,

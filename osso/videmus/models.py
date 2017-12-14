@@ -99,7 +99,7 @@ class VideoFileBase(models.Model):
         return os.path.join(VIDEO_DIR, format, filename)
 
     def __str__(self):
-        return unicode(self).encode('utf-8')
+        return str(self).encode('utf-8')
 
     def __unicode__(self):
         return smart_text(self.video)
@@ -154,11 +154,10 @@ class VideoManager(models.Manager):
         return video, created
 
 
-class Video(VideoFileBase):
+class Video(VideoFileBase, metaclass=VideoMetaClass):
     '''
     Abstract ``Video`` model that can store and encode a video file.
     '''
-    __metaclass__ = VideoMetaClass
 
     format = 'original'
 

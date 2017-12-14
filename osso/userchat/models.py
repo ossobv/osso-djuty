@@ -72,7 +72,7 @@ class Channel(Model):
         return repr(self)
 
     def __repr__(self):
-        return (u'Channel(name=%s, relation_id=%d)' %
+        return ('Channel(name=%s, relation_id=%d)' %
                 (repr(self.name), self.relation.id))
 
     class Meta:
@@ -100,7 +100,7 @@ class Message(models.Model):
         return repr(self)
 
     def __repr__(self):
-        return (u'Message(timestamp=%s, channel_id=%s, sender=%s)' %
+        return ('Message(timestamp=%s, channel_id=%s, sender=%s)' %
                 (self.timestamp, self.channel.id, self.sender))
 
 

@@ -20,12 +20,12 @@ MOLLIE_IPS = (
 
 class HttpResponseOk(HttpResponse):
     def __init__(self, message=None, saved=None):
-        super(HttpResponseOk, self).__init__(content=u'OK', content_type='text/plain; charset=UTF-8')
+        super(HttpResponseOk, self).__init__(content='OK', content_type='text/plain; charset=UTF-8')
 
 
 class HttpResponseFail(HttpResponseServerError):
     def __init__(self, message='(unknown)'):
-        super(HttpResponseFail, self).__init__(content=u'ERROR: %s' % message, content_type='text/plain; charset=UTF-8')
+        super(HttpResponseFail, self).__init__(content='ERROR: %s' % message, content_type='text/plain; charset=UTF-8')
 
 
 @commit_on_success
@@ -41,11 +41,11 @@ class HttpResponseFail(HttpResponseServerError):
 # This bug also affects the TransactionMiddleware, so if you use that
 # you could consider removing this decorator.
 def incoming_text(request):
-    return simple_form_view(request, form_class=IncomingTextMessageForm, heading=_(u'Incoming SMS'),
+    return simple_form_view(request, form_class=IncomingTextMessageForm, heading=_('Incoming SMS'),
             ip_whitelist=MOLLIE_IPS, httpresponse_ok=HttpResponseOk, httpresponse_fail=HttpResponseFail, mail_on_fail=True)
 
 
 @commit_on_success
 def delivery_report(request):
-    return simple_form_view(request, form_class=DeliveryReportForm, heading=_(u'Delivery report'),
+    return simple_form_view(request, form_class=DeliveryReportForm, heading=_('Delivery report'),
             ip_whitelist=MOLLIE_IPS, httpresponse_ok=HttpResponseOk, httpresponse_fail=HttpResponseFail, mail_on_fail=True)

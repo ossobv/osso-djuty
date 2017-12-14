@@ -42,9 +42,9 @@ class CommandTestCase(TestCase):
     @patch('sys.stderr', new_callable=StringIO)
     @patch('sys.stdout', new_callable=StringIO)
     def test_ostat(self, stdout, stderr):
-        with self.assertRaisesRegexp(CommandError, 'invalid/missing arguments'):
+        with self.assertRaisesRegex(CommandError, 'invalid/missing arguments'):
             call_command('ostat')
-        with self.assertRaisesRegexp(CommandError, 'No model found'):
+        with self.assertRaisesRegex(CommandError, 'No model found'):
             call_command('ostat', 'auth.Pena', '1')
         call_command('ostat', 'auth.User', '1')
         self.assertIn("<class 'django.contrib.auth.models.User'> with pk '1' "

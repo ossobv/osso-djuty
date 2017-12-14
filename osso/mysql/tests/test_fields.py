@@ -20,7 +20,7 @@ Copyright (C) 2012,2013,2016  Walter Doekes <wdoekes>, OSSO B.V.
     USA.
 """
 try:
-    py2 = bool(unicode)
+    py2 = bool(str)
     bchr = chr
 except NameError:
     py2 = False
@@ -71,7 +71,7 @@ class AsciiTest(TestCase):
 
     @skip_if_not_mysql_or_sqlite
     def test_create(self):
-        obj = AsciiModel.objects.create(name=u'unicode-\u20ac', value=1)
+        obj = AsciiModel.objects.create(name='unicode-\u20ac', value=1)
 
         # Lookup by id and check name validity (downcast to ascii)
         obj2 = AsciiModel.objects.get(id=obj.id)
@@ -79,29 +79,29 @@ class AsciiTest(TestCase):
 
     @skip_if_not_mysql_or_sqlite
     def test_lookup(self):
-        obj = AsciiModel.objects.create(name=u'unicode-?', value=2)
+        obj = AsciiModel.objects.create(name='unicode-?', value=2)
 
         # Lookup by name (should be downcast to ascii)
-        obj2 = AsciiModel.objects.get(name=u'unicode-\u20ac')
+        obj2 = AsciiModel.objects.get(name='unicode-\u20ac')
         self.assertEqual(obj2.id, obj.id)
 
     @skip_if_not_mysql_or_sqlite
     def test_only(self):
-        AsciiModel.objects.create(name=u'unicode-?', value=3)
+        AsciiModel.objects.create(name='unicode-?', value=3)
         values = [i.name for i in AsciiModel.objects.only('name')]
-        self.assertEqual(values, [u'unicode-?'])
+        self.assertEqual(values, ['unicode-?'])
 
     @skip_if_not_mysql_or_sqlite
     def test_values(self):
-        AsciiModel.objects.create(name=u'unicode-?', value=4)
+        AsciiModel.objects.create(name='unicode-?', value=4)
         values = [i['name'] for i in AsciiModel.objects.values('name')]
-        self.assertEqual(values, [u'unicode-?'])
+        self.assertEqual(values, ['unicode-?'])
 
     @skip_if_not_mysql_or_sqlite
     def test_values_list(self):
-        AsciiModel.objects.create(name=u'unicode-?', value=5)
+        AsciiModel.objects.create(name='unicode-?', value=5)
         values = list(AsciiModel.objects.values_list('name', flat=True))
-        self.assertEqual(values, [u'unicode-?'])
+        self.assertEqual(values, ['unicode-?'])
 
     @skip_if_not_mysql_or_sqlite
     def test_case_sensitive_store(self):
@@ -125,21 +125,21 @@ class AsciiTest(TestCase):
     def test_substring_contains(self):
         AsciiModel.objects.create(name='a Mid-String to search for', value=1)
         AsciiModel.objects.create(name='whatever', value=2)
-        self.assertEquals(
+        self.assertEqual(
             AsciiModel.objects.filter(name__contains='Mid-String').count(), 1)
 
     @skip_if_not_mysql_or_sqlite
     def test_substring_startswith(self):
         AsciiModel.objects.create(name='a Mid-String to search for', value=1)
         AsciiModel.objects.create(name='whatever', value=2)
-        self.assertEquals(
+        self.assertEqual(
             AsciiModel.objects.filter(name__startswith='a Mid').count(), 1)
 
     @skip_if_not_mysql_or_sqlite
     def test_substring_endswith(self):
         AsciiModel.objects.create(name='a Mid-String to search for', value=1)
         AsciiModel.objects.create(name='whatever', value=2)
-        self.assertEquals(
+        self.assertEqual(
             AsciiModel.objects.filter(name__endswith='search for').count(), 1)
 
     @skip_if_not_mysql_or_sqlite
@@ -147,7 +147,7 @@ class AsciiTest(TestCase):
     def test_substring_contains_case(self):
         AsciiModel.objects.create(name='a Mid-String to search for', value=1)
         AsciiModel.objects.create(name='a mid-string to miss', value=2)
-        self.assertEquals(
+        self.assertEqual(
             AsciiModel.objects.filter(name__contains='Mid-String').count(), 1)
 
     @skip_if_not_mysql_or_sqlite
@@ -155,7 +155,7 @@ class AsciiTest(TestCase):
     def test_substring_startswith_case(self):
         AsciiModel.objects.create(name='a Mid-String to search for', value=1)
         AsciiModel.objects.create(name='a mid-string to miss', value=2)
-        self.assertEquals(
+        self.assertEqual(
             AsciiModel.objects.filter(name__startswith='a Mid').count(), 1)
 
     @skip_if_not_mysql_or_sqlite
@@ -163,7 +163,7 @@ class AsciiTest(TestCase):
     def test_substring_endswith_case(self):
         AsciiModel.objects.create(name='a Mid-String to search for', value=1)
         AsciiModel.objects.create(name='a mid-string to Search For', value=2)
-        self.assertEquals(
+        self.assertEqual(
             AsciiModel.objects.filter(name__endswith='search for').count(), 1)
 
 

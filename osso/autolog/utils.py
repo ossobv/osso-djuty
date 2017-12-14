@@ -120,7 +120,7 @@ def log(message, log='main', subsys='(main)', fail_silently=True):
                                  NAMEDIDS[namedid])
 
     try:
-        line = (u'%s %s: %s\n' % (prefix, subsys, message)).encode('utf-8')
+        line = ('%s %s: %s\n' % (prefix, subsys, message)).encode('utf-8')
     except UnicodeDecodeError:
         line = ('%s %s: %s\n' % (prefix, subsys, message))
     assert isinstance(line, str)

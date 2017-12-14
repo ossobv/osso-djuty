@@ -88,8 +88,8 @@ class TransactionReport(View):
                 raise Payment.DoesNotExist('bad trxid?')
         except Payment.DoesNotExist as e:
             mail_admins('Check failed at TGP TransactionReport',
-                        (u'Exception: %s (%r)\n\nGet: %r\n\nPost: %r\n\n'
-                         u'Meta: %r' %
+                        ('Exception: %s (%r)\n\nGet: %r\n\nPost: %r\n\n'
+                         'Meta: %r' %
                          (e, e, request.GET, request.POST, request.META)))
             response = HttpResponse('NAK', content_type=content_type)
             response.status_code = 500
@@ -112,12 +112,12 @@ class TransactionReport(View):
                 'is_success': payment.is_success,
                 'blob': payment.blob,
             }
-            mail_admins((u'Replying with %s to TGP report [%s, %s, %s] '
-                         u'(might indicate a problem)' % (
+            mail_admins(('Replying with %s to TGP report [%s, %s, %s] '
+                         '(might indicate a problem)' % (
                              reply, payment.id, payment.is_success,
                              payment.created)),
-                        (u'Exception: %s (%s)\n\nGet: %r\n\nPost: %r\n\n'
-                         u'Traceback: %s\n\nMeta: %r\n\nPayment: %r' % (
+                        ('Exception: %s (%s)\n\nGet: %r\n\nPost: %r\n\n'
+                         'Traceback: %s\n\nMeta: %r\n\nPayment: %r' % (
                              e, e, request.GET, request.POST,
                              traceback.format_exc(), request.META,
                              payinfo)))

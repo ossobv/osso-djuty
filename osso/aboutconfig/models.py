@@ -1,6 +1,6 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
 try:
-    py2 = bool(unicode)
+    py2 = bool(str)
 except NameError:
     py2 = False
 

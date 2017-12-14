@@ -25,17 +25,17 @@ from . import pyl10n_core as _p
 def format(format, val, grouping=False, monetary=False, dutch_rounding=False,
            locale=None):
     if monetary:
-        assert format == u'%f'
+        assert format == '%f'
         return currency(val, False, grouping, dutch_rounding=dutch_rounding,
                         locale=locale)
 
-    assert len(format) and format[0] == u'%'
+    assert len(format) and format[0] == '%'
     conv = _p.localeconv(locale)
 
     if dutch_rounding:
         val = dutch_round(val, _format_to_fractionals(format))
     ret = format % val
-    if u'e' in ret or u'E' in ret:  # we're looking at exponents.. blame user
+    if 'e' in ret or 'E' in ret:  # we're looking at exponents.. blame user
         return ret
     return _group_and_decimal(ret, grouping, conv['decimal_point'],
                               conv['thousands_sep'], conv['grouping'])
@@ -83,17 +83,17 @@ def currency(val, symbol=True, grouping=False, international=False,
     if dutch_rounding:
         val = dutch_round(val, fractionals)
     val = abs(val)
-    ret = (u'%%.%if' % fractionals) % val
+    ret = ('%%.%if' % fractionals) % val
     ret = _group_and_decimal(ret, grouping, conv['mon_decimal_point'],
                              conv['mon_thousands_sep'], conv['mon_grouping'])
 
     if not symbol:
         if positioning == 0:
-            return u'(%s%s%s)' % (ret,)
+            return '(%s%s%s)' % (ret,)
         elif positioning == 1 or positioning == 3 or positioning == 127:
-            return u'%s%s' % (sign, ret)
+            return '%s%s' % (sign, ret)
         elif positioning == 2 or positioning == 4:
-            return u'%s%s' % (ret, sign)
+            return '%s%s' % (ret, sign)
         assert False
 
     if symbol_before:
@@ -102,7 +102,7 @@ def currency(val, symbol=True, grouping=False, international=False,
         args = [ret, space_between_symbol_value, symbol_char]
 
     if positioning == 0:
-        ret = u'(%s%s%s)' % tuple(args)
+        ret = '(%s%s%s)' % tuple(args)
     else:
         if (positioning == 1 or (positioning == 3 and symbol_before) or
                 positioning == 127):
@@ -115,7 +115,7 @@ def currency(val, symbol=True, grouping=False, international=False,
             args.insert(1, sign)
         else:
             assert False
-        ret = u'%s%s%s%s' % tuple(args)
+        ret = '%s%s%s%s' % tuple(args)
 
     return ret
 
@@ -125,15 +125,15 @@ def atof(string, allow_grouping=True, func=float, locale=None):
     if allow_grouping:
         ts = conv['thousands_sep']
         ds = conv['decimal_point']
-        if u'.' in string and u'.' not in (ts, ds):
+        if '.' in string and '.' not in (ts, ds):
             raise ValueError('invalid decimal separator found')
-        string = string.replace(ts, u'')  # get rid of grouping (ignore pos)
+        string = string.replace(ts, '')  # get rid of grouping (ignore pos)
     else:
         ds = conv['decimal_point']
-        if u'.' in string and u'.' != ds:
+        if '.' in string and '.' != ds:
             raise ValueError('invalid decimal separator found')
-    if ds != u'':
-        string = string.replace(ds, u'.')
+    if ds != '':
+        string = string.replace(ds, '.')
     return func(string)
 
 
@@ -202,13 +202,13 @@ def _group(val, group_char, group_list):
 
 def _group_and_decimal(val, grouping, decimal_char, group_char, group_list):
     if grouping:
-        if u'.' in val:
-            left, right = val.split(u'.')
-            return u'%s%s%s' % (_group(left, group_char, group_list),
+        if '.' in val:
+            left, right = val.split('.')
+            return '%s%s%s' % (_group(left, group_char, group_list),
                                 decimal_char, right)
         else:
             return _group(val, group_char, group_list)
-    return val.replace(u'.', decimal_char)
+    return val.replace('.', decimal_char)
 
 
 def pyl10n_numeric_test():

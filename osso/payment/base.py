@@ -40,7 +40,7 @@ Some payment providers require additional parameters to the
 get_payment_form: you can provide them in your subclass.
 """
 import unittest
-import urlparse
+import urllib.parse
 
 from osso.payment.xmlutils import htmlesc
 
@@ -125,8 +125,8 @@ def url2formdata(url):
     Split the URL into a scheme+netloc+path and split up query
     components.
     """
-    obj = urlparse.urlparse(url)
-    items = tuple(urlparse.parse_qsl(obj.query))
+    obj = urllib.parse.urlparse(url)
+    items = tuple(urllib.parse.parse_qsl(obj.query))
     return '%s://%s%s' % (obj.scheme, obj.netloc, obj.path), items
 
 

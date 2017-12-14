@@ -137,7 +137,7 @@ class Command(BaseCommand):
                 object._old_rdepends = False
             else:
                 # == GETTING TO_BE_DELETED OBJECTS THE DJANGO 1.1.1- WAY ==
-                dependent_objects = [unicode(object), []]
+                dependent_objects = [str(object), []]
                 perms_needed = set()
                 get_deleted_objects(dependent_objects, perms_needed, None,
                                     object, object._meta, 1, admin.site)
@@ -147,7 +147,7 @@ class Command(BaseCommand):
         return object._rdepends
 
     def print_rdepend_count(self, object):
-        print(self.count_rdepends(object))
+        print((self.count_rdepends(object)))
 
     def print_stat(self, object):
         dependent_count = self.count_rdepends(object)
@@ -157,7 +157,7 @@ class Command(BaseCommand):
             def children_print(children, indent=0):
                 for child in children:
                     name, grandchildren = child
-                    print('      : %s- %s' % ('  ' * indent, name))
+                    print(('      : %s- %s' % ('  ' * indent, name)))
                     children_print(grandchildren, indent + 1)
         else:
             def children_print(children, indent=0):
@@ -165,24 +165,24 @@ class Command(BaseCommand):
                     if isinstance(child, type([])):
                         children_print(child, indent + 1)
                     else:
-                        print('      : %s- %s' % ('  ' * indent, child))
+                        print(('      : %s- %s' % ('  ' * indent, child)))
 
         opts = object._meta
         if hasattr(opts, 'module_name'):  # renamed to model_name
             opts.model_name = opts.module_name
 
         identifier = '%s.%s:%s' % (opts.app_label, opts.model_name, object.pk)
-        print('    ID: %s' % (identifier,))
-        print(' Value: %s' % (unicode(object),))
+        print(('    ID: %s' % (identifier,)))
+        print((' Value: %s' % (str(object),)))
         if hasattr(object, 'created'):
-            print('Create: %s' % (object.created,))
+            print(('Create: %s' % (object.created,)))
         if hasattr(object, 'modified'):
-            print('Modify: %s' % (object.modified,))
+            print(('Modify: %s' % (object.modified,)))
         if dependent_count:
-            print('  Deps: %s ==>' % (dependent_count,))
+            print(('  Deps: %s ==>' % (dependent_count,)))
             if object._old_rdepends:
                 children_print(dependent_objects[1])
             else:
                 children_print(dependent_objects[1:])
         else:
-            print('  Deps: %s' % (dependent_count,))
+            print(('  Deps: %s' % (dependent_count,)))

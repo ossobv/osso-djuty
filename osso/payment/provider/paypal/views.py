@@ -47,8 +47,8 @@ class TransactionPassed(RedirectView):
             return payment.get_url('success')
 
         mail_admins(
-            u'Check failed at paypal/paypal transaction_passed',
-            u'Exception: %s (%r)\n\nGet: %r\n\nPost: %r\n\nMeta: %r' % (
+            'Check failed at paypal/paypal transaction_passed',
+            'Exception: %s (%r)\n\nGet: %r\n\nPost: %r\n\nMeta: %r' % (
                 e, e, self.request.GET, self.request.POST, self.request.META
             )
         )
@@ -81,8 +81,8 @@ class TransactionAborted(RedirectView):
             return payment.get_url('abort')
 
         mail_admins(
-            u'Check failed at paypal/paypal transaction_aborted',
-            u'Exception: %s (%r)\n\nGet: %r\n\nPost: %r\n\nMeta: %r' % (
+            'Check failed at paypal/paypal transaction_aborted',
+            'Exception: %s (%r)\n\nGet: %r\n\nPost: %r\n\nMeta: %r' % (
                 e, e, self.request.GET, self.request.POST, self.request.META
             )
         )

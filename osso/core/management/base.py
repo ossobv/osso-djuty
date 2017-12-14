@@ -24,7 +24,7 @@
 #     def handle(self, *args, **kwargs):
 #         self.stdout.write('utf8 unbuffered heaven')
 #
-from __future__ import absolute_import, with_statement
+
 import atexit
 import sys
 from os import fdopen
@@ -141,7 +141,7 @@ class BaseCommand(DjangoBaseCommand):
                     # But if we weren't, we should supply the backtrace.
                     else:
                         mail_admins(
-                            u'%s cronbg stopped manually' % (module_name,),
+                            '%s cronbg stopped manually' % (module_name,),
                             traceback_str
                         )
                     # No more mailing below.
@@ -154,7 +154,7 @@ class BaseCommand(DjangoBaseCommand):
 
             if traceback_str:
                 mail_admins(
-                    u'Exception in %s cronbg!' % (module_name,),
+                    'Exception in %s cronbg!' % (module_name,),
                     traceback.format_exc()
                 )
                 sys.exit(1)
@@ -166,15 +166,15 @@ def docstring(doc):
     """
     if not doc:
         return ''
-    if doc[0] != u'\n':
+    if doc[0] != '\n':
         raise NotImplementedError('FIXME: Expected docstring to start on '
                                   'second line, got this: %r' % (doc,))
     offset = 1
-    while doc[offset] == u' ':
+    while doc[offset] == ' ':
         offset += 1
-    spacing = u'\n' + ((offset - 1) * u' ')
+    spacing = '\n' + ((offset - 1) * ' ')
 
-    doc = doc.replace(spacing, u'\n')
+    doc = doc.replace(spacing, '\n')
     return doc.strip()  # drop leading and trailing space (esp. the first LF)
 
 

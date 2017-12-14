@@ -111,7 +111,7 @@ def _strftime(fmt, lc_time, date=None):
 def pyl10n_time_test():
     import datetime
     now = datetime.datetime.now()
-    print(format_datetime(now - datetime.timedelta(minutes=5), 'de_DE'))
-    print(format_datetime(now - datetime.timedelta(minutes=10), 'en_US'))
-    print(format_datetime(now - datetime.timedelta(minutes=15), 'nl_NL'))
-    print(format_datetime(now - datetime.timedelta(minutes=20), 'sv_SE'))
+    print((format_datetime(now - datetime.timedelta(minutes=5), 'de_DE')))
+    print((format_datetime(now - datetime.timedelta(minutes=10), 'en_US')))
+    print((format_datetime(now - datetime.timedelta(minutes=15), 'nl_NL')))
+    print((format_datetime(now - datetime.timedelta(minutes=20), 'sv_SE')))

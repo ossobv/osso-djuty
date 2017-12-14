@@ -37,8 +37,8 @@ class TransactionReturn(RedirectView):
                 e = ValueError('Mismatch of transaction_id in GET')
 
         mail_admins(
-            u'Check failed at mollie/ideal transaction_return',
-            u'Exception: %s (%r)\n\nGet: %r\n\nPost: %r\n\nMeta: %r' % (
+            'Check failed at mollie/ideal transaction_return',
+            'Exception: %s (%r)\n\nGet: %r\n\nPost: %r\n\nMeta: %r' % (
                 e, e, self.request.GET, self.request.POST, self.request.META
             )
         )
@@ -71,8 +71,8 @@ class TransactionReport(View):
                 # (c) if the lookup says 'paid', we have a problem
                 mail_admins(('Replying with NAK to bad message from Mollie '
                              '(might indicate a problem)'),
-                            (u'Exception: %s (%s)\n\nGet: %r\n\nPost: %r\n\n'
-                             u'Meta: %r' %
+                            ('Exception: %s (%s)\n\nGet: %r\n\nPost: %r\n\n'
+                             'Meta: %r' %
                              (e, e, self.request.GET, self.request.POST,
                               self.request.META)))
                 response = HttpResponse('NAK', content_type=content_type)
@@ -81,8 +81,8 @@ class TransactionReport(View):
             else:
                 return HttpResponse('OK', content_type=content_type)
 
-        mail_admins(u'Check failed at mollie/ideal transaction_report',
-                    (u'Exception: %s (%s)\n\nGet: %r\n\nPost: %r\n\nMeta: %r' %
+        mail_admins('Check failed at mollie/ideal transaction_report',
+                    ('Exception: %s (%s)\n\nGet: %r\n\nPost: %r\n\nMeta: %r' %
                      (e, e, self.request.GET, self.request.POST,
                       self.request.META)))
         response = HttpResponse('NAK', content_type=content_type)
