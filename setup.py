@@ -11,7 +11,7 @@ except ImportError:  # python<=2.6
         ret = file_.wait()
         if ret:
             raise CalledProcessError(ret, command)
-        return out
+        return out.decode("utf-8")
 
 from distutils.core import setup
 
@@ -66,9 +66,9 @@ else:
 data.append('.version')
 
 
-#####################
+#
 # HACKS BEGIN HERE! #
-#####################
+#
 # Otherwise we get these errors:
 # """error: can't copy 'seractivity/fixtures/config_data.xml': doesn't exist or
 #    not a regular file""" when it wants to copy stuff from "useractivity".
@@ -105,9 +105,9 @@ def _get_data_files_HACK(self):
 # http://mail.python.org/pipermail/distutils-sig/2005-April/004458.html
 # http://permalink.gmane.org/gmane.comp.python.distutils.devel/1589
 build_py._get_data_files = _get_data_files_HACK
-###################
+#
 # HACKS END HERE! #
-###################
+#
 
 
 setup(
