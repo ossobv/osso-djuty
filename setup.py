@@ -113,7 +113,7 @@ build_py._get_data_files = _get_data_files_HACK
 setup(
     # In need of a better name.
     name='osso-djuty',
-    version=version,
+    version=str(version),
     # Which files?
     packages=packages,
     package_data={'osso': data},  # cheat and let all data belong to osso pkg
