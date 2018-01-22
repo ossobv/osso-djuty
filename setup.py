@@ -137,6 +137,9 @@ setup(
     #    'Programming Language :: Python :: 2',
     #     'Topic :: Software Development :: Libraries',
     # ],
+    install_requires=[
+        'pyl10n>=1.0',
+    ],
 )
 
 # vim: set ts=8 sw=4 sts=4 et ai tw=79:

@@ -1,19 +1,19 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
 import re
+
 from django.conf import settings
 from django.core.exceptions import MiddlewareNotUsed
 from django.utils import translation
 from django.utils.cache import patch_vary_headers
-from osso.l10n import locale
 
 
 # Format of Accept-Language header values. From RFC 2616, section 14.4 and 3.9.
 # (stolen from django and modified)
 accept_language_re = re.compile(r'''
-        (?:\s*)                                     # Skip whitespace
-        (([A-Za-z]{1,8})(?:-[A-Za-z]{1,8})*|\*)     # "en", "en-au", "x-y-z", "*"
-        (?:\s*;\s*q=(0(?:\.\d{,3})?|1(?:.0{,3})?))? # Optional "q=1.00", "q=0.8"
-        (?:\s*,\s*|\s*$)                            # Multiple accepts per header.
+    (?:\s*)                                     # Skip whitespace
+    (([A-Za-z]{1,8})(?:-[A-Za-z]{1,8})*|\*)     # "en", "en-au", "x-y-z", "*"
+    (?:\s*;\s*q=(0(?:\.\d{,3})?|1(?:.0{,3})?))? # Optional "q=1.00", "q=0.8"
+    (?:\s*,\s*|\s*$)                            # Multiple accepts per header.
 ''', re.VERBOSE)
 
 
@@ -27,16 +27,15 @@ class L10nMiddleware(object):
     The difference with django.middleware.locale.LocaleMiddleware
     is that this one checks settings.LANGUAGE_CODES for valid
     languages.
-
-    Also, it sets the pyl10n locale for the current thread.
     '''
 
     def __init__(self):
-        if not hasattr(settings, 'LANGUAGE_CODES') or len(settings.LANGUAGE_CODES) == 0:
-            locale.setlocale(settings.LANGUAGE_CODE)
+        if (not hasattr(settings, 'LANGUAGE_CODES') or
+                len(settings.LANGUAGE_CODES) == 0):
             translation.activate(settings.LANGUAGE_CODE)
-            raise MiddlewareNotUsed('A fixed language code was set. Not using Accept-Language headers.')
-        locale.setlocalefunc(translation.get_language)
+            raise MiddlewareNotUsed(
+                'A fixed language code was set. Not using Accept-Language '
+                'headers.')
 
     def process_request(self, request):
         # Get valid language code from session, cookie or accept headers
@@ -64,7 +63,8 @@ class L10nMiddleware(object):
             return lang_code
 
         # Parse Accept-Header
-        languages = self.parse_accept_lang_header(request.META.get('HTTP_ACCEPT_LANGUAGE', ''))
+        languages = self.parse_accept_lang_header(
+            request.META.get('HTTP_ACCEPT_LANGUAGE', ''))
         for language in languages:
             # en-us
             if language[0] in settings.LANGUAGE_CODES:
@@ -81,7 +81,8 @@ class L10nMiddleware(object):
         Parses the lang_string, which is the body of an HTTP Accept-Language
         header, and returns a list of (lang, q-value), ordered by 'q' values.
 
-        Any format errors in lang_string results in an empty list being returned.
+        Any format errors in lang_string results in an empty list being
+        returned.
 
         (stolen from django and modified)
         '''
