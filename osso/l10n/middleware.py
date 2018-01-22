@@ -1,11 +1,19 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
 import re
+import warnings
 
 from django.conf import settings
 from django.core.exceptions import MiddlewareNotUsed
 from django.utils import translation
 from django.utils.cache import patch_vary_headers
 
+
+# This file is not needed.
+warnings.warn(
+    'osso.l10n.middleware is deprecated. The django locale middleware '
+    'works equally well. Make sure you limit LANGUAGES instead of '
+    'LANGUAGE_CODES though.',
+    DeprecationWarning, stacklevel=4)
 
 # Format of Accept-Language header values. From RFC 2616, section 14.4 and 3.9.
 # (stolen from django and modified)
