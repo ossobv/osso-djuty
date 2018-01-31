@@ -173,7 +173,7 @@ class Command(BaseCommand):
 
         identifier = '%s.%s:%s' % (opts.app_label, opts.model_name, object.pk)
         print('    ID: %s' % (identifier,))
-        print(' Value: %s' % (unicode(object),))
+        print(' Value: %s' % (object,))
         if hasattr(object, 'created'):
             print('Create: %s' % (object.created,))
         if hasattr(object, 'modified'):
