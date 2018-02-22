@@ -40,13 +40,14 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.formatter_class = argparse.RawTextHelpFormatter
-        parser.add_argument('--database', action='store',
-            default='default', help='Nominates a database to flush. '
-                                    'Defaults to the "default" database.')
+        parser.add_argument(
+            '--database', action='store', default='default', help=(
+                'Nominates a database to flush. '
+                'Defaults to the "default" database.'))
 
     def handle(self, *args, **kwargs):
-        answer = raw_input('Are you sure you want to flush/reset the db '
-                           '[y/n] ? ')
+        answer = raw_input(
+            'Are you sure you want to flush/reset the db [y/n] ? ')
         if answer.strip() != 'y':
             self.stdout.write('Aborted.')
             sys.exit(1)
@@ -57,9 +58,15 @@ class Command(BaseCommand):
         utils.recreatedb(database=database)
         self.stdout.write('done')
 
-        self.stdout.write('Creating tables and more syncdb stuff ...', ending='')
-        call_command('syncdb', interactive=False, verbosity=0,
+        self.stdout.write(
+            'Creating tables and more migrate stuff ...', ending='')
+        migrate_cmd = ('syncdb', 'migrate')[django_version >= (1, 7)]
+        call_command(migrate_cmd, interactive=False, verbosity=0,
                      database=database)
+        if migrate_cmd == 'migrate':
+            # We'll need to do the initial_data manually too..
+            call_command('loaddata', 'initial_data',
+                         interactive=False, verbosity=0, database=database)
         self.stdout.write('done\n')
 
         self.stdout.write('Creating superuser automatically ...', ending='')
