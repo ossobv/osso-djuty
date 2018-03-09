@@ -9,7 +9,6 @@ import re
 import stat
 from datetime import datetime, timedelta
 from subprocess import Popen, PIPE
-from sys import modules
 from tempfile import mkstemp
 from importlib import import_module
 
@@ -66,7 +65,7 @@ def assert_writable(paths, for_other_user=False):
         if for_other_user:
             # <for_other_user> should be able to write to it (check uid
             # or mode).
-            expected_id = pwd.getpwnam('www-data').pw_uid
+            expected_id = pwd.getpwnam(for_other_user).pw_uid
             try:
                 st = os.stat(path)
             except OSError as e:
