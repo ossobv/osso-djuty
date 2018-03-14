@@ -13,9 +13,10 @@ from tempfile import mkstemp
 from importlib import import_module
 
 
-__all__ = ('import_module', 'ascii_filename', 'assert_writable',
-           'file_needs_updating', 'safe_pathjoin', 'select_writable_path',
-           'repo_version', 'git_version', 'hg_version', 'svn_version')
+__all__ = (
+    'import_module', 'ascii_filename', 'assert_writable',
+    'file_needs_updating', 'safe_pathjoin', 'select_writable_path',
+    'repo_version', 'git_version', 'hg_version', 'svn_version')
 
 
 def ascii_filename(path, replacement='X'):
@@ -60,46 +61,83 @@ def assert_writable(paths, for_other_user=False):
     Example at end of django settings file:
     assert_writable(_WRITABLE_PATHS, for_other_user=('www-data', False)[DEBUG])
     '''
-    errors = []
-    for path in paths:
-        if for_other_user:
-            # <for_other_user> should be able to write to it (check uid
-            # or mode).
-            expected_id = pwd.getpwnam(for_other_user).pw_uid
-            try:
-                st = os.stat(path)
-            except OSError as e:
-                errors.append('%s: %s' % (path, e))
-            else:
-                if not stat.S_ISDIR(st.st_mode):
-                    errors.append('%s: Not a directory' % (path,))
-                elif stat.S_IMODE(st.st_mode) & 0x7 == 0x7:  # rwx
-                    pass
-                elif st.st_uid == expected_id:
-                    pass
-                else:
-                    errors.append(
-                        '%s: Expected uid %d (%s), but st_uid = %d '
-                        'with mode %o.' % (
-                            path, expected_id, for_other_user,
-                            st.st_uid, st.st_mode))
-        else:
-            # We should be able to write to it.
-            try:
-                os.makedirs(path)
-            except OSError:
-                pass  # file exists
-            try:
-                fd, filename = mkstemp(dir=path)
-            except OSError as e:
-                errors.append('%s: %s' % (path, e))
-            else:
-                os.close(fd)
-                os.unlink(filename)
+    if hasattr(paths, 'isalpha'):
+        raise TypeError('paths argument should be an iterable, not string')
+
+    # If we want to test the writability of self, use the "better" test
+    # which also creates the paths.
+    different_uid = None
+    if for_other_user:
+        different_uid = pwd.getpwnam(for_other_user).pw_uid
+        if different_uid == os.getuid():
+            different_uid = None
+
+    if different_uid is None:
+        # Will auto-create paths if possible.
+        errors = _assert_writable_by_me(paths)
+    else:
+        # Will check write perms on the paths only.
+        errors = _assert_writable_by_uid(paths, different_uid)
+
     if errors:
         raise AssertionError(
             'Not all file paths are writable by the app:\n  %s' % (
                  '\n  '.join(errors),))
+
+
+def _assert_writable_by_me(paths):
+    '''
+    Check that we can write to all all paths, creating the necessary
+    dirs as appropriate.
+    '''
+    errors = []
+
+    for path in paths:
+        # We should be able to write to it.
+        try:
+            os.makedirs(path)
+        except OSError:
+            pass  # file exists
+        try:
+            fd, filename = mkstemp(dir=path)
+        except OSError as e:
+            errors.append('%s: %s' % (path, e))
+        else:
+            os.close(fd)
+            os.unlink(filename)
+
+    return errors
+
+
+def _assert_writable_by_uid(paths, uid):
+    '''
+    Check that the passed uid has write powers in all paths.
+    '''
+    errors = []
+
+    for path in paths:
+        try:
+            st = os.stat(path)
+        except OSError as e:
+            errors.append('%s: %s' % (path, e))
+        else:
+            if not stat.S_ISDIR(st.st_mode):
+                errors.append('%s: Not a directory' % (path,))
+            elif stat.S_IMODE(st.st_mode) & 0o7 == 0o7:  # all(rwx)
+                pass
+            elif st.st_uid == uid and (  # user == uid && user(rwx)
+                    stat.S_IMODE(st.st_mode) & 0o700 == 0o700):
+                pass
+            else:
+                uid_name = pwd.getpwuid(uid).pw_name
+                stuid_name = pwd.getpwuid(st.st_uid).pw_name
+                errors.append(
+                    '%s: Expected uid %d (%s), but st_uid = %d (%s) '
+                    'with mode %o.' % (
+                        path, uid, uid_name, st.st_uid, stuid_name,
+                        st.st_mode))
+
+    return errors
 
 
 def file_needs_updating(filename, write_every, do_not_write_after=None):
