@@ -147,17 +147,20 @@ class Command(BaseCommand):
         return object._rdepends
 
     def print_rdepend_count(self, object):
-        print(self.count_rdepends(object))
+        self.stdout.write(self.count_rdepends(object))
 
     def print_stat(self, object):
         dependent_count = self.count_rdepends(object)
         dependent_objects = self.get_rdepends(object)
 
+        def prn(name, ilevel):
+            self.stdout.write(u'      : %s- %s' % ('  ' * ilevel, name))
+
         if object._old_rdepends:
             def children_print(children, indent=0):
                 for child in children:
                     name, grandchildren = child
-                    print('      : %s- %s' % ('  ' * indent, name))
+                    prn(name, indent)
                     children_print(grandchildren, indent + 1)
         else:
             def children_print(children, indent=0):
@@ -165,24 +168,24 @@ class Command(BaseCommand):
                     if isinstance(child, type([])):
                         children_print(child, indent + 1)
                     else:
-                        print('      : %s- %s' % ('  ' * indent, child))
+                        prn(child, indent)
 
         opts = object._meta
         if hasattr(opts, 'module_name'):  # renamed to model_name
             opts.model_name = opts.module_name
 
-        identifier = '%s.%s:%s' % (opts.app_label, opts.model_name, object.pk)
-        print('    ID: %s' % (identifier,))
-        print(' Value: %s' % (object,))
+        identifier = u'%s.%s:%s' % (opts.app_label, opts.model_name, object.pk)
+        self.stdout.write(u'    ID: %s' % (identifier,))
+        self.stdout.write(u' Value: %s' % (object,))
         if hasattr(object, 'created'):
-            print('Create: %s' % (object.created,))
+            self.stdout.write(u'Create: %s' % (object.created,))
         if hasattr(object, 'modified'):
-            print('Modify: %s' % (object.modified,))
+            self.stdout.write(u'Modify: %s' % (object.modified,))
         if dependent_count:
-            print('  Deps: %s ==>' % (dependent_count,))
+            self.stdout.write(u'  Deps: %s ==>' % (dependent_count,))
             if object._old_rdepends:
                 children_print(dependent_objects[1])
             else:
                 children_print(dependent_objects[1:])
         else:
-            print('  Deps: %s' % (dependent_count,))
+            self.stdout.write(u'  Deps: %s' % (dependent_count,))
