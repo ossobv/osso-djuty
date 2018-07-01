@@ -136,5 +136,14 @@ class TransactionReport(View):
         if ip4.lower().startswith('::ffff:'):
             ip4 = ip4[7:]
 
-        if not ip4.startswith('78.152.58.'):
+        if ip4 == '127.0.0.1':
+            # For local override:
+            #   curl -XPOST -d status=Success -d amount=675 -d trxid=X
+            #     -d rtlo=Y https://SITE/api/targetpay/ID/report/
+            #     --resolve SITE:443:127.0.0.1
+            pass
+        elif ip4.startswith('78.152.58.'):
+            # The Targetpay IPs.
+            pass
+        else:
             raise PaymentSuspect('Bad reporter IP')
