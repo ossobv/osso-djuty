@@ -83,9 +83,17 @@ class TransactionReport(View):
         content_type = 'text/plain; charset=UTF-8'
         try:
             payment = Payment.objects.get(id=payment_id)
-            trxid = payment.unique_key.split('-', 1)[1]
-            if request.POST.get('trxid') != trxid:
-                raise Payment.DoesNotExist('bad trxid?')
+            if payment.unique_key:
+                trxid = payment.unique_key.split('-', 1)[1]
+                if request.POST.get('trxid') != trxid:
+                    raise Payment.DoesNotExist('bad trxid?')
+            elif request.POST.get('status') == 'Expired':
+                # Since aug2018, TGP started sending Expired notices for
+                # 3-hour old transactions that weren't picked up.
+                # Mark transaction as failed, and answer with OK.
+                payment.mark_aborted()
+                return HttpResponse('OK', content_type=content_type)
+
         except Payment.DoesNotExist as e:
             mail_admins('Check failed at TGP TransactionReport',
                         (u'Exception: %s (%r)\n\nGet: %r\n\nPost: %r\n\n'
