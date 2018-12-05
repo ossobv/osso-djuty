@@ -36,7 +36,7 @@ class Creator(object):
 class SafeCharField(models.CharField):
     '''
     A CharField that silently discards all non-printable characters
-    below the space (except tab).
+    below the space (except tab) and strips leading and trailing WS.
     '''
     def formfield(self, **kwargs):
         defaults = {
