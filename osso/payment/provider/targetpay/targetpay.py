@@ -1,8 +1,10 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
 import json
+from socket import error, timeout
 from urllib import urlencode
+from urllib2 import URLError
 
-from osso.core.http.shortcuts import http_get
+from osso.core.http.shortcuts import HTTPError, Options, http_get, opt_secure
 from osso.payment import (
     BuyerError, PaymentAlreadyUsed, PaymentSuspect,
     ProviderError, ProviderBadConfig, ProviderDown)
@@ -10,6 +12,9 @@ from osso.payment.base import Provider
 from osso.payment.conditional import log, reverse, settings
 from osso.payment.models import AtomicUpdateFailed, Payment
 from osso.payment.signals import payment_updated
+
+
+http_opt = (opt_secure | Options(timeout=10))
 
 
 class AtomicUpdateDupe(AtomicUpdateFailed):
@@ -216,8 +221,17 @@ class TargetpayBase(object):
         url = '{url}?{parameters}'.format(
             url=url, parameters=urlencode(parameters))
 
-        log(url, 'targetpay', 'qry.{}'.format(self.provider_sub))
-        ret = http_get(url)
+        for attempt in range(3):
+            log(url, 'targetpay', 'qry.{}'.format(self.provider_sub))
+            try:
+                ret = http_get(url, opt=http_opt)
+            except (HTTPError, URLError, error, timeout) as e:
+                log('connection error #{}: {}'.format(attempt + 1, e),
+                    'targetpay', 'ret.{}'.format(self.provider_sub))
+            else:
+                break
+        else:
+            raise
         log(ret, 'targetpay', 'ret.{}'.format(self.provider_sub))
 
         return ret
