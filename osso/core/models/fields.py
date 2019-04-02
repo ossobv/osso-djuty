@@ -159,22 +159,26 @@ class FormatterBaseField(object):
 
     The convenience is that it does validation on the format fields at
     save time (which is why you need to supply all possibilities in the
-    format_fields iterable).
+    format_fields iterable). To support formatting of specific objects you have
+    to supply them as the clean_value or using the format_dict parameter.
     '''
+    WithAttr = fields.FormatterCharField.WithAttr
     CLEAN_VALUE_DEFAULT = \
         fields.FormatterCharField.CLEAN_VALUE_DEFAULT
     CLEAN_VALUE_WITH_ATTRIBUTES = \
         fields.FormatterCharField.CLEAN_VALUE_WITH_ATTRIBUTES
 
     def __init__(self, *args, **kwargs):
-        self.format_fields = kwargs.pop('format_fields', None) or ()
-        self.accept_newlines = kwargs.pop('accept_newlines', None) or False
-        self.clean_value = kwargs.pop('clean_value', None) or self.CLEAN_VALUE_DEFAULT
+        self.format_dict = kwargs.pop('format_dict', None)
+        self.format_fields = kwargs.pop('format_fields', None)
+        self.accept_newlines = kwargs.pop('accept_newlines', None)
+        self.clean_value = kwargs.pop('clean_value', None)
         super(FormatterBaseField, self).__init__(*args, **kwargs)
 
     def formfield(self, **kwargs):
         defaults = {
             'form_class': fields.FormatterCharField,
+            'format_dict': self.format_dict,
             'format_fields': self.format_fields,
             'clean_value': self.clean_value,
             'accept_newlines': self.accept_newlines,

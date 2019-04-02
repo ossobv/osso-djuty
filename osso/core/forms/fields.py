@@ -2,6 +2,8 @@
 import re
 from django import forms
 from django.forms.models import ModelChoiceIterator
+from django.utils import six
+from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from osso.core.forms.widgets import (new_widget_with_attributes,
                                      EditableSelectWidget)
@@ -61,16 +63,25 @@ class EditableSelectField(forms.ModelChoiceField):
 
 
 class FormatterCharField(forms.CharField):
-    class _WithAttributes(object):
+    @python_2_unicode_compatible
+    class WithAttr(object):
+        def __init__(self, value):
+            self._value = value
+
+        def __format__(self, spec):
+            return format(self._value, spec)
+
         def __getattr__(self, name):
-            return self.__class__()
+            return self.__class__(self._value)
 
         def __str__(self):
-            return 'whatever'
-        __repr__ = __unicode__ = __str__
+            return six.text_type(self._value)
+
+        def __repr__(self):
+            return repr(self._value)
 
     CLEAN_VALUE_DEFAULT = 'whatever'
-    CLEAN_VALUE_WITH_ATTRIBUTES = _WithAttributes()
+    CLEAN_VALUE_WITH_ATTRIBUTES = WithAttr('whatever')
 
     default_error_messages = {
         'formaterror': _(
@@ -110,12 +121,36 @@ class FormatterCharField(forms.CharField):
             FormatterCharField(
                 format_fields=('foo',),
                 clean_value=FormatterCharField.CLEAN_VALUE_WITH_ATTRIBUTES)
+
+        If you need a value of a specific type with attribute indexing you can
+        use the attached AttrClass to wrap it.
+        For example to support the format: {foo:0.2f}
+
+            FormatterCharField(
+                format_fields=('foo',),
+                clean_value=FormatterCharField.WithAttr(Decimal('0.1')))
+
+        For full control of the allowed format arguments use format_dict.
+        For example to support the format: {foo:0.2f} {bar:%Y-%m-%d}
+
+            FormatterCharField(
+                format_dict={'foo': float(3.1), 'bar': datetime(2019, 1, 1)})
         """
-        clean_value = kwargs.pop('clean_value',
-                                 FormatterCharField.CLEAN_VALUE_DEFAULT)
-        self.format_dict = dict((i, clean_value)
-                                for i in kwargs.pop('format_fields', ()))
-        self.accept_newlines = kwargs.pop('accept_newlines')
+        self.format_dict = kwargs.pop('format_dict', None)
+        if self.format_dict:
+            if any(kwargs.pop(i, None)
+                   for i in ('clean_value', 'format_fields')):
+                raise ValueError(
+                    'Cannot combine format_dict with clean_value and/or '
+                    'format_fields.')
+        else:
+            clean_value = kwargs.pop(
+                'clean_value', None) or FormatterCharField.CLEAN_VALUE_DEFAULT
+            format_fields = kwargs.pop('format_fields', None) or ()
+            self.format_dict = dict((i, clean_value)
+                                    for i in format_fields)
+
+        self.accept_newlines = kwargs.pop('accept_newlines', None) or False
 
         super(FormatterCharField, self).__init__(*args, **kwargs)
 
