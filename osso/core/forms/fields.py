@@ -1,12 +1,12 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
 import re
+from six import python_2_unicode_compatible, text_type
+
 from django import forms
 from django.forms.models import ModelChoiceIterator
-from django.utils import six
-from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
-from osso.core.forms.widgets import (new_widget_with_attributes,
-                                     EditableSelectWidget)
+from osso.core.forms.widgets import (
+    new_widget_with_attributes, EditableSelectWidget)
 from osso.core.types import cidr4
 
 
@@ -75,7 +75,7 @@ class FormatterCharField(forms.CharField):
             return self.__class__(self._value)
 
         def __str__(self):
-            return six.text_type(self._value)
+            return text_type(self._value)
 
         def __repr__(self):
             return repr(self._value)
