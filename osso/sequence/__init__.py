@@ -30,8 +30,15 @@ except AttributeError:
     db_engine = settings.DATABASE_ENGINE
 db_engine = db_engine.rsplit('.', 1)[-1]
 
-backend = load_backend(db_engine)
+if db_engine:
+    backend = load_backend(db_engine)
 
-sequence = backend.Sequence()
+    sequence = backend.Sequence()
 
-post_syncdb.connect(sequence.install, sender=sequence_app)
+    post_syncdb.connect(sequence.install, sender=sequence_app)
+else:
+    # So we can import it. This should happen when DATABASES is not
+    # configured (properly). Allow the rest of the import so Django can
+    # continue and complain about the DATABASES, instead of about the
+    # broken osso.sequence.
+    sequence = None
