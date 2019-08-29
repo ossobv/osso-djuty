@@ -150,7 +150,7 @@ class TransactionReport(View):
             #     -d rtlo=Y https://SITE/api/targetpay/ID/report/
             #     --resolve SITE:443:127.0.0.1
             pass
-        elif ip4.startswith('78.152.58.'):
+        elif ip4.startswith(('78.152.58.', '185.150.71.', '185.22.142.82')):
             # The Targetpay IPs.
             pass
         else:
