@@ -150,8 +150,13 @@ class TransactionReport(View):
             #     -d rtlo=Y https://SITE/api/targetpay/ID/report/
             #     --resolve SITE:443:127.0.0.1
             pass
-        elif ip4.startswith(('78.152.58.', '185.150.71.', '185.22.142.82')):
+        elif ip4.startswith('185.150.71.') and (
+                64 <= int(ip4.split('.')[3]) < 128):
             # The Targetpay IPs.
+            # > IPv4: 185.150.71.64/26 (185.150.71.64 tot 185.150.71.126)
+            # > IPv6: 2a07:6e80:3::/48 (Q4 2019)
+            # > De wijzigingen moeten vóór 31 augustus zijn voltooid,
+            # > omdat de oude IP-adressen daarna niet meer werken.
             pass
         else:
             raise PaymentSuspect('Bad reporter IP')
