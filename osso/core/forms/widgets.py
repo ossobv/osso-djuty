@@ -1,8 +1,8 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
 from django.forms import Select
+from django.utils.html import conditional_escape
 from django.forms.widgets import (
-    CheckboxInput, CheckboxSelectMultiple, chain,
-    conditional_escape)  # see CheckboxSelectMultiple.render
+    CheckboxInput, CheckboxSelectMultiple, chain)  # see CheckboxSelectMultiple.render
 try:
     from django.utils.encoding import force_text
 except ImportError:
