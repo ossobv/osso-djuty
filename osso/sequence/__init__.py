@@ -2,7 +2,11 @@
 from importlib import import_module
 
 from django.conf import settings
-from django.db.models.signals import post_syncdb
+try:
+    from django.db.models.signals import post_syncdb
+except ImportError:
+    # post_syncdb moved to post_migrate in Django 1.7 in ~2015
+    from django.db.models.signals import post_migrate as post_syncdb
 from osso.sequence import models as sequence_app
 from osso.sequence.backends import SequenceDoesNotExist, SequenceError  # noqa
 
