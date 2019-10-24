@@ -3,6 +3,10 @@ osso-djuty
 
 A bunch of Django utility functions / helpers.
 
+> **Note**: The master branch is a slimmed down version with several apps removed
+>           in order to move the code forwards. You can still use the old apps by
+>           switching to the [django14-18][django14-18] branch.
+
 
 Contents
 --------
@@ -30,3 +34,6 @@ Contents
 |-------------|-------------------|
 | doc         | Schema dump tool. |
 | locale      | Locale files.     |
+
+
+[django14-18]: https://github.com/ossobv/osso-djuty/tree/django14-18
