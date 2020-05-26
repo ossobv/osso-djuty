@@ -86,7 +86,7 @@ def to_linear_text(html):
         html = html.encode('utf-8')
         doc = fromstring(html)
     except ParserError as e:
-        html = u'Parse error "%s" parsing this:\n\n%s' % (e, html)
+        html = 'Parse error "%s" parsing this:\n\n%s' % (e, html)
         html = '<body><pre>%s</pre></body>' % (html.replace('&', '&amp')
                                                    .replace('<', '&lt;')
                                                    .replace('>', '&gt;'),)
@@ -158,9 +158,9 @@ def to_pdf(html, destination=None):
     # We defer the loading of this because it somehow breaks the
     # doctests when placed at the top.
     try:
-        from cStringIO import StringIO
+        from io import StringIO
     except ImportError:
-        from StringIO import StringIO
+        from io import StringIO
 
     if destination is None:
         destination = StringIO()

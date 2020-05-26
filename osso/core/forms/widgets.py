@@ -50,7 +50,7 @@ class CheckboxSelectMultipleWithJS(CheckboxSelectMultiple):
             if has_id:
                 final_attrs = dict(final_attrs, id='%s_%s' %
                                    (attrs['id'], i), style='display:inline;')
-                label_for = u' for="%s"' % final_attrs['id']
+                label_for = ' for="%s"' % final_attrs['id']
             else:
                 label_for = ''
 
@@ -59,14 +59,14 @@ class CheckboxSelectMultipleWithJS(CheckboxSelectMultiple):
             option_value = force_text(option_value)
             rendered_cb = cb.render(name, option_value)
             option_label = conditional_escape(force_text(option_label))
-            output.append(u'<label%s style="display:block;">%s %s</label>' %
+            output.append('<label%s style="display:block;">%s %s</label>' %
                           (label_for, rendered_cb, option_label))
 
         # Optionally wrap it in spans
         COLUMNS, MINVALUES = 3, 8
         if len(output) > MINVALUES:
             per_column = int(float(len(output) + COLUMNS - 1) / COLUMNS)
-            for i in reversed(range(per_column, len(output), per_column)):
+            for i in reversed(list(range(per_column, len(output), per_column))):
                 output.insert(i, ('</span><span class="column"'
                                   ' style="display:block;">'))
             output.insert(0, ('<span class="large-multiple-choice">'
@@ -89,7 +89,7 @@ class CheckboxSelectMultipleWithJS(CheckboxSelectMultiple):
             for i in ((name, 'true', 'Select All'), (name, 'false', 'None'))
         )
         output = ('<span class="large-multiple-choice-quickselect">' +
-                  buttons + '</span><br/>' + u'\n'.join(output))
+                  buttons + '</span><br/>' + '\n'.join(output))
         return mark_safe(output)
 
 
@@ -127,16 +127,16 @@ class EditableSelectWidget(Select):
         attrs['onchange'] = ('document.getElementById("%s__select")'
                              '.checked=true;') % attrs['id']
         return mark_safe(
-            (u'<span>'
-             u'<input style="float:left;" type="radio" name="%(id)s__type"'
-             u' value="select" id="%(id)s__select" checked="checked"/>'
-             u'%(select)s'
-             u'<br style="clear:both;">'
-             u'<input style="float:left;" type="radio"'
-             u' name="%(id)s__type" value="text" id="%(id)s__text"/>'
-             u'<input type="text" maxlength="%(max_length)s"'
-             u' name="%(id)s__value" onchange="%(onchange)s"/>'
-             u'</span>') %
+            ('<span>'
+             '<input style="float:left;" type="radio" name="%(id)s__type"'
+             ' value="select" id="%(id)s__select" checked="checked"/>'
+             '%(select)s'
+             '<br style="clear:both;">'
+             '<input style="float:left;" type="radio"'
+             ' name="%(id)s__type" value="text" id="%(id)s__text"/>'
+             '<input type="text" maxlength="%(max_length)s"'
+             ' name="%(id)s__value" onchange="%(onchange)s"/>'
+             '</span>') %
             {'id': attrs['id'],
              'select': (super(EditableSelectWidget, self)
                         .render(name, value, attrs, choices)),

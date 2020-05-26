@@ -1,9 +1,4 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
-try:
-    py2 = bool(unicode)
-except NameError:
-    py2 = False
-
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from osso.core.models import Model, SafeCharField
@@ -38,13 +33,10 @@ class Item(Model):
     def save(self, *args, **kwargs):
         if self.datatype_id == DATATYPE_TEXT:
             self.value = self.value.strip()
-        super(Item, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.key
-
-    if not py2:
-        __str__ = __unicode__  # py3
 
     class Meta:
         ordering = ('key',)

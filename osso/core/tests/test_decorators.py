@@ -15,7 +15,6 @@ class DecoratorTestCase(TestCase):
         self.user = User.objects.create_user(
             username='user', email='',
             password='user2')
-        self.user.is_authenticated = (lambda: True)
 
     def get_request(self, method, user=None):
         req = HttpRequest()
@@ -52,8 +51,8 @@ class DecoratorTestCase(TestCase):
             assert syslog['openlog'].called, 'syslog was not called'
             assert syslog['syslog'].called, 'syslog was not called'
             expected = (LOG_WARNING,
-                        '[django] Failed login for user from /unset/ port '
-                        '/unset/ (Host: /unset/)')
+                        b'[django] Failed login for user from /unset/ port '
+                        b'/unset/ (Host: /unset/)')
             self.assertEqual(syslog['syslog'].call_args[0], expected)
         with patch.multiple('syslog', openlog=DEFAULT,
                             syslog=DEFAULT) as syslog:

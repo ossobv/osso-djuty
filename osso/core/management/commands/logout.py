@@ -56,7 +56,7 @@ class Command(BaseCommand):
         # Show which we found.
         if verbose >= 2:
             for item in items:
-                print('%-7s %s' % ('%d.' % (item[0],), item[1]))
+                print(('%-7s %s' % ('%d.' % (item[0],), item[1])))
 
         # Show which we didn't find.
         for username in usernames:
@@ -66,8 +66,8 @@ class Command(BaseCommand):
 
         # Log them out.
         if verbose >= 1:
-            print('Preparing to remove session data for %d users' %
-                  (len(found_user_ids,)))
+            print(('Preparing to remove session data for %d users' %
+                  (len(found_user_ids,))))
         deleted = ueber_logout(found_user_ids)
         if verbose >= 1:
-            print('Removed %d session data items' % (deleted,))
+            print(('Removed %d session data items' % (deleted,)))

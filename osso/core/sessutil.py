@@ -46,7 +46,7 @@ def ueber_logout(arg):
             user_id = user_id_type(sess_dict.get(sesskey))
         except TypeError:
             # Possibly there is no sesskey ("_auth_user_id") in the
-            # session, e.g. if session is: {u'testcookie': u'worked'}
+            # session, e.g. if session is: {'testcookie': 'worked'}
             # => int(None) => TypeError
             # Or possibly this session has a user ID from a different
             # backend (less likely) which we cannot convert to the

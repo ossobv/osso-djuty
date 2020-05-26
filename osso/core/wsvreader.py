@@ -60,7 +60,7 @@ class WsvReader(object):
         self.read_header()
         return self
 
-    def next(self):
+    def __next__(self):
         columns = self.split_line(self.get_line())
 
         # Ensure that the header is long enough.
@@ -71,7 +71,7 @@ class WsvReader(object):
                 self.columnnames.append(extra_columnname)
             i += 1
 
-        return self.dict(zip(self.columnnames, columns))
+        return self.dict(list(zip(self.columnnames, columns)))
 
     def read_header(self):
         self.columnnames = self.split_line(self.get_line())
@@ -240,7 +240,7 @@ class TestCase(unittest.TestCase):
         )
 
     def get_file(self, string, seekable=True):
-        from StringIO import StringIO
+        from io import StringIO
 
         if seekable:
             return StringIO(string)
@@ -274,7 +274,7 @@ if __name__ == '__main__':
     for file in files:
         reader = WsvReader(file, dict=OrderedDict)
         if len(files) > 1:
-            print('\n==> %s' % (file.name,))
+            print(('\n==> %s' % (file.name,)))
         for row in reader:
             print(row)
         file.close()

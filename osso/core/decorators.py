@@ -64,8 +64,7 @@ def login_with_profile_required(func):
     '''
     def test(user):
         try:
-            return bool(user.is_authenticated() and
-                        user.authenticatablecontact)
+            return user.is_authenticated and user.authenticatablecontact
         except ObjectDoesNotExist:
             # XXX: we should replace assert with something better
             assert False, 'User %s has no profile!' % user
@@ -80,7 +79,7 @@ def log_failed_logins(view_func):
         if request.method == 'POST':
             # Django auth sets request.user if authentication was
             # successful.
-            if not request.user.is_authenticated():
+            if not request.user.is_authenticated:
                 log_failed_login(request)
         return response
 
@@ -118,8 +117,8 @@ def log_failed_login(request, username=None):
     if xff:
         xff = ', X-Forwarded-For: %s' % (xff,)
     msg = (
-        u'[django] Failed login for %(username)s '
-        u'from %(address)s port %(port)s (Host: %(host)s%(xff)s)\n'
+        '[django] Failed login for %(username)s '
+        'from %(address)s port %(port)s (Host: %(host)s%(xff)s)\n'
     ) % {
         'username': ILLEGAL_RE.sub('?', username) or '/unset/',
         'address': request.META.get('REMOTE_ADDR', '/unset/'),

@@ -137,7 +137,7 @@ class Command(BaseCommand):
                 object._old_rdepends = False
             else:
                 # == GETTING TO_BE_DELETED OBJECTS THE DJANGO 1.1.1- WAY ==
-                dependent_objects = [unicode(object), []]
+                dependent_objects = [str(object), []]
                 perms_needed = set()
                 get_deleted_objects(dependent_objects, perms_needed, None,
                                     object, object._meta, 1, admin.site)
@@ -154,7 +154,7 @@ class Command(BaseCommand):
         dependent_objects = self.get_rdepends(object)
 
         def prn(name, ilevel):
-            self.stdout.write(u'      : %s- %s' % ('  ' * ilevel, name))
+            self.stdout.write('      : %s- %s' % ('  ' * ilevel, name))
 
         if object._old_rdepends:
             def children_print(children, indent=0):
@@ -174,18 +174,18 @@ class Command(BaseCommand):
         if hasattr(opts, 'module_name'):  # renamed to model_name
             opts.model_name = opts.module_name
 
-        identifier = u'%s.%s:%s' % (opts.app_label, opts.model_name, object.pk)
-        self.stdout.write(u'    ID: %s' % (identifier,))
-        self.stdout.write(u' Value: %s' % (object,))
+        identifier = '%s.%s:%s' % (opts.app_label, opts.model_name, object.pk)
+        self.stdout.write('    ID: %s' % (identifier,))
+        self.stdout.write(' Value: %s' % (object,))
         if hasattr(object, 'created'):
-            self.stdout.write(u'Create: %s' % (object.created,))
+            self.stdout.write('Create: %s' % (object.created,))
         if hasattr(object, 'modified'):
-            self.stdout.write(u'Modify: %s' % (object.modified,))
+            self.stdout.write('Modify: %s' % (object.modified,))
         if dependent_count:
-            self.stdout.write(u'  Deps: %s ==>' % (dependent_count,))
+            self.stdout.write('  Deps: %s ==>' % (dependent_count,))
             if object._old_rdepends:
                 children_print(dependent_objects[1])
             else:
                 children_print(dependent_objects[1:])
         else:
-            self.stdout.write(u'  Deps: %s' % (dependent_count,))
+            self.stdout.write('  Deps: %s' % (dependent_count,))

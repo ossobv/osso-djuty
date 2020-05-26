@@ -50,7 +50,7 @@ def disowned(*command_and_args):
     try:
         os.closerange  # exists since python 2.6
     except AttributeError:
-        for fd in xrange(MAXFD - 1, -1, -1):
+        for fd in range(MAXFD - 1, -1, -1):
             try:
                 os.close(fd)
             except OSError:

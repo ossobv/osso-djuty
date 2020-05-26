@@ -348,7 +348,7 @@ class PhoneNumberField(models.Field):
         return 'DecimalField'
 
     def to_python(self, value):
-        if isinstance(value, basestring) or value is None:
+        if isinstance(value, str) or value is None:
             return value
         return '+%s' % value
 

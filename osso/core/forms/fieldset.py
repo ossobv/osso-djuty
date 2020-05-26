@@ -17,7 +17,7 @@ class Fieldset(object):
         self.name = name
         self.description = description
         self.fields = fields
-        self.classes = u' '.join(classes)
+        self.classes = ' '.join(classes)
 
     def hidden_fields(self):
         """
@@ -49,7 +49,7 @@ def process_fieldsets_meta(form):
     Process the fieldset Meta class attrribute into a list of fieldsets.
     '''
     if not hasattr(form, 'Meta') or not hasattr(form.Meta, 'fieldsets'):
-        return [Fieldset(form=form, fields=form.fields.keys())]
+        return [Fieldset(form=form, fields=list(form.fields.keys()))]
     return [Fieldset(form=form, name=name, **options) for name, options in form.Meta.fieldsets]
 
 

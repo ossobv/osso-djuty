@@ -46,7 +46,7 @@ class Command(BaseCommand):
                 'Defaults to the "default" database.'))
 
     def handle(self, *args, **kwargs):
-        answer = raw_input(
+        answer = input(
             'Are you sure you want to flush/reset the db [y/n] ? ')
         if answer.strip() != 'y':
             self.stdout.write('Aborted.')

@@ -91,10 +91,10 @@ def simple_form_view(request, form_class, form_kwargs={}, heading='Form',
             return httpresponse_ok(message='', saved=return_value)
         if mail_on_fail:
             mail_admins(
-                u'Invalid input on "%s" form' % (force_text(heading),),
-                (u'Form validation failed for form %s with kwargs %r.\n\n'
-                 u'Host: %s\nPath: %s\nRemoteAddr: %s\n\nData: %r\n\n'
-                 u'Errors: %r\n') %
+                'Invalid input on "%s" form' % (force_text(heading),),
+                ('Form validation failed for form %s with kwargs %r.\n\n'
+                 'Host: %s\nPath: %s\nRemoteAddr: %s\n\nData: %r\n\n'
+                 'Errors: %r\n') %
                 (form_class.__name__, form_kwargs, request.META['HTTP_HOST'],
                  request.META['PATH_INFO'], request.META['REMOTE_ADDR'],
                  data, form.errors)
@@ -108,7 +108,7 @@ def simple_form_view(request, form_class, form_kwargs={}, heading='Form',
 
 
 def _html(title, body):
-    return u'''<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" \
+    return '''<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" \
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
@@ -125,7 +125,7 @@ def _html(title, body):
 def _form(title, url, form):
     return _html(
         title,
-        (u'<form method="post" action="%s"><table>%s<tr><th></th>'
-         u'<td><input type="submit"/></td></table>') %
+        ('<form method="post" action="%s"><table>%s<tr><th></th>'
+         '<td><input type="submit"/></td></table>') %
         (url, form.as_table())
     )

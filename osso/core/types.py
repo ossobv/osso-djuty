@@ -110,7 +110,7 @@ class cidr4(_ComparableMixin):
     >>> net = cidr4('192.168.1.0/24')
     >>> '1.2.3.4' in net
     False
-    >>> u'192.168.1.2/31' in net
+    >>> '192.168.1.2/31' in net
     True
     >>> try: True in net
     ... except TypeError: pass
@@ -122,7 +122,7 @@ class cidr4(_ComparableMixin):
         if isinstance(value, cidr4):
             self.address, self.sigbits = value.address, value.sigbits
             return
-        elif not isinstance(value, basestring):
+        elif not isinstance(value, str):
             raise TypeError('Cannot convert %r to a cidr4 type' % (value,))
 
         value = str(value).strip()
@@ -146,7 +146,7 @@ class cidr4(_ComparableMixin):
             sigbits = ((tmp + (tmp >> 3)) & 0o30707070707) % 63
 
             if netmask & ~(0xffffffff << (32 - sigbits)) != 0:
-                print('hier!'), netmask
+                print(('hier!'), netmask)
                 raise ValueError('Invalid netmask.')
         # 1.2.3.0/24
         else:

@@ -45,7 +45,7 @@ class Command(BaseCommand):
 
     def check_files(self, model, field_name, pk_skip):
         def escape(value):
-            value = unicode(value).encode('utf-8')
+            value = str(value).encode('utf-8')
             value = (value
                      .replace('\\', '\\\\')
                      .replace('\t', '\\t')
@@ -73,4 +73,4 @@ class Command(BaseCommand):
             else:
                 status = 'OK'
                 filename = '-'
-            print('%s\t%s\t%s' % (escape(object_.pk), status, filename))
+            print(('%s\t%s\t%s' % (escape(object_.pk), status, filename)))

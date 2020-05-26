@@ -10,14 +10,14 @@ from osso.core.forms.widgets import (
 from osso.core.types import cidr4
 
 
-safecharfield_re = re.compile(ur'[\x00-\x08\x0a-\x1f]')
-safetextfield_re = re.compile(ur'[\x00-\x08\x0b-\x1f]')
+safecharfield_re = re.compile(r'[\x00-\x08\x0a-\x1f]')
+safetextfield_re = re.compile(r'[\x00-\x08\x0b-\x1f]')
 
 
 class SafeCharField(forms.CharField):
     def clean(self, value):
         value = super(SafeCharField, self).clean(value)
-        return u' '.join(safecharfield_re.sub(u'', value).strip().split())
+        return ' '.join(safecharfield_re.sub('', value).strip().split())
 
 
 class Cidr4Field(forms.CharField):
