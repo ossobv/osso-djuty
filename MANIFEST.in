@@ -3,8 +3,8 @@ include CONTRIBUTING.md
 include HISTORY.md
 include LICENSE
 include README.md
+include osso/.version
 
-recursive-include osso/.version
 recursive-include osso/locale *
 recursive-include osso/core/tests-data *
 recursive-exclude * __pycache__

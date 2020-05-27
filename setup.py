@@ -12,10 +12,13 @@ try:
     # sdist gets to save the version.
     version = check_output([
         'git', 'log', '-1', '--pretty=format:0.9+%ct.%h']).decode()
-except CalledProcessError:
+except (CalledProcessError, FileNotFoundError):
     # install gets to look it up.
-    with open(version_path) as f:
-        version = f.read().strip()
+    try:
+        with open(version_path) as f:
+            version = f.read().strip()
+    except FileNotFoundError:
+        version = '0.9'  # Fallback for source tar downloads.
 else:
     with open(version_path, 'w') as f:
         f.write('%s\n' % (version,))
