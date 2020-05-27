@@ -1,13 +1,13 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
 from django.contrib.auth.models import User
 from django.core.management import call_command
+from django.core.management.base import OutputWrapper
 from django.test import TestCase
 from django.utils.six import StringIO
 
 from mock import patch
 
 from osso.core.management.base import BaseCommand, CommandError
-from osso.core.management.compat import RealOutputWrapper
 
 
 class TestCommand(BaseCommand):
@@ -22,10 +22,10 @@ class CommandTestCase(TestCase):
         cmd = TestCommand()
         cmd.execute(stdout=out, stderr=out)
         self.assertIn('hello world!\nhello err...\n', out.getvalue())
-        self.assertTrue(isinstance(cmd.stdout, RealOutputWrapper))
-        self.assertTrue(isinstance(cmd.stderr, RealOutputWrapper))
-        self.assertFalse(isinstance(cmd.stdout._out, RealOutputWrapper))
-        self.assertFalse(isinstance(cmd.stderr._out, RealOutputWrapper))
+        self.assertTrue(isinstance(cmd.stdout, OutputWrapper))
+        self.assertTrue(isinstance(cmd.stderr, OutputWrapper))
+        self.assertFalse(isinstance(cmd.stdout._out, OutputWrapper))
+        self.assertFalse(isinstance(cmd.stderr._out, OutputWrapper))
 
     @patch('sys.stderr', new_callable=StringIO)
     @patch('sys.stdout', new_callable=StringIO)
@@ -34,10 +34,10 @@ class CommandTestCase(TestCase):
         cmd.execute()
         self.assertIn('hello world!\n', stdout.getvalue())
         self.assertIn('hello err...\n', stderr.getvalue())
-        self.assertTrue(isinstance(cmd.stdout, RealOutputWrapper))
-        self.assertTrue(isinstance(cmd.stderr, RealOutputWrapper))
-        self.assertFalse(isinstance(cmd.stdout._out, RealOutputWrapper))
-        self.assertFalse(isinstance(cmd.stderr._out, RealOutputWrapper))
+        self.assertTrue(isinstance(cmd.stdout, OutputWrapper))
+        self.assertTrue(isinstance(cmd.stderr, OutputWrapper))
+        self.assertFalse(isinstance(cmd.stdout._out, OutputWrapper))
+        self.assertFalse(isinstance(cmd.stderr._out, OutputWrapper))
 
     @patch('sys.stderr', new_callable=StringIO)
     @patch('sys.stdout', new_callable=StringIO)

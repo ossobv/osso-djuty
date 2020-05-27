@@ -1,12 +1,10 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
 import argparse
-import optparse
 import os
 import pwd
 import socket
 import sys
 
-from django import VERSION as django_version
 from django.core.management import call_command
 from django.contrib.auth.models import Group, User
 try:
@@ -28,15 +26,6 @@ class Command(BaseCommand):
      * config_data insertion
      * example_data insertion
      """)
-    # Optparse was used up to Django 1.8.
-    if django_version < (1, 8):
-        option_list = BaseCommand.option_list + (
-            optparse.make_option(
-                '--database', action='store', dest='database',
-                default=DEFAULT_DB_ALIAS,
-                help='Nominates a database to flush. '
-                     'Defaults to the "default" database.'),
-        )
 
     def add_arguments(self, parser):
         parser.formatter_class = argparse.RawTextHelpFormatter
@@ -60,13 +49,11 @@ class Command(BaseCommand):
 
         self.stdout.write(
             'Creating tables and more migrate stuff ...', ending='')
-        migrate_cmd = ('syncdb', 'migrate')[django_version >= (1, 7)]
-        call_command(migrate_cmd, interactive=False, verbosity=0,
+        call_command('migrate', interactive=False, verbosity=0,
                      database=database)
-        if migrate_cmd == 'migrate':
-            # We'll need to do the initial_data manually too..
-            call_command('loaddata', 'initial_data',
-                         interactive=False, verbosity=0, database=database)
+        # We'll need to do the initial_data manually too.
+        call_command('loaddata', 'initial_data',
+                     interactive=False, verbosity=0, database=database)
         self.stdout.write('done\n')
 
         self.stdout.write('Creating superuser automatically ...', ending='')

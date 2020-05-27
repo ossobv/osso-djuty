@@ -29,17 +29,9 @@ import atexit
 import sys
 from os import fdopen
 
-from django import VERSION as django_version
 from django.core.management.base import BaseCommand as DjangoBaseCommand
 from django.core.management.base import CommandError
-try:
-    from django.db import connections
-except ImportError:  # Django<1.2
-    from django.db import connection
-    connections = {'default': connection}
-
-from .compat import OutputWrapper
-
+from django.db import connections
 
 __all__ = ['BaseCommand', 'CommandError', 'docstring']
 
@@ -55,22 +47,15 @@ class BaseCommand(DjangoBaseCommand):
     """
     def execute(self, *args, **kwargs):
         # Force unbuffered stdout.
-        if 'stdout' not in kwargs and getattr(sys.stdout, 'name', None) == '<stdout>':
+        if ('stdout' not in kwargs
+                and getattr(sys.stdout, 'name', None) == '<stdout>'):
             # Reopen without line buffering.
             reopened = fdopen(sys.stdout.fileno(), 'w', 0)
             # Disable/break the old one (see comment at the top).
             sys.stdout.close()
             kwargs['stdout'] = sys.stdout = reopened
 
-        # Wrap self.stdout/err with a wrapper that uses utf-8.
-        kwargs['stdout'] = OutputWrapper(kwargs.get('stdout') or sys.stdout)
-        kwargs['stderr'] = OutputWrapper(kwargs.get('stderr') or sys.stderr)
-
         atexit.register(_cleanup_connections)
-
-        if django_version < (1, 2):
-            self.stdout = kwargs['stdout']
-            self.stderr = kwargs['stderr']
 
         return super(BaseCommand, self).execute(*args, **kwargs)
 

@@ -157,10 +157,7 @@ def to_pdf(html, destination=None):
                               'xhtml2pdf (>= 0.0.6)')
     # We defer the loading of this because it somehow breaks the
     # doctests when placed at the top.
-    try:
-        from io import StringIO
-    except ImportError:
-        from io import StringIO
+    from io import StringIO
 
     if destination is None:
         destination = StringIO()

@@ -5,7 +5,6 @@ from resource import getrusage
 from sys import exc_info
 from time import time
 
-from django import VERSION
 from django.conf import settings
 from django.contrib.auth import views as auth_views
 from django.core.exceptions import MiddlewareNotUsed
@@ -80,17 +79,8 @@ class LogFailedLoginsMiddleware(object):
                 for i in urls.urlpatterns:
                     if i.callback == original:
                         i._callback = auth_views.login
-            except:
+            except Exception:
                 pass
-
-        # Same goes for the admin-site login. Note that since Django
-        # 1.3 this uses the auth login function. We only do this for
-        # old versions.
-        if VERSION < (1, 3):
-            from django.contrib import admin
-            if not hasattr(admin.site.login, '__is_decorator'):
-                # Wrap the /admin/ login
-                admin.site.login = log_failed_logins(admin.site.login)
 
 
 class LogRequestsMiddleware(object):
