@@ -86,7 +86,7 @@ class Cidr4Field(models.Field):
         defaults.update(kwargs)
         return super(Cidr4Field, self).formfield(**defaults)
 
-    def from_db_value(self, value, expression, connection, context):
+    def from_db_value(self, value, expression, connection):
         return self.to_python(value)
 
     def contribute_to_class(self, cls, name, **kwargs):
@@ -361,7 +361,7 @@ class PhoneNumberField(models.Field):
         defaults.update(kwargs)
         return super(PhoneNumberField, self).formfield(**defaults)
 
-    def from_db_value(self, value, expression, connection, context):
+    def from_db_value(self, value, expression, connection):
         return self.to_python(value)
 
     def contribute_to_class(self, cls, name, **kwargs):
