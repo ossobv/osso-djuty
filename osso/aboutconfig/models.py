@@ -1,6 +1,6 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from osso.core.models import Model, SafeCharField
 
 
