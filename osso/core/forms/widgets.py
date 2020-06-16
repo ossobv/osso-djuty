@@ -21,11 +21,11 @@ def new_widget_with_attributes(widget_super, extra_attrs):
             TextInput, {'readonly': 'readonly'})
     '''
     class _WidgetWithAttributes(widget_super):
-        def render(self, name, value, attrs=None):
+        def render(self, name, value, attrs=None, renderer=None):
             if attrs is None:
                 attrs = {}
             attrs.update(extra_attrs)
-            return super(widget_super, self).render(name, value, attrs)
+            return super().render(name, value, attrs, renderer)
     return _WidgetWithAttributes
 
 
