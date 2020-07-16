@@ -17,6 +17,8 @@ safetextfield_re = re.compile(ur'[\x00-\x08\x0b-\x1f]')
 class SafeCharField(forms.CharField):
     def clean(self, value):
         value = super(SafeCharField, self).clean(value)
+        if not value:
+            return value  # None or empty is allowed by the caller.
         return u' '.join(safecharfield_re.sub(u'', value).strip().split())
 
 
@@ -156,6 +158,9 @@ class FormatterCharField(forms.CharField):
 
     def clean(self, value):
         value = super(FormatterCharField, self).clean(value)
+        if not value:
+            return value  # None or empty is allowed by the caller.
+
         if self.accept_newlines:
             value = safetextfield_re.sub('', value)
         else:
