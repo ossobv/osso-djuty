@@ -1,4 +1,9 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
+try:
+    from django.utils.deprecation import MiddlewareMixin
+except ImportError:
+    MiddlewareMixin = object
+
 from osso.relation.utils import get_active_relation
 
 
@@ -20,7 +25,7 @@ class LazyActiveRelationId(object):
         return request._cached_active_relation_id
 
 
-class ActiveRelationMiddleware(object):
+class ActiveRelationMiddleware(MiddlewareMixin):
     def process_request(self, request):
         # If we do assert hasattr(request, "user") here, we "execute" it
         # and that costs us a query even when we don't need it, so we

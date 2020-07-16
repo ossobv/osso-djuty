@@ -12,6 +12,11 @@ from django.core.exceptions import MiddlewareNotUsed
 from django.core.urlresolvers import reverse
 from django.db import connection
 from django.http import HttpResponse, HttpResponseRedirect
+try:
+    from django.utils.deprecation import MiddlewareMixin
+except ImportError:
+    MiddlewareMixin = object
+
 from osso.core.decorators import log_failed_logins
 try:
     from osso.autolog.utils import log
@@ -30,7 +35,7 @@ __all__ = ('LogFailedLoginsMiddleware',
 logger = logging.getLogger(__name__)
 
 
-class LogFailedLoginsMiddleware(object):
+class LogFailedLoginsMiddleware(MiddlewareMixin):
     '''
     Write a line to stderr for every failed django login. Web servers
     like apache write these in the error log.
@@ -80,7 +85,7 @@ class LogFailedLoginsMiddleware(object):
                 for i in urls.urlpatterns:
                     if i.callback == original:
                         i._callback = auth_views.login
-            except:
+            except Exception:
                 pass
 
         # Same goes for the admin-site login. Note that since Django
@@ -93,7 +98,7 @@ class LogFailedLoginsMiddleware(object):
                 admin.site.login = log_failed_logins(admin.site.login)
 
 
-class LogRequestsMiddleware(object):
+class LogRequestsMiddleware(MiddlewareMixin):
     '''
     Log the beginning and end time of every request to a log file. This
     is a crude way to see which pages need optimization.
@@ -117,7 +122,7 @@ class LogRequestsMiddleware(object):
         return response
 
 
-class LogSqlToConsoleMiddleware(object):
+class LogSqlToConsoleMiddleware(MiddlewareMixin):
     '''
     Log all SQL statements direct to the console (in debug mode only).
     Intended for use with the django development server.
@@ -156,7 +161,7 @@ class LogSqlToConsoleMiddleware(object):
         return response
 
 
-class NoDisabledUsersMiddleware(object):
+class NoDisabledUsersMiddleware(MiddlewareMixin):
     '''
     Logs out users that are set to is_active=False automatically. When
     you switch the user state, the user still keeps his session. Force
@@ -179,7 +184,7 @@ class NoDisabledUsersMiddleware(object):
                 return HttpResponseRedirect(logout_url)
 
 
-class IgnoreUploadErrorMiddleware(object):
+class IgnoreUploadErrorMiddleware(MiddlewareMixin):
     """A stab at ignoring user-upload errors.
 
     See also for a different solution:
@@ -250,7 +255,7 @@ class IgnoreUploadErrorMiddleware(object):
         return None
 
 
-class RusageMiddleware(object):
+class RusageMiddleware(MiddlewareMixin):
     """
     FIXME: this needs documentation
     """

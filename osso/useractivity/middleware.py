@@ -1,11 +1,16 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
 from django.conf import settings
+try:
+    from django.utils.deprecation import MiddlewareMixin
+except ImportError:
+    MiddlewareMixin = object
+
 from osso.aboutconfig.utils import aboutconfig
 from osso.useractivity import (IDLE_MAX_DEFAULT, mark_active, mark_login,
                                mark_logout, prune_idlers)
 
 
-class UserActivityMiddleware(object):
+class UserActivityMiddleware(MiddlewareMixin):
     '''
     This middleware has to be loaded after the AuthenticationMiddleware, so it
     has access to the request.user property.

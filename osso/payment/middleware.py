@@ -1,14 +1,20 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
 import sys
+
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.utils.log import getLogger
+try:
+    from django.utils.deprecation import MiddlewareMixin
+except ImportError:
+    MiddlewareMixin = object
+
 from osso.payment import ProviderDown
 
 logger = getLogger('django.request')
 
 
-class ProviderErrorMiddleware(object):
+class ProviderErrorMiddleware(MiddlewareMixin):
     """
     Right now, we only trap the ProviderDown exception that is thrown
     when there is a transient error with the payment provider. We catch

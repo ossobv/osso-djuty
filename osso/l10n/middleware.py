@@ -6,6 +6,10 @@ from django.conf import settings
 from django.core.exceptions import MiddlewareNotUsed
 from django.utils import translation
 from django.utils.cache import patch_vary_headers
+try:
+    from django.utils.deprecation import MiddlewareMixin
+except ImportError:
+    MiddlewareMixin = object
 
 
 # This file is not needed.
@@ -25,7 +29,7 @@ accept_language_re = re.compile(r'''
 ''', re.VERBOSE)
 
 
-class L10nMiddleware(object):
+class L10nMiddleware(MiddlewareMixin):
     '''
     This is an updated version of django's very simple middleware
     that parses a request and decides what translation object to
@@ -37,7 +41,8 @@ class L10nMiddleware(object):
     languages.
     '''
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
+        super(L10nMiddleware, self).__init__(*args, **kwargs)
         if (not hasattr(settings, 'LANGUAGE_CODES') or
                 len(settings.LANGUAGE_CODES) == 0):
             translation.activate(settings.LANGUAGE_CODE)
