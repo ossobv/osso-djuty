@@ -2,10 +2,9 @@ dist: focal
 language: python
 addons:
   postgresql: "13"
-  mariadb: "10.5"
 services:
   - postgresql
-  - mariadb
+  - mysql
 before_install:
   - sudo mysql -e "CREATE DATABASE djuty;"
   - sudo createdb -U postgres -w djuty
