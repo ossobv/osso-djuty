@@ -1,7 +1,7 @@
 osso-djuty
 ==========
 
-[![Continuous Integration Status](https://travis-ci.org/ossobv/osso-djuty.svg?branch=python3)](https://travis-ci.org/ossobv/osso-djuty)
+[![Continuous Integration Status](https://travis-ci.org/ossobv/osso-djuty.svg?branch=python3)](https://travis-ci.com/github/ossobv/osso-djuty)
 
 A bunch of Django utility functions / helpers.
 
