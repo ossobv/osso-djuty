@@ -1,3 +1,5 @@
+dist: focal
+language: python
 addons:
   postgresql: "13"
   mariadb: "10.5"
@@ -8,8 +10,6 @@ before_install:
   - sudo mysql -e 'CREATE DATABASE djuty;'
   - sudo createuser -U postgres -w djuty
   - sudo createdb -U postgres -w -O djuty djuty
-sudo: false
-language: python
 python:
   - 3.6
   - 3.7
