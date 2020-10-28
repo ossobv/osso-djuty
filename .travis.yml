@@ -7,7 +7,9 @@ services:
   - postgresql
   - mariadb
 before_install:
-  - sudo mysql -e 'CREATE DATABASE djuty;'
+  - sudo mysql -e "CREATE DATABASE djuty;"
+  - sudo mysql -e "CREATE USER 'djuty'@'localhost';"
+  - sudo mysql -e "GRANT ALL ON djuty.* TO 'djuty'@'localhost';"
   - sudo createuser -U postgres -w djuty
   - sudo createdb -U postgres -w -O djuty djuty
 python:
