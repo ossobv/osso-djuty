@@ -1,3 +1,13 @@
+addons:
+  postgresql: "13"
+  mariadb: "10.5"
+services:
+  - postgresql
+  - mariadb
+before_install:
+  - mysql -e 'CREATE DATABASE djuty;'
+  - createuser -U postgres -w djuty
+  - createdb -U postgres -w -O djuty djuty
 sudo: false
 language: python
 python:
@@ -7,6 +17,7 @@ python:
 env:
   - DJANGO=2.2
   - DJANGO=3.0
+  - DJANGO=3.1
 install:
   - pip install tox-travis
 script:

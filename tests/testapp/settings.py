@@ -132,6 +132,7 @@ INSTALLED_APPS = (
     'osso.aboutconfig',
     'osso.l10n',
     'osso.rpc',
+    'osso.sequence',
 )
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'

@@ -1,6 +1,6 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
-from mock import patch, DEFAULT
 from syslog import LOG_WARNING
+from unittest.mock import patch, DEFAULT
 
 from django.contrib.auth.models import AnonymousUser, User
 from django.core.exceptions import PermissionDenied
