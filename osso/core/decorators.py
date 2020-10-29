@@ -104,16 +104,16 @@ def log_failed_login(request, credentials=None, username=None, **kwargs):
     # every message.
     syslog.openlog(logoption=(syslog.LOG_PID | syslog.LOG_NDELAY),
                    facility=syslog.LOG_AUTH)
-    syslog.syslog(syslog.LOG_WARNING, msg.encode('utf-8')[0:-1])  # strip LF
+    syslog.syslog(syslog.LOG_WARNING, msg[0:-1])  # strip LF
 
     # These log messages are here for further debugging and
     # backwards compatibility.
     if request.META.get('SERVER_SOFTWARE') == 'mod_python':
         from mod_python import apache
-        apache.log_error(msg.encode('utf-8')[0:-1])  # strip LF
+        apache.log_error(msg[0:-1])  # strip LF
     elif sys.argv[1:2] != ['test']:  # no output during test runs
         # We could check for 'uwsgi.version' in request.META
         # and add strftime('%c'), but that log confuses
         # fail2ban so we won't bother.
-        sys.stderr.write(msg.encode('utf-8'))
+        sys.stderr.write(msg)
         sys.stderr.flush()  # mod_python needs this, others might too

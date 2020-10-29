@@ -59,6 +59,6 @@ class DecoratorTestCase(TestCase):
             assert syslog['openlog'].called, 'syslog was not called'
             assert syslog['syslog'].called, 'syslog was not called'
             expected = (LOG_WARNING,
-                        b'[django] Failed login for user from /unset/ port'
-                        b' /unset/ (Host: /unset/)')
+                        '[django] Failed login for user from /unset/ port'
+                        ' /unset/ (Host: /unset/)')
             self.assertEqual(syslog['syslog'].call_args[0], expected)
