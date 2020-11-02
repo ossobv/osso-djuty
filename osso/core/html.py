@@ -139,7 +139,7 @@ def to_pdf(html, destination=None):
     else:
         destination.seek(0)
 
-    html = html.encode('ascii', 'xmlcharrefreplace')
+    html = html.encode('ascii', 'xmlcharrefreplace').decode()
     source = StringIO(html)
     context = CreatePDF(src=source, dest=destination, default_css=DEFAULT_CSS)
     del context
