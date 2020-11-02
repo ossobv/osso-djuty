@@ -1,4 +1,5 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
+from io import BytesIO, StringIO
 import re
 
 
@@ -8,8 +9,8 @@ __all__ = ('to_linear_text', 'to_pdf')
 BLOCK_ELEMENTS = ('address', 'blockquote', 'center', 'dir', 'div', 'dl',
                   'fieldset', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
                   'hr', 'isindex', 'menu', 'noframes', 'noscript', 'ol',
-                  'p', 'pre', 'table', 'ul') + ('dd', 'dt', 'frameset',
-                  'li', 'tbody', 'td', 'tfoot', 'th', 'thead', 'tr')
+                  'p', 'pre', 'table', 'ul', 'dd', 'dt', 'frameset', 'li',
+                  'tbody', 'td', 'tfoot', 'th', 'thead', 'tr')
 RE_WHITE = re.compile(r'\s+')
 RE_WHITE_AROUND_LF = re.compile(r'\n +| +\n')
 RE_DOUBLE_LF = re.compile(r'\n\n+')
@@ -38,7 +39,8 @@ def to_linear_text(html):
     try:
         from lxml.html import fromstring
     except ImportError as e:
-        raise ImportError(e.args[0] + '\n\n*HINT* apt-get install python-lxml')
+        raise ImportError(
+            e.args[0] + '\n\n*HINT* apt-get install python3-lxml') from e
     from lxml.etree import Comment, ParserError
 
     def helper(parent):
@@ -126,41 +128,14 @@ def to_pdf(html, destination=None):
     import warnings
     warnings.filterwarnings('ignore')  # silence the 'sets' deprecationwarning
     try:
-        # from xhtml2pdf.pisa import CreatePDF
-        # from xhtml2pdf.default import DEFAULT_CSS
-        raise ImportError('Bah! xhtml2pdf does not handle tables (auto-width, '
-                          'borders, backgrounds) correctly.')
-        # Instead, you may do this:
-        # > --- sx/pisa3/pisa_util.py.orig  2014-05-28 00:00:50.931100630 +0200
-        # > +++ sx/pisa3/pisa_util.py       2014-05-28 00:01:23.283345829 +0200
-        # > @@ -40,10 +40,11 @@ import shutil
-        # >
-        # >  rgb_re = re.compile("^.*?rgb[(]([0-9]+).*?([0-9]+).*?([0-9]+)[)].*?[ ]*$")
-        # >
-        # > -if not(reportlab.Version[0] == "2" and reportlab.Version[2] >= "1"):
-        # > +_reportlab_version = tuple(map(int, reportlab.Version.split('.')))
-        # > +if _reportlab_version < (2, 1):
-        # >      raise ImportError("Reportlab Version 2.1+ is needed!")
-        # >
-        # > -REPORTLAB22 = (reportlab.Version[0] == "2" and reportlab.Version[2] >= "2")
-        # > +REPORTLAB22 = _reportlab_version >= (2, 2)
-        # >  # print "***", reportlab.Version, REPORTLAB22, reportlab.__file__
-        # >
-        # >  import logging
-    except ImportError:
-        try:
-            from ho.pisa import CreatePDF
-            from sx.pisa3.pisa_default import DEFAULT_CSS
-        except ImportError as e:
-            raise ImportError(e.args[0] + '\n\n*HINT* apt-get install '
-                              'python-pisa (>= 3.0.12) or '
-                              'xhtml2pdf (>= 0.0.6)')
-    # We defer the loading of this because it somehow breaks the
-    # doctests when placed at the top.
-    from io import StringIO
+        from xhtml2pdf.pisa import CreatePDF
+        from xhtml2pdf.default import DEFAULT_CSS
+    except ImportError as e:
+        raise ImportError(
+            e.args[0] + '\n\n*HINT* apt-get install python3-xhtml2pdf') from e
 
     if destination is None:
-        destination = StringIO()
+        destination = BytesIO()
     else:
         destination.seek(0)
 
