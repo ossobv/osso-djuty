@@ -1,8 +1,8 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
+from itertools import chain
 from django.forms import Select
 from django.utils.html import conditional_escape
-from django.forms.widgets import (
-    CheckboxInput, CheckboxSelectMultiple, chain)  # see CheckboxSelectMultiple.render
+from django.forms.widgets import CheckboxInput, CheckboxSelectMultiple
 try:
     from django.utils.encoding import force_text
 except ImportError:
@@ -30,7 +30,7 @@ def new_widget_with_attributes(widget_super, extra_attrs):
 
 
 class CheckboxSelectMultipleWithJS(CheckboxSelectMultiple):
-    def render(self, name, value, attrs=None, choices=()):
+    def render(self, name, value, attrs=None, choices=(), renderer=None):
         '''
         This render function is copied from django/forms/widgets.py...
         ...and altered several times.
@@ -57,7 +57,7 @@ class CheckboxSelectMultipleWithJS(CheckboxSelectMultiple):
             cb = CheckboxInput(final_attrs,
                                check_test=(lambda value: value in str_values))
             option_value = force_text(option_value)
-            rendered_cb = cb.render(name, option_value)
+            rendered_cb = cb.render(name, option_value, renderer=renderer)
             option_label = conditional_escape(force_text(option_label))
             output.append('<label%s style="display:block;">%s %s</label>' %
                           (label_for, rendered_cb, option_label))
@@ -66,7 +66,8 @@ class CheckboxSelectMultipleWithJS(CheckboxSelectMultiple):
         COLUMNS, MINVALUES = 3, 8
         if len(output) > MINVALUES:
             per_column = int(float(len(output) + COLUMNS - 1) / COLUMNS)
-            for i in reversed(list(range(per_column, len(output), per_column))):
+            for i in reversed(list(range(
+                    per_column, len(output), per_column))):
                 output.insert(i, ('</span><span class="column"'
                                   ' style="display:block;">'))
             output.insert(0, ('<span class="large-multiple-choice">'
@@ -94,7 +95,7 @@ class CheckboxSelectMultipleWithJS(CheckboxSelectMultiple):
 
 
 # class CheckboxSelectMultipleWithJS(CheckboxSelectMultiple):
-#     def render(self, name, value, attrs=None, choices=()):
+#     def render(self, name, value, attrs=None, choices=(), renderer=None):
 #         def get_js(selection_status):
 #             return '''
 #         var checkboxes = document.getElementsByName('%s');
@@ -117,7 +118,7 @@ class EditableSelectWidget(Select):
     Widget to render a selectbox and a textfield of which either one may
     be chosen.
     '''
-    def render(self, name, value, attrs=None, choices=()):
+    def render(self, name, value, attrs=None, choices=(), renderer=None):
         # FIXME: the following three items
         # - check whether value is in queryset or choices and select the
         #   appropriate radio select
