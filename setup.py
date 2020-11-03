@@ -49,7 +49,7 @@ setup(
     #     'Topic :: Software Development :: Libraries',
     # ],
     install_requires=[
-        'pyl10n>=1.0',
+        'pyl10n>=1.1',
     ],
 )
 
