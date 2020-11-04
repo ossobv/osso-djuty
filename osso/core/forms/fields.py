@@ -17,6 +17,8 @@ safetextfield_re = re.compile(r'[\x00-\x08\x0b-\x1f]')
 class SafeCharField(forms.CharField):
     def clean(self, value):
         value = super(SafeCharField, self).clean(value)
+        if value in self.empty_values:
+            return value
         return ' '.join(safecharfield_re.sub('', value).strip().split())
 
 
@@ -31,7 +33,7 @@ class Cidr4Field(forms.CharField):
 
     def clean(self, value):
         value = super(Cidr4Field, self).clean(value)
-        if value == '' and not self.required:
+        if value in self.empty_values and not self.required:
             return None
         try:
             value = cidr4(value)
@@ -156,10 +158,14 @@ class FormatterCharField(forms.CharField):
 
     def clean(self, value):
         value = super(FormatterCharField, self).clean(value)
+        if value in self.empty_values:
+            return value
+
         if self.accept_newlines:
             value = safetextfield_re.sub('', value)
         else:
             value = safecharfield_re.sub('', value)
+
         try:
             # Check the validity
             value.format(**self.format_dict)
@@ -194,7 +200,7 @@ class PhoneNumberField(forms.CharField):
 
     def clean(self, value):
         value = super(PhoneNumberField, self).clean(value)
-        if value == '' and not self.required:
+        if value in self.empty_values and not self.required:
             return None
         value = value.strip()
 
