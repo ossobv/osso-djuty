@@ -30,6 +30,10 @@ class _ComparableMixin(object):
     def __ne__(self, other):
         return self.__cmp__(other) != 0
 
+    # Suppress py3 hash warning. Feel free to implement a hash method on
+    # your subclass though.
+    __hash__ = None
+
 
 class cidr4(_ComparableMixin):
     '''
@@ -169,7 +173,7 @@ class cidr4(_ComparableMixin):
     def __cmp__(self, other):
         try:
             other = cidr4(other)
-        except:
+        except Exception:
             return NotImplemented
         try:
             return (cmp(self.address, other.address) or
@@ -184,6 +188,12 @@ class cidr4(_ComparableMixin):
             if self.sigbits > other.sigbits:
                 return 1
             return 0
+
+    def __setattr__(self, key, value):
+        if key in self.__slots__ and not hasattr(self, key):
+            super(cidr4, self).__setattr__(key, value)
+        else:
+            raise TypeError('immutable')
 
     def __repr__(self):
         return 'cidr4("%s")' % self.__str__()
@@ -224,3 +234,7 @@ class cidr4(_ComparableMixin):
             (netmask >> 8) & 0xff,
             (netmask) & 0xff
         )
+
+    def __hash__(self):
+        "You shouldn't mutate address/sigbits. If you do, this is wrong."
+        return hash((self.address, self.sigbits))
