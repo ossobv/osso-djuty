@@ -27,7 +27,6 @@
 
 import atexit
 import sys
-from os import fdopen
 
 from django.core.management.base import BaseCommand as DjangoBaseCommand
 from django.core.management.base import CommandError
@@ -46,15 +45,6 @@ class BaseCommand(DjangoBaseCommand):
       in the background.
     """
     def execute(self, *args, **kwargs):
-        # Force unbuffered stdout.
-        if ('stdout' not in kwargs
-                and getattr(sys.stdout, 'name', None) == '<stdout>'):
-            # Reopen without line buffering.
-            reopened = fdopen(sys.stdout.fileno(), 'w', 0)
-            # Disable/break the old one (see comment at the top).
-            sys.stdout.close()
-            kwargs['stdout'] = sys.stdout = reopened
-
         atexit.register(_cleanup_connections)
 
         return super(BaseCommand, self).execute(*args, **kwargs)
@@ -131,7 +121,7 @@ class BaseCommand(DjangoBaseCommand):
                         )
                     # No more mailing below.
                     traceback_str = None
-            except Exception as e:
+            except Exception:
                 traceback_str = traceback.format_exc()
             else:
                 # If cron() stopped by returning, we won't send any mail.
