@@ -1,20 +1,12 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
 import argparse
-import optparse
 
-from django import VERSION as django_version
-from django.contrib import admin
-try:
-    from django.contrib.admin.utils import get_deleted_objects
-except ImportError:
-    from django.contrib.admin.util import get_deleted_objects
-try:
-    from django.apps import apps
-    get_model = apps.get_model
-except ImportError:
-    from django.db.models import get_model
+from django.contrib.admin.utils import get_deleted_objects
+from django.apps import apps
 from django.contrib.contenttypes.models import ContentType
 from osso.core.management.base import BaseCommand, CommandError, docstring
+
+get_model = apps.get_model
 
 
 class Command(BaseCommand):
@@ -23,14 +15,6 @@ class Command(BaseCommand):
 
     Supply two+ arguments: app_label.model_name object_pk...
     """)
-
-    # Optparse was used up to Django 1.8.
-    if django_version < (1, 8):
-        option_list = BaseCommand.option_list + (
-            optparse.make_option(
-                '--rdepend-count', action='store_true',
-                default=False, help='Print count of dependent objects'),
-        )
 
     missing_args_message = 'invalid/missing arguments, see ostat --help'
 
@@ -84,64 +68,36 @@ class Command(BaseCommand):
     def count_rdepends(self, object):
         deps = self.get_rdepends(object)
 
-        if object._old_rdepends:
-            def children_count(list):
-                ret = 0
-                name, children = list
-                for child in children:
-                    ret += 1 + children_count(child)
-                return ret
-            return children_count(deps)
-        else:
-            def children_count(list):
-                ret = 0
-                for child in list:
-                    if isinstance(child, type([])):
-                        ret += children_count(child)
-                    else:
-                        ret += 1
-                return ret
-            return children_count(deps[1:])
+        def children_count(list):
+            ret = 0
+            for child in list:
+                if isinstance(child, type([])):
+                    ret += children_count(child)
+                else:
+                    ret += 1
+            return ret
+        return children_count(deps[1:])
 
     def get_rdepends(self, object):
         if not hasattr(object, '_rdepends'):
-            if django_version >= (1, 1, 4):
-                # == GETTING TO_BE_DELETED OBJECTS THE DJANGO 1.1.4+ WAY ==
-                class AnonymousUser:
-                    is_staff = is_superuser = False
+            # Fake Admin site to get to be deleted objects.
+            class AnonymousUser:
+                is_staff = is_superuser = False
 
-                    def has_perm(self, perm):
-                        return False
+                def has_perm(self, perm):
+                    return False
 
-                # Hacks to force has_admin=False
-                class AdminSite:
-                    name = 'irrelevant'
-                    _registry = {}
+            # Hacks to force has_admin=False
+            class AdminSite:
+                name = 'irrelevant'
+                _registry = {}
 
-                if django_version >= (1, 3):
-                    using = 'default'
-                    retval = get_deleted_objects(
-                        (object,), object._meta,
-                        AnonymousUser(), AdminSite(), using)
+            using = 'default'
+            retval = get_deleted_objects(
+                (object,), object._meta,
+                AnonymousUser(), AdminSite(), using)
 
-                    if django_version >= (1, 8):
-                        (dependent_objects, _, perms_needed,
-                         protected) = retval
-                    else:
-                        (dependent_objects, perms_needed,
-                         protected) = retval
-                else:
-                    (dependent_objects, perms_needed) = \
-                        get_deleted_objects((object,), object._meta,
-                                            AnonymousUser(), AdminSite())
-                object._old_rdepends = False
-            else:
-                # == GETTING TO_BE_DELETED OBJECTS THE DJANGO 1.1.1- WAY ==
-                dependent_objects = [unicode(object), []]
-                perms_needed = set()
-                get_deleted_objects(dependent_objects, perms_needed, None,
-                                    object, object._meta, 1, admin.site)
-                object._old_rdepends = True
+            (dependent_objects, _, perms_needed, protected) = retval
 
             object._rdepends = dependent_objects
         return object._rdepends
@@ -154,38 +110,28 @@ class Command(BaseCommand):
         dependent_objects = self.get_rdepends(object)
 
         def prn(name, ilevel):
-            self.stdout.write(u'      : %s- %s' % ('  ' * ilevel, name))
+            self.stdout.write('      : %s- %s' % ('  ' * ilevel, name))
 
-        if object._old_rdepends:
-            def children_print(children, indent=0):
-                for child in children:
-                    name, grandchildren = child
-                    prn(name, indent)
-                    children_print(grandchildren, indent + 1)
-        else:
-            def children_print(children, indent=0):
-                for child in children:
-                    if isinstance(child, type([])):
-                        children_print(child, indent + 1)
-                    else:
-                        prn(child, indent)
+        def children_print(children, indent=0):
+            for child in children:
+                if isinstance(child, type([])):
+                    children_print(child, indent + 1)
+                else:
+                    prn(child, indent)
 
         opts = object._meta
         if hasattr(opts, 'module_name'):  # renamed to model_name
             opts.model_name = opts.module_name
 
-        identifier = u'%s.%s:%s' % (opts.app_label, opts.model_name, object.pk)
-        self.stdout.write(u'    ID: %s' % (identifier,))
-        self.stdout.write(u' Value: %s' % (object,))
+        identifier = '%s.%s:%s' % (opts.app_label, opts.model_name, object.pk)
+        self.stdout.write('    ID: %s' % (identifier,))
+        self.stdout.write(' Value: %s' % (object,))
         if hasattr(object, 'created'):
-            self.stdout.write(u'Create: %s' % (object.created,))
+            self.stdout.write('Create: %s' % (object.created,))
         if hasattr(object, 'modified'):
-            self.stdout.write(u'Modify: %s' % (object.modified,))
+            self.stdout.write('Modify: %s' % (object.modified,))
         if dependent_count:
-            self.stdout.write(u'  Deps: %s ==>' % (dependent_count,))
-            if object._old_rdepends:
-                children_print(dependent_objects[1])
-            else:
-                children_print(dependent_objects[1:])
+            self.stdout.write('  Deps: %s ==>' % (dependent_count,))
+            children_print(dependent_objects[1:])
         else:
-            self.stdout.write(u'  Deps: %s' % (dependent_count,))
+            self.stdout.write('  Deps: %s' % (dependent_count,))

@@ -29,7 +29,7 @@ class Command(BaseCommand):
         if command == 'show':
             self.show(sessions)
         elif command == 'remove':
-            if all(not i for i in lookup_args.values()):
+            if all(not i for i in list(lookup_args.values())):
                 raise CommandError('Refusing to remove all sessions. '
                                    'Supply one or more lookup arguments.')
             self.remove(sessions, quiet=(not verbose))
@@ -96,23 +96,23 @@ class Command(BaseCommand):
 
             if user != last_user:
                 if last_user is not None:
-                    print  # trailing LF after each record
-                print '%s:' % (user.username or '(anonymoususer)',)
+                    print()  # trailing LF after each record
+                print('%s:' % (user.username or '(anonymoususer)',))
                 last_user = user
-            print ' ', session.session_key, session.expire_date
+            print(' ', session.session_key, session.expire_date)
             if decoded:
                 decoded_printable = pformat(decoded)
-                print '   ', '\n    '.join(decoded_printable.split('\n'))
+                print('   ', '\n    '.join(decoded_printable.split('\n')))
 
         if sessions:
-            print  # trailing LF
+            print()  # trailing LF
 
     def remove(self, sessions, quiet=False):
         engine = import_module(settings.SESSION_ENGINE)
 
         for data in sessions:
             if not quiet:
-                print 'Deleting session', data['session'].session_key
+                print('Deleting session', data['session'].session_key)
 
             store = engine.SessionStore(data['session'].session_key)
             store.delete()

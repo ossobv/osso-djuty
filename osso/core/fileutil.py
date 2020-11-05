@@ -29,27 +29,28 @@ def ascii_filename(path, replacement='X'):
     >>> ascii_filename('\\nab\\0c\\x81')
     'XabXcX'
 
-    >>> ascii_filename(u'unicode')
-    u'unicode'
+    >>> ascii_filename('unicode')
+    'unicode'
 
-    >>> ascii_filename(u'euro\\u20acsign\\xa0')
-    u'euroXsignX'
+    >>> ascii_filename('euro\\u20acsign\\xa0')
+    'euroXsignX'
 
-    >>> ascii_filename(u'\\1-\\2\\3', replacement='abc')
-    u'abc-abcabc'
+    >>> ascii_filename('\\1-\\2\\3', replacement='abc')
+    'abc-abcabc'
 
     >>> try: x = ascii_filename(None)
     ... except TypeError: None
     ... else: print('Got: %r' % x)
+    >>> try: x = ascii_filename(b'byted')
+    ... except TypeError: None
+    ... else: print('Got: %r' % x)
     '''
-    if isinstance(path, str):
-        return ascii_filename.str_re.sub(replacement, path)
-    if isinstance(path, unicode):
-        return ascii_filename.uni_re.sub(replacement, path)
-    raise TypeError('Expected basestring, got %s: %r' %
-                    (path.__class__.__name__, path))
-ascii_filename.str_re = re.compile(r'[\x00-\x1f\x80-\xff]')
-ascii_filename.uni_re = re.compile(u'[\u0000-\u001f\u0080-\uffff]')
+    if str is None or not isinstance(path, str):
+        raise TypeError(
+            'ascii_filename() argument must be a string, not {}'.format(
+                type(path)))
+    return ascii_filename.str_re.sub(replacement, path)
+ascii_filename.str_re = re.compile('[\u0000-\u001f\u0080-\uffff]')  # noqa
 
 
 def assert_writable(paths, for_other_user=False):

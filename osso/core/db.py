@@ -1,24 +1,21 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
-from django import VERSION as django_version
-from django.conf import settings
-from django.db import DatabaseError, connection, transaction
-try:
-    from django.db.transaction import commit_manually, commit_on_success
-except ImportError:  # Django 1.8+ has no commit_*
-    from django.db.transaction import commit, set_autocommit
+from django.db import DatabaseError, connections, router, transaction
+from django.db.transaction import commit, set_autocommit
 
-    def commit_manually(fn):
-        def _commit_manually(*args, **kwargs):
-            set_autocommit(False)
-            try:
-                res = fn(*args, **kwargs)
-                commit()
-            finally:
-                set_autocommit(True)
-            return res
-        return _commit_manually
 
-    commit_on_success = commit_manually
+def commit_manually(fn):
+    def _commit_manually(*args, **kwargs):
+        set_autocommit(False)
+        try:
+            res = fn(*args, **kwargs)
+            commit()
+        finally:
+            set_autocommit(True)
+        return res
+    return _commit_manually
+
+
+commit_on_success = commit_manually
 
 
 __all__ = ('suppressed_sql_notes', 'add_constraint', 'enumify')
@@ -57,15 +54,15 @@ def add_constraint(model, column, check):
     post_syncdb.connect(f, sender=sys.modules[__name__]) # alas, no __module__
     '''
     table = model._meta.db_table
+
+    db_alias = router.db_for_write(model)
+    connection = connections[db_alias]
+    db_vendor = connection.vendor
+
     qn = connection.ops.quote_name
     qn_table = qn(table)
     qn_column = qn(column)
     qn_constraint = qn('%s_%s_check' % (table, column))
-
-    if django_version < (1, 2):
-        db_engine = settings.DATABASE_ENGINE
-    else:
-        db_engine = settings.DATABASES['default']['ENGINE']
 
     # The testing framework in django 1.3 calls syncdb and then
     # flush. This causes post_syncdb to be called for both
@@ -78,8 +75,7 @@ def add_constraint(model, column, check):
     # The fix:
     # Make sure the ADD constraint is done safely (ignore it if
     # exists or remove if before creation).
-    if db_engine in ('postgresql_psycopg2',
-                     'django.db.backends.postgresql_psycopg2'):
+    if db_vendor == 'postgres':
         queries = (
             (True, ('ALTER TABLE %s DROP CONSTRAINT %s;' %
                     (qn_table, qn_constraint))),
@@ -88,7 +84,7 @@ def add_constraint(model, column, check):
         )
     else:
         raise NotImplementedError('add_constraint is not implemented for '
-                                  'database engine %s' % db_engine)
+                                  'database vendor %s' % db_vendor)
 
     # Execute the queries
     cursor = connection.cursor()
@@ -130,21 +126,20 @@ def enumify(model, column, choices, null=False):
     table = model._meta.db_table
     choices = list(choices)  # now we can accept generators as well as lists
     placeholders_str = ', '.join('%s' for i in choices)
+
+    db_alias = router.db_for_write(model)
+    connection = connections[db_alias]
+    db_name = connection.settings_dict['NAME']
+    db_vendor = connection.vendor
+
     qn = connection.ops.quote_name
     qn_table, qn_column = qn(table), qn(column)
-
-    if django_version < (1, 2):
-        db_engine = settings.DATABASE_ENGINE
-        db_name = settings.DATABASE_NAME
-    else:
-        db_engine = settings.DATABASES['default']['ENGINE']
-        db_name = settings.DATABASES['default']['NAME']
 
     # Check if it is done already. But only for MySQL since that ALTER
     # TABLE is blocking and slow. Postgres doesn't have an equally
     # simple query to find out whether it is done already. But I'm
     # betting it detects that it is and runs a lightning fast no-op.
-    if db_engine in ('mysql', 'django.db.backends.mysql'):
+    if db_vendor == 'mysql':
         cursor = connection.cursor()
         cursor.execute('SELECT data_type, column_type, is_nullable '
                        'FROM information_schema.columns '
@@ -167,14 +162,13 @@ def enumify(model, column, choices, null=False):
         del cursor
 
     # Prepare the queries
-    if db_engine in ('mysql', 'django.db.backends.mysql'):
+    if db_vendor == 'mysql':
         queries = (
             ('ALTER TABLE %s CHANGE COLUMN %s %s ENUM(%s) %sNULL' %
              (qn_table, qn_column, qn_column, placeholders_str,
               ('NOT ', '')[null]), choices),
         )
-    elif db_engine in ('postgresql_psycopg2',
-                       'django.db.backends.postgresql_psycopg2'):
+    elif db_vendor == 'postgresql':
         qn_enum_type = qn('%s_%s_enum' % (table, column))
 
         # Do the create type separately as it may already exist (due
@@ -196,13 +190,13 @@ def enumify(model, column, choices, null=False):
             ('ALTER TABLE %s ALTER COLUMN %s %s NOT NULL' %
              (qn_table, qn_column, ('SET', 'DROP')[null]),),
         )
-    elif db_engine in ('sqlite3', 'django.db.backends.sqlite3'):
+    elif db_vendor == 'sqlite3':
         # You didn't want any performance anyway, as you're using
         # sqlite.. We're done here.
         queries = ()
     else:
         raise NotImplementedError('enumify is not implemented for '
-                                  'database engine %s' % db_engine)
+                                  'database engine %s' % db_vendor)
 
     # Execute the queries
     cursor = connection.cursor()

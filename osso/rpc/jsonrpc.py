@@ -1,7 +1,7 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
-from ronald_koebler_jsonrpc import RPCError as Error; Error # put in this scope
-import urllib2
-import ronald_koebler_jsonrpc
+from .ronald_koebler_jsonrpc import RPCError as Error; Error # put in this scope
+import urllib.request, urllib.error, urllib.parse
+from . import ronald_koebler_jsonrpc
 
 
 class HttpCookieTransport(ronald_koebler_jsonrpc.Transport):
@@ -17,10 +17,10 @@ class HttpCookieTransport(ronald_koebler_jsonrpc.Transport):
         if self.cookie:
             headers['Cookie'] = self.cookie
         try:
-            req = urllib2.Request(self.url, data, headers)
-            fp = urllib2.urlopen(req)
+            req = urllib.request.Request(self.url, data, headers)
+            fp = urllib.request.urlopen(req)
             response = fp.read()
-        except urllib2.HTTPError as exception:
+        except urllib.error.HTTPError as exception:
             fp = exception.fp # see finally clause
         except Exception as exception:
             pass

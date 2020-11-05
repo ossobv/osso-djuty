@@ -4,22 +4,22 @@ from six import python_2_unicode_compatible, text_type
 
 from django import forms
 from django.forms.models import ModelChoiceIterator
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from osso.core.forms.widgets import (
     new_widget_with_attributes, EditableSelectWidget)
 from osso.core.types import cidr4
 
 
-safecharfield_re = re.compile(ur'[\x00-\x08\x0a-\x1f]')
-safetextfield_re = re.compile(ur'[\x00-\x08\x0b-\x1f]')
+safecharfield_re = re.compile(r'[\x00-\x08\x0a-\x1f]')
+safetextfield_re = re.compile(r'[\x00-\x08\x0b-\x1f]')
 
 
 class SafeCharField(forms.CharField):
     def clean(self, value):
         value = super(SafeCharField, self).clean(value)
-        if not value:
-            return value  # None or empty is allowed by the caller.
-        return u' '.join(safecharfield_re.sub(u'', value).strip().split())
+        if value in self.empty_values:
+            return value
+        return ' '.join(safecharfield_re.sub('', value).strip().split())
 
 
 class Cidr4Field(forms.CharField):
@@ -33,7 +33,7 @@ class Cidr4Field(forms.CharField):
 
     def clean(self, value):
         value = super(Cidr4Field, self).clean(value)
-        if value == '' and not self.required:
+        if value in self.empty_values and not self.required:
             return None
         try:
             value = cidr4(value)
@@ -158,13 +158,14 @@ class FormatterCharField(forms.CharField):
 
     def clean(self, value):
         value = super(FormatterCharField, self).clean(value)
-        if not value:
-            return value  # None or empty is allowed by the caller.
+        if value in self.empty_values:
+            return value
 
         if self.accept_newlines:
             value = safetextfield_re.sub('', value)
         else:
             value = safecharfield_re.sub('', value)
+
         try:
             # Check the validity
             value.format(**self.format_dict)
@@ -199,7 +200,7 @@ class PhoneNumberField(forms.CharField):
 
     def clean(self, value):
         value = super(PhoneNumberField, self).clean(value)
-        if value == '' and not self.required:
+        if value in self.empty_values and not self.required:
             return None
         value = value.strip()
 

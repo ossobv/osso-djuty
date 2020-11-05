@@ -11,7 +11,7 @@ class Command(BaseCommand):
     """)
 
     def handle(self, *args, **kwargs):
-        answer = raw_input('Are you sure you want to create/empty the db '
+        answer = input('Are you sure you want to create/empty the db '
                            '[y/n] ? ')
         if answer.strip() != 'y':
             print('Aborted.')

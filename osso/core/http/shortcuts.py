@@ -1,7 +1,7 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
-import httplib
-import urllib
-import urllib2
+import http.client
+import urllib.request, urllib.parse, urllib.error
+import urllib.request, urllib.error, urllib.parse
 import socket
 import ssl
 import sys
@@ -15,12 +15,12 @@ class BadProtocol(ValueError):
     pass
 
 
-class HTTPError(urllib2.HTTPError):
+class HTTPError(urllib.error.HTTPError):
     """
     Override the original HTTPError, drop the fp and add a response.
     """
     def __init__(self, url, code, msg, hdrs, response):
-        urllib2.HTTPError.__init__(self, url, code, msg, hdrs, None)
+        urllib.error.HTTPError.__init__(self, url, code, msg, hdrs, None)
         self.response = response
 
     def __str__(self):
@@ -52,7 +52,7 @@ class Options(object):
         'timeout')
 
     def __init__(self, **kwargs):
-        for key, value in kwargs.items():
+        for key, value in list(kwargs.items()):
             if key not in self._PROPERTIES:
                 raise TypeError('unexpected arg %r' % (key,))
             setattr(self, key, value)
@@ -86,12 +86,12 @@ opt_secure.protocols = ('https',)
 opt_secure.verify_cert = True
 
 
-class Request(urllib2.Request):
+class Request(urllib.request.Request):
     """
     Override the urllib2.Request class to supply a custom method.
     """
     def __init__(self, method=None, *args, **kwargs):
-        urllib2.Request.__init__(self, *args, **kwargs)
+        urllib.request.Request.__init__(self, *args, **kwargs)
         assert method in ('DELETE', 'GET', 'POST', 'PUT')
         self._method = method
 
@@ -99,7 +99,7 @@ class Request(urllib2.Request):
         return self._method
 
 
-class ValidHTTPSConnection(httplib.HTTPConnection):
+class ValidHTTPSConnection(http.client.HTTPConnection):
     """
     This class allows communication via SSL.
 
@@ -107,11 +107,11 @@ class ValidHTTPSConnection(httplib.HTTPConnection):
     Source: http://stackoverflow.com/questions/6648952/\
             urllib-and-validation-of-server-certificate
     """
-    default_port = httplib.HTTPS_PORT
+    default_port = http.client.HTTPS_PORT
     cacert_file = opt_default.cacert_file
 
     def __init__(self, *args, **kwargs):
-        httplib.HTTPConnection.__init__(self, *args, **kwargs)
+        http.client.HTTPConnection.__init__(self, *args, **kwargs)
 
     def connect(self):
         "Connect to a host on a given (SSL) port."
@@ -125,7 +125,7 @@ class ValidHTTPSConnection(httplib.HTTPConnection):
             cert_reqs=ssl.CERT_REQUIRED)
 
 
-class ValidHTTPSHandler(urllib2.HTTPSHandler):
+class ValidHTTPSHandler(urllib.request.HTTPSHandler):
     """
     Originally by: Walter Cacau, 2013-01-14
     Source: http://stackoverflow.com/questions/6648952/\
@@ -133,7 +133,7 @@ class ValidHTTPSHandler(urllib2.HTTPSHandler):
     """
     def __init__(self, cacert_file):
         self.cacert_file = cacert_file
-        urllib2.HTTPSHandler.__init__(self)
+        urllib.request.HTTPSHandler.__init__(self)
 
     def https_open(self, req):
         # If someone uses an alternate cacert_file, we have no decent
@@ -172,7 +172,7 @@ def http_post(url, data=None, opt=opt_default):
         # Allow binstrings for data.
         pass
     elif data:
-        data = urllib.urlencode(data)
+        data = urllib.parse.urlencode(data)
     else:
         data = ''  # ensure POST-mode
     return _http_request(url, method='POST', data=data, opt=opt)
@@ -186,7 +186,7 @@ def http_put(url, data=None, opt=opt_default):
         # Allow binstrings for data.
         pass
     elif data:
-        data = urllib.urlencode(data)
+        data = urllib.parse.urlencode(data)
     else:
         data = ''  # ensure POST-mode
     return _http_request(url, method='PUT', data=data, opt=opt)
@@ -202,9 +202,9 @@ def _http_request(url, method=None, data=None, opt=None):
     # Create URL opener.
     if opt.verify_cert:
         # It's legal to pass either a class or an instance here.
-        opener = urllib2.build_opener(ValidHTTPSHandler(opt.cacert_file))
+        opener = urllib.request.build_opener(ValidHTTPSHandler(opt.cacert_file))
     else:
-        opener = urllib2.build_opener()
+        opener = urllib.request.build_opener()
 
     # Create the Request with optional extra headers.
     req = Request(
@@ -216,7 +216,7 @@ def _http_request(url, method=None, data=None, opt=None):
         fp = opener.open(req, timeout=opt.timeout)
         # print fp.info()  # (temp, print headers)
         response = fp.read()
-    except urllib2.HTTPError as exception:
+    except urllib.error.HTTPError as exception:
         fp = exception.fp  # see finally clause
         exc_info = sys.exc_info()
     except Exception:
@@ -270,7 +270,7 @@ if __name__ == '__main__':
     try:
         http_get('http://example.com/get')
     except HTTPError as e:
-        print('Got %s' % (e,))
+        print(('Got %s' % (e,)))
     else:
         assert False, 'expected 404'
 

@@ -24,22 +24,13 @@
 #     def handle(self, *args, **kwargs):
 #         self.stdout.write('utf8 unbuffered heaven')
 #
-from __future__ import absolute_import, with_statement
+
 import atexit
 import sys
-from os import fdopen
 
-from django import VERSION as django_version
 from django.core.management.base import BaseCommand as DjangoBaseCommand
 from django.core.management.base import CommandError
-try:
-    from django.db import connections
-except ImportError:  # Django<1.2
-    from django.db import connection
-    connections = {'default': connection}
-
-from .compat import OutputWrapper
-
+from django.db import connections
 
 __all__ = ['BaseCommand', 'CommandError', 'docstring']
 
@@ -54,23 +45,7 @@ class BaseCommand(DjangoBaseCommand):
       in the background.
     """
     def execute(self, *args, **kwargs):
-        # Force unbuffered stdout.
-        if 'stdout' not in kwargs and getattr(sys.stdout, 'name', None) == '<stdout>':
-            # Reopen without line buffering.
-            reopened = fdopen(sys.stdout.fileno(), 'w', 0)
-            # Disable/break the old one (see comment at the top).
-            sys.stdout.close()
-            kwargs['stdout'] = sys.stdout = reopened
-
-        # Wrap self.stdout/err with a wrapper that uses utf-8.
-        kwargs['stdout'] = OutputWrapper(kwargs.get('stdout') or sys.stdout)
-        kwargs['stderr'] = OutputWrapper(kwargs.get('stderr') or sys.stderr)
-
         atexit.register(_cleanup_connections)
-
-        if django_version < (1, 2):
-            self.stdout = kwargs['stdout']
-            self.stderr = kwargs['stderr']
 
         return super(BaseCommand, self).execute(*args, **kwargs)
 
@@ -141,12 +116,12 @@ class BaseCommand(DjangoBaseCommand):
                     # But if we weren't, we should supply the backtrace.
                     else:
                         mail_admins(
-                            u'%s cronbg stopped manually' % (module_name,),
+                            '%s cronbg stopped manually' % (module_name,),
                             traceback_str
                         )
                     # No more mailing below.
                     traceback_str = None
-            except Exception as e:
+            except Exception:
                 traceback_str = traceback.format_exc()
             else:
                 # If cron() stopped by returning, we won't send any mail.
@@ -154,7 +129,7 @@ class BaseCommand(DjangoBaseCommand):
 
             if traceback_str:
                 mail_admins(
-                    u'Exception in %s cronbg!' % (module_name,),
+                    'Exception in %s cronbg!' % (module_name,),
                     traceback.format_exc()
                 )
                 sys.exit(1)
@@ -166,15 +141,15 @@ def docstring(doc):
     """
     if not doc:
         return ''
-    if doc[0] != u'\n':
+    if doc[0] != '\n':
         raise NotImplementedError('FIXME: Expected docstring to start on '
                                   'second line, got this: %r' % (doc,))
     offset = 1
-    while doc[offset] == u' ':
+    while doc[offset] == ' ':
         offset += 1
-    spacing = u'\n' + ((offset - 1) * u' ')
+    spacing = '\n' + ((offset - 1) * ' ')
 
-    doc = doc.replace(spacing, u'\n')
+    doc = doc.replace(spacing, '\n')
     return doc.strip()  # drop leading and trailing space (esp. the first LF)
 
 

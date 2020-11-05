@@ -1,7 +1,6 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
 import warnings
 
-from django import VERSION as django_version
 from django.db import connection, models
 from osso.core.forms import fields
 from osso.core.types import cidr4
@@ -65,10 +64,6 @@ class Cidr4Field(models.Field):
             return None
         return cidr4(value)
 
-    if django_version < (1, 2):
-        def get_db_prep_value(self, value):
-            return self.get_prep_value(value)
-
     def get_prep_value(self, value):
         if value is None:
             return None
@@ -91,7 +86,7 @@ class Cidr4Field(models.Field):
         defaults.update(kwargs)
         return super(Cidr4Field, self).formfield(**defaults)
 
-    def from_db_value(self, value, expression, connection, context):
+    def from_db_value(self, value, expression, connection, context=None):
         return self.to_python(value)
 
     def contribute_to_class(self, cls, name, **kwargs):
@@ -348,13 +343,9 @@ class PhoneNumberField(models.Field):
         return 'DecimalField'
 
     def to_python(self, value):
-        if isinstance(value, basestring) or value is None:
+        if isinstance(value, str) or value is None:
             return value
         return '+%s' % value
-
-    if django_version < (1, 2):
-        def get_db_prep_value(self, value):
-            return self.get_prep_value(value)
 
     def get_prep_value(self, value):
         if value is None:
@@ -370,7 +361,7 @@ class PhoneNumberField(models.Field):
         defaults.update(kwargs)
         return super(PhoneNumberField, self).formfield(**defaults)
 
-    def from_db_value(self, value, expression, connection, context):
+    def from_db_value(self, value, expression, connection, context=None):
         return self.to_python(value)
 
     def contribute_to_class(self, cls, name, **kwargs):

@@ -89,7 +89,7 @@ class Sequence(BaseSequence):
         value, is_called = cursor.fetchone()
         if not is_called:
             raise SequenceError('sequence %r has no value' % name)
-        assert isinstance(value, (int, long))
+        assert isinstance(value, int)
         return value
 
     @savepoint
@@ -104,7 +104,7 @@ class Sequence(BaseSequence):
         except DatabaseError:
             raise SequenceDoesNotExist('sequence %r does not exist' % name)
         row = cursor.fetchone()
-        assert isinstance(row[0], (int, long))
+        assert isinstance(row[0], int)
         return row[0]
 
     @savepoint

@@ -21,9 +21,9 @@ Currently, JSON-RPC 2.0(pre) and JSON-RPC 1.0 are implemented
 
         >>> proxy = ServerProxy( JsonRpc20(), TransportTcpIp(addr=("127.0.0.1", 31415)) )
         >>> proxy.echo( "hello world" )
-        u'hello world'
+        'hello world'
         >>> proxy.echo( "bye." )
-        u'bye.'
+        'bye.'
 
     simple Server with JsonRPC2.0 and TCP/IP with logging to STDOUT::
 
@@ -47,13 +47,13 @@ Currently, JSON-RPC 2.0(pre) and JSON-RPC 1.0 are implemented
 
         >>> proxy = ServerProxy( JsonRpc20(), TransportUnixSocket(addr="\\x00.rpcsocket") )
         >>> proxy.hi( message="hello" )         #named parameters
-        u'hi there'
+        'hi there'
         >>> proxy.test()                        #fault
         Traceback (most recent call last):
           ...
-        jsonrpc.RPCMethodNotFound: <RPCFault -32601: u'Method not found.' (None)>
+        jsonrpc.RPCMethodNotFound: <RPCFault -32601: 'Method not found.' (None)>
         >>> proxy.debug.echo( "hello world" )   #hierarchical procedures
-        u'hello world'
+        'hello world'
 
     Server with JsonRPC2.0 and abstract Unix Domain Socket with a logfile::
 
@@ -257,7 +257,7 @@ except ImportError as err:
     try:
         import json as simplejson # XXX-WJD 2012-04-30: added json import fallback
     except ImportError as err:
-        print("FATAL: json-module 'simplejson/json' is missing (%s)" % (err))
+        print(("FATAL: json-module 'simplejson/json' is missing (%s)" % (err)))
         sys.exit(1)
 
 #----------------------
@@ -268,7 +268,7 @@ def dictkeyclean(d):
     :Raises: UnicodeEncodeError
     """
     new_d = {}
-    for (k, v) in d.iteritems():
+    for (k, v) in d.items():
         new_d[str(k)] = v
     return new_d
 
@@ -310,7 +310,7 @@ class JsonRpc10:
         :Raises:    TypeError if method/params is of wrong type or
                     not JSON-serializable
         """
-        if not isinstance(method, (str, unicode)):
+        if not isinstance(method, str):
             raise TypeError('"method" must be a string (or unicode string).')
         if not isinstance(params, (tuple, list)):
             raise TypeError("params must be a tuple/list.")
@@ -326,7 +326,7 @@ class JsonRpc10:
                     | "method", "params" and "id" are always in this order.
         :Raises:    see dumps_request
         """
-        if not isinstance(method, (str, unicode)):
+        if not isinstance(method, str):
             raise TypeError('"method" must be a string (or unicode string).')
         if not isinstance(params, (tuple, list)):
             raise TypeError("params must be a tuple/list.")
@@ -380,7 +380,7 @@ class JsonRpc10:
             raise RPCParseError("No valid JSON. (%s)" % str(err))
         if not isinstance(data, dict):  raise RPCInvalidRPC("No valid RPC-package.")
         if "method" not in data:        raise RPCInvalidRPC("""Invalid Request, "method" is missing.""")
-        if not isinstance(data["method"], (str, unicode)):
+        if not isinstance(data["method"], str):
             raise RPCInvalidRPC("""Invalid Request, "method" must be a string.""")
         if "id"     not in data:        data["id"]     = None   #be liberal
         if "params" not in data:        data["params"] = ()     #be liberal
@@ -487,7 +487,7 @@ class JsonRpc20:
         :Raises:    TypeError if method/params is of wrong type or
                     not JSON-serializable
         """
-        if not isinstance(method, (str, unicode)):
+        if not isinstance(method, str):
             raise TypeError('"method" must be a string (or unicode string).')
         if not isinstance(params, (tuple, list, dict)):
             raise TypeError("params must be a tuple/list/dict or None.")
@@ -507,7 +507,7 @@ class JsonRpc20:
                     | "jsonrpc", "method" and "params" are always in this order.
         :Raises:    see dumps_request
         """
-        if not isinstance(method, (str, unicode)):
+        if not isinstance(method, str):
             raise TypeError('"method" must be a string (or unicode string).')
         if not isinstance(params, (tuple, list, dict)):
             raise TypeError("params must be a tuple/list/dict or None.")
@@ -562,11 +562,11 @@ class JsonRpc20:
             raise RPCParseError("No valid JSON. (%s)" % str(err))
         if not isinstance(data, dict):  raise RPCInvalidRPC("No valid RPC-package.")
         if "jsonrpc" not in data:       raise RPCInvalidRPC("""Invalid Response, "jsonrpc" missing.""")
-        if not isinstance(data["jsonrpc"], (str, unicode)):
+        if not isinstance(data["jsonrpc"], str):
             raise RPCInvalidRPC("""Invalid Response, "jsonrpc" must be a string.""")
         if data["jsonrpc"] != "2.0":    raise RPCInvalidRPC("""Invalid jsonrpc version.""")
         if "method" not in data:        raise RPCInvalidRPC("""Invalid Request, "method" is missing.""")
-        if not isinstance(data["method"], (str, unicode)):
+        if not isinstance(data["method"], str):
             raise RPCInvalidRPC("""Invalid Request, "method" must be a string.""")
         if "params" not in data:        data["params"] = ()
         #convert params-keys from unicode to str
@@ -598,7 +598,7 @@ class JsonRpc20:
             raise RPCParseError("No valid JSON. (%s)" % str(err))
         if not isinstance(data, dict):  raise RPCInvalidRPC("No valid RPC-package.")
         if "jsonrpc" not in data:       raise RPCInvalidRPC("""Invalid Response, "jsonrpc" missing.""")
-        if not isinstance(data["jsonrpc"], (str, unicode)):
+        if not isinstance(data["jsonrpc"], str):
             raise RPCInvalidRPC("""Invalid Response, "jsonrpc" must be a string.""")
         if data["jsonrpc"] != "2.0":    raise RPCInvalidRPC("""Invalid jsonrpc version.""")
         if "id" not in data:            raise RPCInvalidRPC("""Invalid Response, "id" missing.""")

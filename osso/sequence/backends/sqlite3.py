@@ -1,9 +1,7 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
 from django.db import connection
-try:
-    from django.db.utils import DatabaseError, IntegrityError
-except ImportError:  # Django 1.1-
-    from django.db.backends.sqlite3.base import DatabaseError, IntegrityError
+from django.db.utils import DatabaseError, IntegrityError
+
 from osso.sequence.backends import (BaseSequence, SequenceDoesNotExist,
                                     SequenceError)
 

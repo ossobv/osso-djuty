@@ -129,20 +129,10 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
     'osso.core',
-    'osso.relation',
     'osso.aboutconfig',
-    'osso.autolog',
     'osso.l10n',
-    'osso.mysql',
-    'osso.payment',
     'osso.rpc',
-    'osso.search',
     'osso.sequence',
-    'osso.sms',
-    'osso.sms.backends.sms_wireless',
-    'osso.useractivity',
-    'osso.userchat',
-    'osso.videmus',
 )
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
@@ -175,8 +165,3 @@ LOGGING = {
         },
     }
 }
-
-if VERSION[:2] >= (1, 6):
-    # Don't autodetect the test runner >Django 1.6.
-    # We do not want the backwards compatible runner.
-    TEST_RUNNER = 'django.test.runner.DiscoverRunner'

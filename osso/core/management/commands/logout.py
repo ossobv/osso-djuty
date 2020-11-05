@@ -2,7 +2,6 @@
 import argparse
 import sys
 
-from django import VERSION as django_version
 from django.contrib.auth.models import User
 from django.db.models import Q
 from osso.core.management.base import BaseCommand, CommandError, docstring
@@ -20,11 +19,10 @@ class Command(BaseCommand):
     """)
     missing_args_message = 'invalid/missing arguments, see logout --help'
 
-    if django_version >= (1, 8):
-        def add_arguments(self, parser):
-            parser.formatter_class = argparse.RawTextHelpFormatter
-            parser.add_argument(
-                'usernames', nargs='+', help='Usernames or groups')
+    def add_arguments(self, parser):
+        parser.formatter_class = argparse.RawTextHelpFormatter
+        parser.add_argument(
+            'usernames', nargs='+', help='Usernames or groups')
 
     def handle(self, *args, **kwargs):
         if 'usernames' not in kwargs:
@@ -56,7 +54,7 @@ class Command(BaseCommand):
         # Show which we found.
         if verbose >= 2:
             for item in items:
-                print('%-7s %s' % ('%d.' % (item[0],), item[1]))
+                print(('%-7s %s' % ('%d.' % (item[0],), item[1])))
 
         # Show which we didn't find.
         for username in usernames:
@@ -66,8 +64,8 @@ class Command(BaseCommand):
 
         # Log them out.
         if verbose >= 1:
-            print('Preparing to remove session data for %d users' %
-                  (len(found_user_ids,)))
+            print(('Preparing to remove session data for %d users' %
+                  (len(found_user_ids,))))
         deleted = ueber_logout(found_user_ids)
         if verbose >= 1:
-            print('Removed %d session data items' % (deleted,))
+            print(('Removed %d session data items' % (deleted,)))

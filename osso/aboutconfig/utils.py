@@ -1,9 +1,4 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
-try:
-    u, py2 = unicode, True
-except NameError:
-    u, py2 = str, False
-
 from datetime import datetime
 
 from django.core.cache import cache
@@ -27,26 +22,16 @@ class ConfigError(ValueError):
                           "Expected an integral value, e.g. '1'")
     """
     def __init__(self, key, found_value, description):
-        if isinstance(key, u):
-            key = key.encode('utf-8')
-        if isinstance(found_value, u):
-            found_value = found_value.encode('utf-8')
         self.args = (key, found_value, description)
 
     def __repr__(self):
         return 'ConfigError(%r, %r, %r)' % self.args
 
-    def __unicode__(self):
-        return (u'Configuration item in AboutConfig bad/missing:\n'
-                u'  lookup key  = %r\n'
-                u'  found value = %r\n'
-                u'%s') % self.args
-
-    if py2:
-        def __str__(self):
-            return unicode(self).encode('utf-8')
-    else:
-        __str__ = __unicode__
+    def __str__(self):
+        return ('Configuration item in AboutConfig bad/missing:\n'
+                '  lookup key  = %r\n'
+                '  found value = %r\n'
+                '%s') % self.args
 
 
 def aboutconfig(key, default='', set=False):
@@ -55,12 +40,8 @@ def aboutconfig(key, default='', set=False):
     Returns the empty string (or the supplied default value as unicode string)
     if the key is not found.
 
-    >>> try:
-    ...     u = unicode
-    ... except NameError:
-    ...     u = str
     >>> def eq(a, b):
-    ...     return isinstance(a, u) and str(a) == b
+    ...     return a == b
     >>> from osso.aboutconfig.models import Item
     >>> from osso.aboutconfig.utils import aboutconfig
     >>> Item.objects.create(key='a.b.c.d.e',
@@ -75,6 +56,7 @@ def aboutconfig(key, default='', set=False):
     >>> eq(aboutconfig('abc', 123.456), '123.456')
     True
     >>> Item.objects.filter(key__in=('a.b.c.d.e', 'abc')).delete()
+    (1, {'aboutconfig.Item': 1})
     '''
     cache_key = 'osso.aboutconfig.%s' % key
 
@@ -99,7 +81,7 @@ def aboutconfig(key, default='', set=False):
         value = Item.objects.get(key=key).value
         cache.set(cache_key, value, CACHE_TIME)
     except Item.DoesNotExist:
-        value = u(default)
+        value = str(default)
     return value
 
 

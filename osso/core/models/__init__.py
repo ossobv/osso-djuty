@@ -1,7 +1,6 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
-from django.conf import settings
 from django.db import models
-from osso.core.models.fields import *  # convenience
+from osso.core.models.fields import *  # noqa convenience
 
 
 class Model(models.Model):
