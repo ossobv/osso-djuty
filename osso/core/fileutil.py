@@ -160,14 +160,14 @@ def file_needs_updating(filename, write_every, do_not_write_after=None):
     True
     >>> count = open(filename, 'w').write('abc')  # XXX use tmpnam?
     >>> st = os.stat(filename)
-    >>> file_needs_updating(filename, 1)
+    >>> file_needs_updating(filename, 2)
     False
-    >>> time.sleep(2)  # sleep more than 1 second..
-    >>> file_needs_updating(filename, 1)  # ..now this returns true
+    >>> time.sleep(3)  # sleep more than 2 seconds..
+    >>> file_needs_updating(filename, 2)  # ..now this returns true
     True
-    >>> file_needs_updating(filename, 1, now)
+    >>> file_needs_updating(filename, 2, now)
     False
-    >>> file_needs_updating(filename, 1, now + timedelta(seconds=60))
+    >>> file_needs_updating(filename, 2, now + timedelta(seconds=60))
     True
     >>> os.unlink(filename)
     '''
