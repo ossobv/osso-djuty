@@ -302,15 +302,11 @@ class ParentField(models.ForeignKey):
                                           blank=blank, null=null, **kwargs)
 
     @staticmethod
-    def check(object=None, attname=None):
+    def check_cyclic(object=None, attname=None):
         '''
         Use this static method to check your model instance against
         cyclic relations.
         '''
-        # Bah! The check function is used by newer Django (1.7+?).
-        if object is None and attname is None:
-            return []
-
         if object.pk is not None:
             parents = set((object.pk,))
             parent = getattr(object, attname)
