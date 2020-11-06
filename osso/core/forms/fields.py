@@ -7,7 +7,7 @@ from django.forms.models import ModelChoiceIterator
 from django.utils.translation import gettext_lazy as _
 from osso.core.forms.widgets import (
     new_widget_with_attributes, EditableSelectWidget)
-from osso.core.types import cidr4
+from osso.core.cidr4 import cidr4
 
 
 safecharfield_re = re.compile(r'[\x00-\x08\x0a-\x1f]')

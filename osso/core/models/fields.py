@@ -3,7 +3,7 @@ import warnings
 
 from django.db import connection, models
 from osso.core.forms import fields
-from osso.core.types import cidr4
+from osso.core.cidr4 import cidr4
 
 
 __all__ = [
