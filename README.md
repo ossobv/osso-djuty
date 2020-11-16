@@ -18,7 +18,7 @@ Contents
 |--------------|-----------------------------------------------------------|
 | aboutconfig  | Get/set basic settings from DB/cache.                     |
 | core         | Lots of nice Django stuff.                                |
-| l10n         | Localization utilities.                                   |
+| l10n         | Localization utilities. Note the templatetag is l10n_o    |
 | mysql        | MySQL fields.                                             |
 | rpc          | RPC through jsonrpc and xmlrpc helpers.                   |
 | sequence     | Unique incremental IDs for various databases.             |
