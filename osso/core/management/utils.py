@@ -45,15 +45,17 @@ def recreatedb(database=DEFAULT_DB_ALIAS):
         # Do some extra checks to ensure that we're not doing something
         # really stupid.
         try:
-            db = open(db_name)
+            db = open(db_name, 'rb')
         except IOError:
             # No file? Nothing to do.
             pass
         else:
-            header = db.read(16)
-            if header != 'SQLite format 3\x00':
-                raise ValueError('Not an SQLite 3 database', db_name)
-            db.close()
+            try:
+                header = db.read(16)
+                if header != b'SQLite format 3\x00':
+                    raise ValueError('Not an SQLite 3 database', db_name)
+            finally:
+                db.close()
             # Remove it
             os.unlink(db_name)
 
