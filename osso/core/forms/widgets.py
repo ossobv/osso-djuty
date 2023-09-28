@@ -4,9 +4,9 @@ from django.forms import Select
 from django.utils.html import conditional_escape
 from django.forms.widgets import CheckboxInput, CheckboxSelectMultiple
 try:
-    from django.utils.encoding import force_text
+    from django.utils.encoding import force_str
 except ImportError:
-    from django.utils.encoding import force_unicode as force_text
+    from django.utils.encoding import force_text as force_str
 from django.utils.safestring import mark_safe
 
 
@@ -42,7 +42,7 @@ class CheckboxSelectMultipleWithJS(CheckboxSelectMultiple):
         final_attrs = self.build_attrs(attrs)
         output = []
         # Normalize to strings
-        str_values = set([force_text(v) for v in value])
+        str_values = set([force_str(v) for v in value])
         for i, (option_value, option_label) in enumerate(chain(self.choices,
                                                                choices)):
             # If an ID attribute was given, add a numeric index as a suffix,
@@ -56,9 +56,9 @@ class CheckboxSelectMultipleWithJS(CheckboxSelectMultiple):
 
             cb = CheckboxInput(final_attrs,
                                check_test=(lambda value: value in str_values))
-            option_value = force_text(option_value)
+            option_value = force_str(option_value)
             rendered_cb = cb.render(name, option_value, renderer=renderer)
-            option_label = conditional_escape(force_text(option_label))
+            option_label = conditional_escape(force_str(option_label))
             output.append('<label%s style="display:block;">%s %s</label>' %
                           (label_for, rendered_cb, option_label))
 
