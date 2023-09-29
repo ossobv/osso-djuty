@@ -2,10 +2,7 @@
 from json import JSONEncoder, dumps
 
 from django.template import Library
-try:
-    from django.utils.encoding import force_text
-except ImportError:
-    from django.utils.encoding import force_unicode as force_text
+from django.utils.encoding import force_str
 from django.utils.functional import Promise
 
 register = Library()
@@ -14,7 +11,7 @@ register = Library()
 class _JSONEncoder(JSONEncoder):
     def default(self, obj):
         if isinstance(obj, Promise):
-            return force_text(obj)
+            return force_str(obj)
         return obj
 
 
