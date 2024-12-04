@@ -61,7 +61,7 @@ class EditableSelectField(forms.ModelChoiceField):
             return self._choices
         return EditableSelectIterator(self)
 
-    choices = property(_get_choices, forms.ChoiceField._set_choices)
+    choices = property(_get_choices, forms.ChoiceField.choices.fset)
 
 
 class FormatterCharField(forms.CharField):
