@@ -11,7 +11,7 @@ admin="`which django-admin`"
 [ -z "$admin" ] && admin="`which django-admin.py`"
 [ -z "$admin" ] && echo 'No virtualenv loaded?' && exit 1
 
-VERSION=`echo 'from django import VERSION;print VERSION' | python 2>/dev/null`
+VERSION=`echo 'from django import VERSION;print(VERSION)' | python 2>/dev/null`
 MAJVER=`echo $VERSION | sed -e 's/^[^0-9]*\([0-9]\+\).*/\1/'`
 MINVER=`echo $VERSION | sed -e 's/^[^0-9]*[0-9]\+[^0-9]\+\([0-9]\+\).*/\1/'`
 NEWVER=1  # from 1.6+ we take tests by the full dotted module
@@ -66,7 +66,6 @@ INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'osso.core',
-    'osso.relation',
 __EOF__
 for app in $INST_APPS; do
     echo "    'osso.$app'," >> osso/test_settings.py
@@ -75,15 +74,12 @@ cat >> osso/test_settings.py << __EOF__
 )
 
 # The l10n middleware likes to have a view to call
-try:  # Django 1.4+
-    from django.conf.urls import patterns
-except ImportError:  # Django 1.3-
-    from django.conf.urls.defaults import patterns
 from django.http import HttpResponse
+from django.urls import path
 def some_view(request):
     return HttpResponse('OK')
-ROOT_URLCONF = patterns('',
-    (u'^$', some_view),
+ROOT_URLCONF = (
+    path('', some_view),
 )
 
 SITE_ID = 1
@@ -92,8 +88,8 @@ __EOF__
 if test "$SHELL" = 1; then
     PYTHONPATH=. "$admin" shell --settings=osso.test_settings $OPTS
 else
-    PYTHONPATH=. "$admin" test --settings=osso.test_settings $OPTS $APPS
+    PYTHONPATH=. "$admin" test --settings=osso.test_settings $OPTS
 fi
 
 # Remove stuff again
-rm -f "osso/test_settings.py" "osso/test_settings.pyc"
+rm -f "osso/test_settings.py" osso/__pycache__/test_settings.cpython-*.pyc
