@@ -4,7 +4,7 @@ from json import JSONEncoder, dumps
 from django.conf import settings
 from django.db.models.query import QuerySet
 from django.http import HttpResponse
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 from django.utils.functional import Promise
 
 
@@ -17,7 +17,7 @@ class _JsonEncoder(JSONEncoder):
         elif isinstance(obj, QuerySet):
             return list(obj)
         elif isinstance(obj, Promise):
-            return force_text(obj)
+            return force_str(obj)
         return obj
 
 

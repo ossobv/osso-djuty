@@ -3,10 +3,7 @@ from django.conf import settings
 from django.core.mail import mail_admins
 from django.http import HttpResponse, HttpResponseServerError
 from django.template.loader import render_to_string
-try:
-    from django.utils.encoding import force_text
-except ImportError:
-    from django.utils.encoding import force_unicode as force_text
+from django.utils.encoding import force_str
 from django.utils.html import escape
 
 
@@ -91,7 +88,7 @@ def simple_form_view(request, form_class, form_kwargs={}, heading='Form',
             return httpresponse_ok(message='', saved=return_value)
         if mail_on_fail:
             mail_admins(
-                'Invalid input on "%s" form' % (force_text(heading),),
+                'Invalid input on "%s" form' % (force_str(heading),),
                 ('Form validation failed for form %s with kwargs %r.\n\n'
                  'Host: %s\nPath: %s\nRemoteAddr: %s\n\nData: %r\n\n'
                  'Errors: %r\n') %
