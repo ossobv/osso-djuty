@@ -1,8 +1,8 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
-from datetime import datetime
-
 from django.core.cache import cache
 from django.db.models.signals import post_save
+from django.utils import timezone
+
 from osso.aboutconfig.models import Item
 
 
@@ -67,7 +67,7 @@ def aboutconfig(key, default='', set=False):
         item, created = Item.objects.get_or_create(key=key,
                                                    defaults={'value': default})
         if not created and item.value != default:
-            now = datetime.now()
+            now = timezone.now()
             rows = Item.objects.filter(key=key).update(value=default,
                                                        modified=now)
             # backends that do not support matched/affected records
@@ -94,4 +94,6 @@ def _flush_cache(instance, created, **kwargs):
     # Changed? Then we may need to flush the cache.
     cache_key = 'osso.aboutconfig.%s' % instance.key
     cache.delete(cache_key)
+
+
 post_save.connect(_flush_cache, sender=Item)

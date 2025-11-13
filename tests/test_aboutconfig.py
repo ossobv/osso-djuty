@@ -17,3 +17,13 @@ class AboutConfigTestCase(TestCase):
         self.assertEqual(aboutconfig('abc', 123.456), '123.456')
         deleted = Item.objects.filter(key__in=('a.b.c.d.e', 'abc')).delete()
         self.assertEqual(deleted, (1, {'aboutconfig.Item': 1}))
+
+    def test_aboutconfig_set(self):
+        assert aboutconfig('key') == ''
+        assert aboutconfig('key', 'val', set=True) is None
+        assert aboutconfig('key', 'not val') == 'val'
+
+    def test_aboutconfig_update(self):
+        assert aboutconfig('key', 'val', set=True) is None
+        assert aboutconfig('key', 'not val', set=True) is None
+        assert aboutconfig('key', 'val') == 'not val'
