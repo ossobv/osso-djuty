@@ -18,18 +18,14 @@ RE_DOUBLE_LF = re.compile(r'\n\n+')
 
 def to_linear_text(html):
     '''
-    >>> import os
-    >>> fn = os.path.join(os.path.dirname(__file__), 'tests-data',
-    ...                   'to_linear_text')
-    >>> input = open(fn + '.html').read()
-    >>> expected = open(fn + '.txt').read()
-    >>> try:
-    ...     result = to_linear_text(input)
-    ... except ImportError:
-    ...     pass
-    ... else:
-    ...     assert result == expected, ('Output dissimilar from %s.txt: %r' %
-    ...                                 (fn, result))
+    >>> from pathlib import Path
+    >>> fn = Path(__file__) / '../../../tests/data/to_linear_text'
+    >>> fn = fn.resolve()
+    >>> input = fn.with_suffix('.html').read_text()
+    >>> expected = fn.with_suffix('.txt').read_text()
+    >>> result = to_linear_text(input)
+    >>> assert result == expected, ('Output dissimilar from %s.txt: %r' %
+    ...                             (fn, result))
     '''
     # Wow.. various imports break the doctests when placed at the top:
     # all tests in tests.py get reduced to 0 tests. (Observed with

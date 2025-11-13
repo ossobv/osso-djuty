@@ -259,7 +259,7 @@ if __name__ == '__main__':
     c = a | b
     assert c.protocols == ('ftp',)
     assert c.verify_cert is False
-    assert c.cacert_file is '/tmp/test.crt'
+    assert c.cacert_file == '/tmp/test.crt'
 
     a = (opt_secure | Options(timeout=10))
     assert a.protocols == ('https',)

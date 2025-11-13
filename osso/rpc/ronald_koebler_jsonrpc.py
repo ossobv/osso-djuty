@@ -19,6 +19,8 @@ Currently, JSON-RPC 2.0(pre) and JSON-RPC 1.0 are implemented
 :Example:
     simple Client with JsonRPC2.0 and TCP/IP::
 
+        >>> import pytest
+        >>> pytest.skip('This example cannot be tested inline')
         >>> proxy = ServerProxy( JsonRpc20(), TransportTcpIp(addr=("127.0.0.1", 31415)) )
         >>> proxy.echo( "hello world" )
         'hello world'

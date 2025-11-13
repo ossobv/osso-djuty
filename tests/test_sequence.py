@@ -1,7 +1,7 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
 from django.test import TestCase
 
-from .. import SequenceDoesNotExist, SequenceError, sequence
+from osso.sequence import SequenceDoesNotExist, SequenceError, sequence
 
 
 class SequenceTest(TestCase):

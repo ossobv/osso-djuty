@@ -1,8 +1,7 @@
 from django.test import TestCase
 
-from .models import Item
-from .utils import aboutconfig
-from .utils import aboutconfig
+from osso.aboutconfig.models import Item
+from osso.aboutconfig.utils import aboutconfig
 
 
 class AboutConfigTestCase(TestCase):

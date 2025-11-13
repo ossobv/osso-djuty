@@ -2,7 +2,10 @@
 # The MySQLdb.OperationalError is superseded by the django DatabaseError
 # in Django 1.4+.
 import warnings
-from MySQLdb import IntegrityError, OperationalError
+try:
+    from MySQLdb import IntegrityError, OperationalError
+except ImportError:
+    IntegrityError = OperationalError = Exception
 
 from django.db import (DatabaseError, IntegrityError as DjangoIntegrityError,
                        connection, transaction)
@@ -186,7 +189,7 @@ class Sequence(BaseSequence):
                 data = cursor.fetchall()
                 self._has_savepoint_issues = (data[0][0] == 'ndbcluster')
                 del data
-            except:
+            except Exception:
                 # Fallback, in case there is no @@default_storage_engine.
                 self._has_savepoint_issues = False
             else:

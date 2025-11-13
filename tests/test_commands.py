@@ -1,25 +1,31 @@
 # vim: set ts=8 sw=4 sts=4 et ai:
+from io import StringIO
 from unittest.mock import patch
 
 from django.contrib.auth.models import User
 from django.core.management import call_command
 from django.core.management.base import OutputWrapper
 from django.test import TestCase
-from django.utils.six import StringIO
 
 from osso.core.management.base import BaseCommand, CommandError
 
 
-class TestCommand(BaseCommand):
+class ExampleCommand(BaseCommand):
     def handle(self, *args, **kwargs):
         self.stdout.write('hello world!')
         self.stderr.write('hello err...')
+
+    def execute(self, *args, **kwargs):
+        kwargs.setdefault('force_color', False)
+        kwargs.setdefault('no_color', True)
+        kwargs.setdefault('skip_checks', True)
+        return super().execute(*args, **kwargs)
 
 
 class CommandTestCase(TestCase):
     def test_kwargs(self):
         out = StringIO()
-        cmd = TestCommand()
+        cmd = ExampleCommand()
         cmd.execute(stdout=out, stderr=out)
         self.assertIn('hello world!\nhello err...\n', out.getvalue())
         self.assertTrue(isinstance(cmd.stdout, OutputWrapper))
@@ -30,7 +36,7 @@ class CommandTestCase(TestCase):
     @patch('sys.stderr', new_callable=StringIO)
     @patch('sys.stdout', new_callable=StringIO)
     def test_nokwargs(self, stdout, stderr):
-        cmd = TestCommand()
+        cmd = ExampleCommand()
         cmd.execute()
         self.assertIn('hello world!\n', stdout.getvalue())
         self.assertIn('hello err...\n', stderr.getvalue())

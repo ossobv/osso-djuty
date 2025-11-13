@@ -92,11 +92,13 @@ class Command(BaseCommand):
                 name = 'irrelevant'
                 _registry = {}
 
-            using = 'default'
-            retval = get_deleted_objects(
-                (object,), object._meta,
-                AnonymousUser(), AdminSite(), using)
+                def is_registered(self, model):
+                    return False
 
+            class Request:
+                user = AnonymousUser()
+
+            retval = get_deleted_objects((object,), Request(), AdminSite())
             (dependent_objects, _, perms_needed, protected) = retval
 
             object._rdepends = dependent_objects

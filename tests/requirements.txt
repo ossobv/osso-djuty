@@ -1,7 +1,7 @@
 # test tools
-coverage
-mock
+pytest
+pytest-cov
+pytest-django
 
 # project dependencies
 lxml
-six

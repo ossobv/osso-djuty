@@ -4,11 +4,8 @@ import datetime
 from django.test import TestCase, override_settings
 from django.utils import translation
 
-from ..templatetags.core import hourstohuman
-try:
-    from ..templatetags.core import strftime
-except ImportError:
-    strftime = None
+from osso.core.templatetags.core import hourstohuman
+from osso.core.templatetags.core import strftime
 
 
 class CoreTemplatetagsTestCase(TestCase):

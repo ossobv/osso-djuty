@@ -1,4 +1,4 @@
-from django.forms.forms import BoundField
+from django.forms.boundfield import BoundField
 
 
 class FieldsetBoundField(BoundField):
@@ -50,7 +50,9 @@ def process_fieldsets_meta(form):
     '''
     if not hasattr(form, 'Meta') or not hasattr(form.Meta, 'fieldsets'):
         return [Fieldset(form=form, fields=list(form.fields.keys()))]
-    return [Fieldset(form=form, name=name, **options) for name, options in form.Meta.fieldsets]
+    return [
+        Fieldset(form=form, name=name, **options)
+        for name, options in form.Meta.fieldsets]
 
 
 class FieldsetMixin(object):

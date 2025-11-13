@@ -40,6 +40,7 @@ def aboutconfig(key, default='', set=False):
     Returns the empty string (or the supplied default value as unicode string)
     if the key is not found.
 
+    >>> getfixture('db')
     >>> def eq(a, b):
     ...     return a == b
     >>> from osso.aboutconfig.models import Item
