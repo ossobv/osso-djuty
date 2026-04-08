@@ -25,6 +25,7 @@
 #         self.stdout.write('utf8 unbuffered heaven')
 #
 
+from argparse import RawTextHelpFormatter
 import atexit
 import sys
 
@@ -43,7 +44,13 @@ class BaseCommand(DjangoBaseCommand):
       messages and shell pipe usage.
     - have a cronbg() method which wraps your cron() method to run it
       in the background.
+    - Use RawTextHelpFormatter to preserve newlines in the help_text.
     """
+    def create_parser(self, *args, **kwargs):
+        parser = super(BaseCommand, self).create_parser(*args, **kwargs)
+        parser.formatter_class = RawTextHelpFormatter
+        return parser
+
     def execute(self, *args, **kwargs):
         atexit.register(_cleanup_connections)
 
