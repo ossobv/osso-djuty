@@ -43,7 +43,8 @@ def forward_postgresql(apps, schema_editor):
             name=name, start=start, increment=increment, value=value)
 
     for name in migrated_names:
-        cursor.execute(f'DROP SEQUENCE {name}')  # Names are valid identifiers.
+        # Names are valid identifiers but have to be quoted to preserve case.
+        cursor.execute(f'DROP SEQUENCE "{name}"')
 
 
 def backward_postgresql(apps, schema_editor):
@@ -56,7 +57,7 @@ def backward_postgresql(apps, schema_editor):
     cursor = schema_editor.connection.cursor()
     for sequence in Sequence.objects.using(db).all():
         cursor.execute(
-            f'CREATE SEQUENCE {SEQUENCE_PREFIX}{sequence.name} '
+            f'CREATE SEQUENCE "{SEQUENCE_PREFIX}{sequence.name}" '
             'INCREMENT %s START %s',
             (sequence.increment, sequence.start))
         if sequence.value:
