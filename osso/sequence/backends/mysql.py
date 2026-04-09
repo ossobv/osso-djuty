@@ -112,20 +112,6 @@ class Sequence(BaseSequence):
         '''
         cursor = connection.cursor()
         try:
-            cursor.execute('''
-                CREATE TABLE sequence_sequence (
-                    `name` VARCHAR(63) character set ascii
-                                       collate ascii_bin NOT NULL,
-                    `start` INTEGER NOT NULL,
-                    `increment` INTEGER NOT NULL,
-                    `value` INTEGER NULL,
-                    PRIMARY KEY (`name`)
-                );
-            ''')
-        except (DatabaseError, OperationalError) as e:
-            if e.args[0] != 1050:  # table exists
-                raise
-        try:
             # cursor.execute('''
             #     CREATE FUNCTION nextval(seq_name VARCHAR(63))
             #         RETURNS INT

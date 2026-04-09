@@ -167,25 +167,3 @@ class Sequence(BaseSequence):
 
         if rowcount == 0:
             raise SequenceDoesNotExist('sequence %r does not exist' % name)
-
-    def install(self, **kwargs):
-        """
-        Hook to prepare the database for sequences.
-        """
-        cursor = connection.cursor()
-        self.lock(cursor)
-        try:
-            cursor.execute("""
-                CREATE TABLE sequence_sequence (
-                    name TEXT(63) NOT NULL,
-                    start INTEGER NOT NULL,
-                    increment INTEGER NOT NULL,
-                    value INTEGER NULL,
-                    PRIMARY KEY (name)
-                )
-            """)
-        except DatabaseError:
-            # Already exists?
-            pass
-        finally:
-            self.unlock(cursor)
